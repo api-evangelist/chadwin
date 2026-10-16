@@ -1,0 +1,69 @@
+generated: '2026-10-16'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/_original/chadwin-api-openapi.json
+format: custom
+envelope:
+  media_type: application/json
+  schema: ErrorResponse
+coverage:
+  operations: 27
+  statuses_declared: 8
+problems:
+- status: 400
+  title: Bad Request
+  description: The feed query parameters are invalid
+  operations: 27
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 401
+  title: Unauthorized
+  description: The request is missing a valid API key
+  operations: 27
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 403
+  title: Forbidden
+  description: The subscription does not include this dataset
+  operations: 25
+  media_types:
+  - application/json
+  schema: DatasetNotEntitledErrorResponse
+- status: 404
+  title: Not Found
+  description: The ticker was not found
+  operations: 19
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 409
+  title: Conflict
+  description: The ticker identifies more than one company
+  operations: 10
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 429
+  title: Too Many Requests
+  description: The request exceeded a rate limit
+  operations: 27
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 500
+  title: Internal Server Error
+  description: A stored result cannot map to the public schema
+  operations: 4
+  media_types:
+  - application/json
+  schema: ErrorResponse
+- status: 503
+  title: Service Unavailable
+  description: The database is unavailable
+  operations: 27
+  media_types:
+  - application/json
+  schema: ErrorResponse

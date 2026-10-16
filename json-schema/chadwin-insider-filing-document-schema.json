@@ -1,0 +1,625 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/chadwin/main/json-schema/chadwin-insider-filing-document-schema.json",
+  "title": "InsiderFilingDocument",
+  "x-generated": "2026-10-16",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderFilingDocument",
+  "type": "object",
+  "properties": {
+    "issuer": {
+      "$ref": "#/$defs/InsiderIssuer"
+    },
+    "accession_number": {
+      "type": "string"
+    },
+    "form": {
+      "type": "string",
+      "enum": [
+        "3",
+        "4",
+        "5",
+        "3/A",
+        "4/A",
+        "5/A"
+      ]
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "period_of_report": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "date_of_original_submission": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "not_subject_to_section_16": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "rule_10b5_1": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "remarks": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reporting_owners": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderTransactionReportingOwner"
+      }
+    },
+    "owner_signatures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "date"
+        ]
+      }
+    },
+    "footnotes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderTransactionFootnote"
+      }
+    },
+    "non_derivative_transactions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderFilingTransactionRow"
+      }
+    },
+    "derivative_transactions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderFilingTransactionRow"
+      }
+    },
+    "non_derivative_holdings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderOwnershipHoldingRow"
+      }
+    },
+    "derivative_holdings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InsiderOwnershipHoldingRow"
+      }
+    },
+    "sec_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "issuer",
+    "accession_number",
+    "form",
+    "accepted_at",
+    "period_of_report",
+    "date_of_original_submission",
+    "not_subject_to_section_16",
+    "rule_10b5_1",
+    "remarks",
+    "reporting_owners",
+    "owner_signatures",
+    "footnotes",
+    "non_derivative_transactions",
+    "derivative_transactions",
+    "non_derivative_holdings",
+    "derivative_holdings",
+    "sec_url"
+  ],
+  "$defs": {
+    "InsiderFieldFootnoteIds": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": "Map from API field name to the document-level footnote IDs that qualify that field. An absent key means the field has no filed footnote reference."
+    },
+    "InsiderFilingTransactionRow": {
+      "type": "object",
+      "properties": {
+        "source_row_index": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "One-based row position within the filing's derivative or non-derivative transaction table."
+        },
+        "transaction_code": {
+          "type": "string",
+          "enum": [
+            "A",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "O",
+            "P",
+            "S",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Z"
+          ],
+          "description": "SEC transaction code: P purchase; S sale; A grant or award; D disposition to issuer; F tax or exercise-price payment with securities; I discretionary Rule 16b-3 transaction; M exempt derivative exercise or conversion; C derivative conversion; E short-position expiration; H long-position expiration or cancellation with value; O out-of-the-money exercise; X in- or at-the-money exercise; G gift; L small acquisition; W inheritance; Z voting-trust transfer; J other event explained in the filing; K equity swap; U tender in a change of control; V voluntary early report."
+        },
+        "transaction_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Transaction date reported in the filing, or null when absent."
+        },
+        "deemed_execution_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Deemed execution date reported for the transaction, or null when not applicable or absent."
+        },
+        "transaction_form_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Row-level SEC form timing code, or null when not stated. This can differ from the containing document form."
+        },
+        "security": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shares": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transaction_total_value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "SEC transactionTotalValue when present. This value is not computed by the API."
+        },
+        "acquired_disposed_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "A when securities were acquired, D when disposed, or null when not stated."
+        },
+        "shares_owned_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ownership_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Normalized ownership value: direct for direct beneficial ownership, indirect for ownership through another person or entity, or null when not stated."
+        },
+        "nature_of_ownership": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transaction_timeliness": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "E for early, L for late, or null when the filing does not state transaction timeliness."
+        },
+        "equity_swap_involved": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "conversion_or_exercise_price": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exercise_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expiration_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "underlying_security": {
+          "$ref": "#/$defs/InsiderUnderlyingSecurity"
+        },
+        "footnote_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "All document-level footnote IDs referenced by fields on this row."
+        },
+        "field_footnote_ids": {
+          "$ref": "#/$defs/InsiderFieldFootnoteIds"
+        }
+      },
+      "required": [
+        "source_row_index",
+        "transaction_code",
+        "transaction_date",
+        "deemed_execution_date",
+        "transaction_form_type",
+        "security",
+        "shares",
+        "price",
+        "transaction_total_value",
+        "acquired_disposed_code",
+        "shares_owned_after",
+        "ownership_type",
+        "nature_of_ownership",
+        "transaction_timeliness",
+        "equity_swap_involved",
+        "conversion_or_exercise_price",
+        "exercise_date",
+        "expiration_date",
+        "underlying_security",
+        "footnote_ids",
+        "field_footnote_ids"
+      ]
+    },
+    "InsiderIssuer": {
+      "type": "object",
+      "properties": {
+        "cik": {
+          "type": "string",
+          "description": "SEC CIK of the issuer whose securities are reported."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Issuer name reported in the filing, or null when absent."
+        },
+        "ticker": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Issuer trading symbol reported in the filing, or null."
+        }
+      },
+      "required": [
+        "cik",
+        "name",
+        "ticker"
+      ]
+    },
+    "InsiderOwnershipHoldingRow": {
+      "type": "object",
+      "properties": {
+        "source_row_index": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "late_holding_form_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "security": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shares_owned_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value_owned_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ownership_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nature_of_ownership": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "conversion_or_exercise_price": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exercise_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expiration_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "underlying_security": {
+          "$ref": "#/$defs/InsiderUnderlyingSecurity"
+        },
+        "footnote_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "field_footnote_ids": {
+          "$ref": "#/$defs/InsiderFieldFootnoteIds"
+        }
+      },
+      "required": [
+        "source_row_index",
+        "late_holding_form_type",
+        "security",
+        "shares_owned_after",
+        "value_owned_after",
+        "ownership_type",
+        "nature_of_ownership",
+        "footnote_ids",
+        "field_footnote_ids"
+      ]
+    },
+    "InsiderReportingOwnerAddress": {
+      "type": "object",
+      "properties": {
+        "street1": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "street1",
+        "street2",
+        "city",
+        "state",
+        "zip_code",
+        "country"
+      ]
+    },
+    "InsiderReportingOwnerRelationship": {
+      "type": "object",
+      "properties": {
+        "is_director": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the filing identifies the owner as a director, or null when not stated."
+        },
+        "is_officer": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the filing identifies the owner as an officer, or null when not stated."
+        },
+        "is_ten_percent_owner": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the filing identifies the owner as a ten-percent owner, or null when not stated."
+        },
+        "is_other": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the filing identifies another Section 16 relationship, or null when not stated."
+        },
+        "officer_title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "other_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "is_director",
+        "is_officer",
+        "is_ten_percent_owner",
+        "is_other",
+        "officer_title",
+        "other_text"
+      ]
+    },
+    "InsiderTransactionFootnote": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Document-level footnote identifier."
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Filed footnote text, or null when the referenced text is absent."
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ]
+    },
+    "InsiderTransactionReportingOwner": {
+      "type": "object",
+      "properties": {
+        "cik": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "address": {
+          "$ref": "#/$defs/InsiderReportingOwnerAddress"
+        },
+        "relationship": {
+          "$ref": "#/$defs/InsiderReportingOwnerRelationship"
+        }
+      },
+      "required": [
+        "cik",
+        "name",
+        "address",
+        "relationship"
+      ]
+    },
+    "InsiderUnderlyingSecurity": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shares": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "shares",
+        "value"
+      ]
+    }
+  }
+}

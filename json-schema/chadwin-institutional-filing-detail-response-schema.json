@@ -1,0 +1,404 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/chadwin/main/json-schema/chadwin-institutional-filing-detail-response-schema.json",
+  "title": "InstitutionalFilingDetailResponse",
+  "x-generated": "2026-10-16",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalFilingDetailResponse",
+  "type": "object",
+  "properties": {
+    "accession_number": {
+      "type": "string"
+    },
+    "form": {
+      "type": "string",
+      "enum": [
+        "13F-HR",
+        "13F-HR/A",
+        "13F-NT",
+        "13F-NT/A"
+      ],
+      "description": "Filed Form 13F type."
+    },
+    "report_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Form 13F cover-page report type: 13F HOLDINGS REPORT when all holdings are reported in this filing, 13F NOTICE when all holdings are reported by other managers, 13F COMBINATION REPORT when holdings are split between this filing and other managers, or null when absent."
+    },
+    "period_of_report": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Quarter-end period described by the filing, or null when absent."
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "manager": {
+      "$ref": "#/$defs/InstitutionalFilingManager"
+    },
+    "amendment": {
+      "$ref": "#/$defs/InstitutionalFilingAmendment"
+    },
+    "confidential_treatment_requested": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "remarks": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "included_managers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InstitutionalFilingIncludedManager"
+      },
+      "description": "Managers whose holdings are included in the information table."
+    },
+    "other_reporting_managers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InstitutionalFilingOtherManager"
+      },
+      "description": "Other reporting managers named on the filing."
+    },
+    "signature": {
+      "$ref": "#/$defs/InstitutionalFilingSignature"
+    },
+    "holdings": {
+      "$ref": "#/$defs/InstitutionalFilingHoldingsSummary"
+    }
+  },
+  "required": [
+    "accession_number",
+    "form",
+    "report_type",
+    "period_of_report",
+    "accepted_at",
+    "manager",
+    "amendment",
+    "confidential_treatment_requested",
+    "remarks",
+    "included_managers",
+    "other_reporting_managers",
+    "signature",
+    "holdings"
+  ],
+  "$defs": {
+    "InstitutionalFilingAmendment": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Amendment number reported on the cover page, or null."
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "RESTATEMENT when the complete corrected filing supersedes the active set, NEW HOLDINGS when rows supplement it, or null when absent."
+        },
+        "confidential_denied_expired": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "date_denied_expired": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date_reported": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason_for_non_confidentiality": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "number",
+        "type",
+        "confidential_denied_expired",
+        "date_denied_expired",
+        "date_reported",
+        "reason_for_non_confidentiality"
+      ]
+    },
+    "InstitutionalFilingHoldingsSummary": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of information-table rows reported by the filing."
+        },
+        "total_value_usd": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Relative URL for paginated as-filed holdings, or null when the filing has no information table."
+        }
+      },
+      "required": [
+        "total_count",
+        "total_value_usd",
+        "url"
+      ]
+    },
+    "InstitutionalFilingIncludedManager": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form_13f_file_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cik": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "crd_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "form_13f_file_number",
+        "cik",
+        "crd_number"
+      ],
+      "description": "Manager whose holdings are included in the filing's information table."
+    },
+    "InstitutionalFilingManager": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/InstitutionalManagerSourceIdentity"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "crd_number": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "address": {
+              "$ref": "#/$defs/InstitutionalFilingManagerAddress"
+            }
+          },
+          "required": [
+            "crd_number",
+            "address"
+          ]
+        }
+      ]
+    },
+    "InstitutionalFilingManagerAddress": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "street1": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state_or_country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "street1",
+        "street2",
+        "city",
+        "state_or_country",
+        "zip_code"
+      ]
+    },
+    "InstitutionalFilingOtherManager": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form_13f_file_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cik": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "crd_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "form_13f_file_number",
+        "cik",
+        "crd_number"
+      ]
+    },
+    "InstitutionalFilingSignature": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signature": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state_or_country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signature_date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "title",
+        "phone",
+        "signature",
+        "city",
+        "state_or_country",
+        "signature_date"
+      ]
+    },
+    "InstitutionalManagerSourceIdentity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "form_13f_file_number": {
+          "type": "string",
+          "description": "SEC Form 13F file number used as the manager endpoint identifier."
+        },
+        "cik": {
+          "type": "string",
+          "description": "SEC CIK of the reporting manager's source filer."
+        }
+      },
+      "required": [
+        "name",
+        "form_13f_file_number",
+        "cik"
+      ]
+    }
+  }
+}

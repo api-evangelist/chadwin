@@ -1,0 +1,4 @@
+Canonical: https://www.chadwin.co/.well-known/security.txt
+Contact: mailto:admin@chadwin.co
+Expires: 2028-06-12T17:30:00Z
+Preferred-Languages: en

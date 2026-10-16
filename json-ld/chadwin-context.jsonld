@@ -1,0 +1,1297 @@
+{
+  "@context": {
+    "@vocab": "https://chadwin.co/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "chadwin": "https://chadwin.co/schema#",
+    "ErrorResponse": "chadwin:ErrorResponse",
+    "error": {
+      "@id": "chadwin:error",
+      "@type": "xsd:string"
+    },
+    "CompanySearchResponse": "chadwin:CompanySearchResponse",
+    "companies": {
+      "@id": "chadwin:companies",
+      "@container": "@list"
+    },
+    "CompanySearchResult": "chadwin:CompanySearchResult",
+    "name": {
+      "@id": "chadwin:name",
+      "@type": "xsd:string"
+    },
+    "cik": {
+      "@id": "chadwin:cik",
+      "@type": "xsd:string"
+    },
+    "website_url": {
+      "@id": "chadwin:website_url",
+      "@type": "xsd:string"
+    },
+    "ir_website_url": {
+      "@id": "chadwin:ir_website_url",
+      "@type": "xsd:string"
+    },
+    "fiscal_year_end": {
+      "@id": "chadwin:fiscal_year_end",
+      "@type": "xsd:string"
+    },
+    "sic": {
+      "@id": "chadwin:sic"
+    },
+    "listings": {
+      "@id": "chadwin:listings",
+      "@container": "@list"
+    },
+    "CompanySearchBadRequestResponse": "chadwin:CompanySearchBadRequestResponse",
+    "CompanyReferenceTooManyRequestsResponse": "chadwin:CompanyReferenceTooManyRequestsResponse",
+    "CompanyReferenceResponse": "chadwin:CompanyReferenceResponse",
+    "company": {
+      "@id": "chadwin:company",
+      "@type": "@id"
+    },
+    "CompanyReference": "chadwin:CompanyReference",
+    "CompanyFinancialStatementsResponse": "chadwin:CompanyFinancialStatementsResponse",
+    "issuer": {
+      "@id": "chadwin:issuer",
+      "@type": "@id"
+    },
+    "periods": {
+      "@id": "chadwin:periods",
+      "@container": "@list"
+    },
+    "FinancialStatementIssuer": "chadwin:FinancialStatementIssuer",
+    "ticker": {
+      "@id": "chadwin:ticker",
+      "@type": "xsd:string"
+    },
+    "CompanyFinancialStatementPeriod": "chadwin:CompanyFinancialStatementPeriod",
+    "fiscal_year": {
+      "@id": "chadwin:fiscal_year",
+      "@type": "xsd:integer"
+    },
+    "fiscal_period": {
+      "@id": "chadwin:fiscal_period",
+      "@type": "xsd:string"
+    },
+    "period_end_date": {
+      "@id": "chadwin:period_end_date",
+      "@type": "xsd:date"
+    },
+    "accession_number": {
+      "@id": "chadwin:accession_number",
+      "@type": "xsd:string"
+    },
+    "currency": {
+      "@id": "chadwin:currency",
+      "@type": "xsd:string"
+    },
+    "balance_sheet": {
+      "@id": "chadwin:balance_sheet",
+      "@type": "@id"
+    },
+    "income_statement": {
+      "@id": "chadwin:income_statement",
+      "@type": "@id"
+    },
+    "cash_flow_statement": {
+      "@id": "chadwin:cash_flow_statement",
+      "@type": "@id"
+    },
+    "metrics": {
+      "@id": "chadwin:metrics",
+      "@type": "@id"
+    },
+    "FinancialStatementBalanceSheet": "chadwin:FinancialStatementBalanceSheet",
+    "cash_and_cash_equivalents": {
+      "@id": "chadwin:cash_and_cash_equivalents",
+      "@type": "xsd:string"
+    },
+    "short_term_investments": {
+      "@id": "chadwin:short_term_investments",
+      "@type": "xsd:string"
+    },
+    "accounts_receivable_current": {
+      "@id": "chadwin:accounts_receivable_current",
+      "@type": "xsd:string"
+    },
+    "other_receivables": {
+      "@id": "chadwin:other_receivables",
+      "@type": "xsd:string"
+    },
+    "inventory": {
+      "@id": "chadwin:inventory",
+      "@type": "xsd:string"
+    },
+    "restricted_cash": {
+      "@id": "chadwin:restricted_cash",
+      "@type": "xsd:string"
+    },
+    "other_current_assets": {
+      "@id": "chadwin:other_current_assets",
+      "@type": "xsd:string"
+    },
+    "total_current_assets": {
+      "@id": "chadwin:total_current_assets",
+      "@type": "xsd:string"
+    },
+    "property_plant_and_equipment_net": {
+      "@id": "chadwin:property_plant_and_equipment_net",
+      "@type": "xsd:string"
+    },
+    "operating_lease_right_of_use_assets": {
+      "@id": "chadwin:operating_lease_right_of_use_assets",
+      "@type": "xsd:string"
+    },
+    "long_term_investment": {
+      "@id": "chadwin:long_term_investment",
+      "@type": "xsd:string"
+    },
+    "goodwill": {
+      "@id": "chadwin:goodwill",
+      "@type": "xsd:string"
+    },
+    "intangible_assets_net_excluding_goodwill": {
+      "@id": "chadwin:intangible_assets_net_excluding_goodwill",
+      "@type": "xsd:string"
+    },
+    "long_term_deferred_tax_assets": {
+      "@id": "chadwin:long_term_deferred_tax_assets",
+      "@type": "xsd:string"
+    },
+    "other_long_term_assets": {
+      "@id": "chadwin:other_long_term_assets",
+      "@type": "xsd:string"
+    },
+    "total_assets": {
+      "@id": "chadwin:total_assets",
+      "@type": "xsd:string"
+    },
+    "accounts_payable_current": {
+      "@id": "chadwin:accounts_payable_current",
+      "@type": "xsd:string"
+    },
+    "accrued_expenses": {
+      "@id": "chadwin:accrued_expenses",
+      "@type": "xsd:string"
+    },
+    "debt_and_finance_lease_liabilities_current": {
+      "@id": "chadwin:debt_and_finance_lease_liabilities_current",
+      "@type": "xsd:string"
+    },
+    "current_borrowings": {
+      "@id": "chadwin:current_borrowings",
+      "@type": "xsd:string"
+    },
+    "current_portion_of_long_term_debt": {
+      "@id": "chadwin:current_portion_of_long_term_debt",
+      "@type": "xsd:string"
+    },
+    "current_taxes_payable": {
+      "@id": "chadwin:current_taxes_payable",
+      "@type": "xsd:string"
+    },
+    "current_unearned_revenue": {
+      "@id": "chadwin:current_unearned_revenue",
+      "@type": "xsd:string"
+    },
+    "other_current_liabilities": {
+      "@id": "chadwin:other_current_liabilities",
+      "@type": "xsd:string"
+    },
+    "total_current_liabilities": {
+      "@id": "chadwin:total_current_liabilities",
+      "@type": "xsd:string"
+    },
+    "long_term_debt_and_finance_lease_liabilities_noncurrent": {
+      "@id": "chadwin:long_term_debt_and_finance_lease_liabilities_noncurrent",
+      "@type": "xsd:string"
+    },
+    "long_term_debt_noncurrent": {
+      "@id": "chadwin:long_term_debt_noncurrent",
+      "@type": "xsd:string"
+    },
+    "long_term_unearned_revenue": {
+      "@id": "chadwin:long_term_unearned_revenue",
+      "@type": "xsd:string"
+    },
+    "long_term_deferred_tax_liabilities": {
+      "@id": "chadwin:long_term_deferred_tax_liabilities",
+      "@type": "xsd:string"
+    },
+    "other_long_term_liabilities": {
+      "@id": "chadwin:other_long_term_liabilities",
+      "@type": "xsd:string"
+    },
+    "total_liabilities": {
+      "@id": "chadwin:total_liabilities",
+      "@type": "xsd:string"
+    },
+    "common_stock": {
+      "@id": "chadwin:common_stock",
+      "@type": "xsd:string"
+    },
+    "additional_paid_in_capital": {
+      "@id": "chadwin:additional_paid_in_capital",
+      "@type": "xsd:string"
+    },
+    "treasury_stock": {
+      "@id": "chadwin:treasury_stock",
+      "@type": "xsd:string"
+    },
+    "preferred_equity": {
+      "@id": "chadwin:preferred_equity",
+      "@type": "xsd:string"
+    },
+    "temporary_equity": {
+      "@id": "chadwin:temporary_equity",
+      "@type": "xsd:string"
+    },
+    "retained_earnings_accumulated_deficit": {
+      "@id": "chadwin:retained_earnings_accumulated_deficit",
+      "@type": "xsd:string"
+    },
+    "comprehensive_income_other": {
+      "@id": "chadwin:comprehensive_income_other",
+      "@type": "xsd:string"
+    },
+    "equity_attributable_to_parent": {
+      "@id": "chadwin:equity_attributable_to_parent",
+      "@type": "xsd:string"
+    },
+    "total_liabilities_and_equity": {
+      "@id": "chadwin:total_liabilities_and_equity",
+      "@type": "xsd:string"
+    },
+    "total_debt": {
+      "@id": "chadwin:total_debt",
+      "@type": "xsd:string"
+    },
+    "total_common_shares_outstanding": {
+      "@id": "chadwin:total_common_shares_outstanding",
+      "@type": "xsd:string"
+    },
+    "restricted_cash_current": {
+      "@id": "chadwin:restricted_cash_current",
+      "@type": "xsd:string"
+    },
+    "restricted_cash_noncurrent": {
+      "@id": "chadwin:restricted_cash_noncurrent",
+      "@type": "xsd:string"
+    },
+    "cash_cash_equivalents_and_restricted_cash": {
+      "@id": "chadwin:cash_cash_equivalents_and_restricted_cash",
+      "@type": "xsd:string"
+    },
+    "contract_assets_current": {
+      "@id": "chadwin:contract_assets_current",
+      "@type": "xsd:string"
+    },
+    "total_debt_and_lease_liabilities": {
+      "@id": "chadwin:total_debt_and_lease_liabilities",
+      "@type": "xsd:string"
+    },
+    "equity_attributable_to_noncontrolling_interests": {
+      "@id": "chadwin:equity_attributable_to_noncontrolling_interests",
+      "@type": "xsd:string"
+    },
+    "equity_including_noncontrolling_interests": {
+      "@id": "chadwin:equity_including_noncontrolling_interests",
+      "@type": "xsd:string"
+    },
+    "finance_lease_liability_current": {
+      "@id": "chadwin:finance_lease_liability_current",
+      "@type": "xsd:string"
+    },
+    "finance_lease_liability_noncurrent": {
+      "@id": "chadwin:finance_lease_liability_noncurrent",
+      "@type": "xsd:string"
+    },
+    "operating_lease_liability_current": {
+      "@id": "chadwin:operating_lease_liability_current",
+      "@type": "xsd:string"
+    },
+    "operating_lease_liability_noncurrent": {
+      "@id": "chadwin:operating_lease_liability_noncurrent",
+      "@type": "xsd:string"
+    },
+    "FinancialStatementIncomeStatement": "chadwin:FinancialStatementIncomeStatement",
+    "revenue": {
+      "@id": "chadwin:revenue",
+      "@type": "xsd:string"
+    },
+    "cost_of_sales": {
+      "@id": "chadwin:cost_of_sales",
+      "@type": "xsd:string"
+    },
+    "gross_profit": {
+      "@id": "chadwin:gross_profit",
+      "@type": "xsd:string"
+    },
+    "selling_general_and_administrative_expense": {
+      "@id": "chadwin:selling_general_and_administrative_expense",
+      "@type": "xsd:string"
+    },
+    "research_and_development_expense": {
+      "@id": "chadwin:research_and_development_expense",
+      "@type": "xsd:string"
+    },
+    "total_operating_expenses": {
+      "@id": "chadwin:total_operating_expenses",
+      "@type": "xsd:string"
+    },
+    "operating_income": {
+      "@id": "chadwin:operating_income",
+      "@type": "xsd:string"
+    },
+    "income_before_income_taxes": {
+      "@id": "chadwin:income_before_income_taxes",
+      "@type": "xsd:string"
+    },
+    "income_tax_expense": {
+      "@id": "chadwin:income_tax_expense",
+      "@type": "xsd:string"
+    },
+    "net_income_from_continuing_operations": {
+      "@id": "chadwin:net_income_from_continuing_operations",
+      "@type": "xsd:string"
+    },
+    "net_income_from_discontinued_operations": {
+      "@id": "chadwin:net_income_from_discontinued_operations",
+      "@type": "xsd:string"
+    },
+    "net_income_attributable_to_parent": {
+      "@id": "chadwin:net_income_attributable_to_parent",
+      "@type": "xsd:string"
+    },
+    "net_income_to_common": {
+      "@id": "chadwin:net_income_to_common",
+      "@type": "xsd:string"
+    },
+    "basic_weighted_average_shares": {
+      "@id": "chadwin:basic_weighted_average_shares",
+      "@type": "xsd:string"
+    },
+    "diluted_weighted_average_shares": {
+      "@id": "chadwin:diluted_weighted_average_shares",
+      "@type": "xsd:string"
+    },
+    "basic_earnings_per_share": {
+      "@id": "chadwin:basic_earnings_per_share",
+      "@type": "xsd:string"
+    },
+    "diluted_earnings_per_share": {
+      "@id": "chadwin:diluted_earnings_per_share",
+      "@type": "xsd:string"
+    },
+    "dividend_per_share": {
+      "@id": "chadwin:dividend_per_share",
+      "@type": "xsd:string"
+    },
+    "nonoperating_income_expense": {
+      "@id": "chadwin:nonoperating_income_expense",
+      "@type": "xsd:string"
+    },
+    "interest_expense": {
+      "@id": "chadwin:interest_expense",
+      "@type": "xsd:string"
+    },
+    "depreciation_and_amortization_expense": {
+      "@id": "chadwin:depreciation_and_amortization_expense",
+      "@type": "xsd:string"
+    },
+    "net_income_attributable_to_noncontrolling_interests": {
+      "@id": "chadwin:net_income_attributable_to_noncontrolling_interests",
+      "@type": "xsd:string"
+    },
+    "net_income_including_noncontrolling_interests": {
+      "@id": "chadwin:net_income_including_noncontrolling_interests",
+      "@type": "xsd:string"
+    },
+    "FinancialStatementCashFlowStatement": "chadwin:FinancialStatementCashFlowStatement",
+    "net_income": {
+      "@id": "chadwin:net_income",
+      "@type": "xsd:string"
+    },
+    "depreciation_and_amortization_adjustment": {
+      "@id": "chadwin:depreciation_and_amortization_adjustment",
+      "@type": "xsd:string"
+    },
+    "share_based_compensation_adjustment": {
+      "@id": "chadwin:share_based_compensation_adjustment",
+      "@type": "xsd:string"
+    },
+    "deferred_income_tax_adjustment": {
+      "@id": "chadwin:deferred_income_tax_adjustment",
+      "@type": "xsd:string"
+    },
+    "other_operating_activities": {
+      "@id": "chadwin:other_operating_activities",
+      "@type": "xsd:string"
+    },
+    "change_in_accounts_receivable": {
+      "@id": "chadwin:change_in_accounts_receivable",
+      "@type": "xsd:string"
+    },
+    "change_in_inventory": {
+      "@id": "chadwin:change_in_inventory",
+      "@type": "xsd:string"
+    },
+    "change_in_accounts_payable": {
+      "@id": "chadwin:change_in_accounts_payable",
+      "@type": "xsd:string"
+    },
+    "change_in_unearned_revenue": {
+      "@id": "chadwin:change_in_unearned_revenue",
+      "@type": "xsd:string"
+    },
+    "change_in_other_net_operating_assets": {
+      "@id": "chadwin:change_in_other_net_operating_assets",
+      "@type": "xsd:string"
+    },
+    "net_cash_from_operating_activities": {
+      "@id": "chadwin:net_cash_from_operating_activities",
+      "@type": "xsd:string"
+    },
+    "capital_expenditure": {
+      "@id": "chadwin:capital_expenditure",
+      "@type": "xsd:string"
+    },
+    "business_acquisitions_net": {
+      "@id": "chadwin:business_acquisitions_net",
+      "@type": "xsd:string"
+    },
+    "investment_in_securities": {
+      "@id": "chadwin:investment_in_securities",
+      "@type": "xsd:string"
+    },
+    "other_investing_activities": {
+      "@id": "chadwin:other_investing_activities",
+      "@type": "xsd:string"
+    },
+    "net_cash_from_investing_activities": {
+      "@id": "chadwin:net_cash_from_investing_activities",
+      "@type": "xsd:string"
+    },
+    "short_term_debt_issued": {
+      "@id": "chadwin:short_term_debt_issued",
+      "@type": "xsd:string"
+    },
+    "long_term_debt_issued": {
+      "@id": "chadwin:long_term_debt_issued",
+      "@type": "xsd:string"
+    },
+    "proceeds_from_debt_issuance": {
+      "@id": "chadwin:proceeds_from_debt_issuance",
+      "@type": "xsd:string"
+    },
+    "short_term_debt_repaid": {
+      "@id": "chadwin:short_term_debt_repaid",
+      "@type": "xsd:string"
+    },
+    "long_term_debt_repaid": {
+      "@id": "chadwin:long_term_debt_repaid",
+      "@type": "xsd:string"
+    },
+    "repayments_of_debt": {
+      "@id": "chadwin:repayments_of_debt",
+      "@type": "xsd:string"
+    },
+    "net_debt_issued_repaid": {
+      "@id": "chadwin:net_debt_issued_repaid",
+      "@type": "xsd:string"
+    },
+    "stock_issuance": {
+      "@id": "chadwin:stock_issuance",
+      "@type": "xsd:string"
+    },
+    "common_stock_repurchases": {
+      "@id": "chadwin:common_stock_repurchases",
+      "@type": "xsd:string"
+    },
+    "employee_share_award_tax_payments": {
+      "@id": "chadwin:employee_share_award_tax_payments",
+      "@type": "xsd:string"
+    },
+    "dividends_paid": {
+      "@id": "chadwin:dividends_paid",
+      "@type": "xsd:string"
+    },
+    "common_dividends_paid": {
+      "@id": "chadwin:common_dividends_paid",
+      "@type": "xsd:string"
+    },
+    "other_financing_activities": {
+      "@id": "chadwin:other_financing_activities",
+      "@type": "xsd:string"
+    },
+    "net_cash_from_financing_activities": {
+      "@id": "chadwin:net_cash_from_financing_activities",
+      "@type": "xsd:string"
+    },
+    "net_change_in_cash_cash_equivalents_and_restricted_cash_including_exchange_rate_effect": {
+      "@id": "chadwin:net_change_in_cash_cash_equivalents_and_restricted_cash_including_exchange_rate_effect",
+      "@type": "xsd:string"
+    },
+    "cash_interest_paid": {
+      "@id": "chadwin:cash_interest_paid",
+      "@type": "xsd:string"
+    },
+    "cash_income_tax_paid": {
+      "@id": "chadwin:cash_income_tax_paid",
+      "@type": "xsd:string"
+    },
+    "effect_of_exchange_rate_on_cash": {
+      "@id": "chadwin:effect_of_exchange_rate_on_cash",
+      "@type": "xsd:string"
+    },
+    "FinancialStatementMetrics": "chadwin:FinancialStatementMetrics",
+    "gross_margin": {
+      "@id": "chadwin:gross_margin",
+      "@type": "xsd:string"
+    },
+    "operating_margin": {
+      "@id": "chadwin:operating_margin",
+      "@type": "xsd:string"
+    },
+    "profit_margin": {
+      "@id": "chadwin:profit_margin",
+      "@type": "xsd:string"
+    },
+    "ebitda": {
+      "@id": "chadwin:ebitda",
+      "@type": "xsd:string"
+    },
+    "ebitda_margin": {
+      "@id": "chadwin:ebitda_margin",
+      "@type": "xsd:string"
+    },
+    "ebit": {
+      "@id": "chadwin:ebit",
+      "@type": "xsd:string"
+    },
+    "ebit_margin": {
+      "@id": "chadwin:ebit_margin",
+      "@type": "xsd:string"
+    },
+    "effective_tax_rate": {
+      "@id": "chadwin:effective_tax_rate",
+      "@type": "xsd:string"
+    },
+    "pretax_margin": {
+      "@id": "chadwin:pretax_margin",
+      "@type": "xsd:string"
+    },
+    "return_on_equity": {
+      "@id": "chadwin:return_on_equity",
+      "@type": "xsd:string"
+    },
+    "interest_coverage": {
+      "@id": "chadwin:interest_coverage",
+      "@type": "xsd:string"
+    },
+    "return_on_assets": {
+      "@id": "chadwin:return_on_assets",
+      "@type": "xsd:string"
+    },
+    "asset_turnover": {
+      "@id": "chadwin:asset_turnover",
+      "@type": "xsd:string"
+    },
+    "cash_short_term_investments": {
+      "@id": "chadwin:cash_short_term_investments",
+      "@type": "xsd:string"
+    },
+    "net_cash_debt": {
+      "@id": "chadwin:net_cash_debt",
+      "@type": "xsd:string"
+    },
+    "net_cash_per_share": {
+      "@id": "chadwin:net_cash_per_share",
+      "@type": "xsd:string"
+    },
+    "working_capital": {
+      "@id": "chadwin:working_capital",
+      "@type": "xsd:string"
+    },
+    "book_value_per_share": {
+      "@id": "chadwin:book_value_per_share",
+      "@type": "xsd:string"
+    },
+    "tangible_book_value": {
+      "@id": "chadwin:tangible_book_value",
+      "@type": "xsd:string"
+    },
+    "current_ratio": {
+      "@id": "chadwin:current_ratio",
+      "@type": "xsd:string"
+    },
+    "cash_ratio": {
+      "@id": "chadwin:cash_ratio",
+      "@type": "xsd:string"
+    },
+    "quick_ratio": {
+      "@id": "chadwin:quick_ratio",
+      "@type": "xsd:string"
+    },
+    "debt_to_assets": {
+      "@id": "chadwin:debt_to_assets",
+      "@type": "xsd:string"
+    },
+    "debt_to_parent_equity": {
+      "@id": "chadwin:debt_to_parent_equity",
+      "@type": "xsd:string"
+    },
+    "free_cash_flow": {
+      "@id": "chadwin:free_cash_flow",
+      "@type": "xsd:string"
+    },
+    "free_cash_flow_margin": {
+      "@id": "chadwin:free_cash_flow_margin",
+      "@type": "xsd:string"
+    },
+    "free_cash_flow_per_share": {
+      "@id": "chadwin:free_cash_flow_per_share",
+      "@type": "xsd:string"
+    },
+    "operating_cash_flow_margin": {
+      "@id": "chadwin:operating_cash_flow_margin",
+      "@type": "xsd:string"
+    },
+    "operating_cash_flow_to_net_income": {
+      "@id": "chadwin:operating_cash_flow_to_net_income",
+      "@type": "xsd:string"
+    },
+    "capital_expenditure_to_revenue": {
+      "@id": "chadwin:capital_expenditure_to_revenue",
+      "@type": "xsd:string"
+    },
+    "debt_to_ebitda": {
+      "@id": "chadwin:debt_to_ebitda",
+      "@type": "xsd:string"
+    },
+    "net_debt_to_ebitda": {
+      "@id": "chadwin:net_debt_to_ebitda",
+      "@type": "xsd:string"
+    },
+    "FinancialStatementsBadRequest": "chadwin:FinancialStatementsBadRequest",
+    "FinancialStatementsUnauthorized": "chadwin:FinancialStatementsUnauthorized",
+    "FinancialStatementsNotEntitled": "chadwin:FinancialStatementsNotEntitled",
+    "FinancialStatementsCompanyNotFound": "chadwin:FinancialStatementsCompanyNotFound",
+    "FinancialStatementsTickerAmbiguous": "chadwin:FinancialStatementsTickerAmbiguous",
+    "FinancialStatementsTooManyRequests": "chadwin:FinancialStatementsTooManyRequests",
+    "FinancialStatementsInternalError": "chadwin:FinancialStatementsInternalError",
+    "FinancialStatementsUnavailable": "chadwin:FinancialStatementsUnavailable",
+    "CompanyKpisResponse": "chadwin:CompanyKpisResponse",
+    "CompanyKpiPeriod": "chadwin:CompanyKpiPeriod",
+    "kpis": {
+      "@id": "chadwin:kpis",
+      "@container": "@list"
+    },
+    "CompanyKpi": "chadwin:CompanyKpi",
+    "kpi_id": {
+      "@id": "chadwin:kpi_id",
+      "@type": "xsd:string"
+    },
+    "group": {
+      "@id": "chadwin:group",
+      "@type": "xsd:string"
+    },
+    "definition": {
+      "@id": "chadwin:definition",
+      "@type": "xsd:string"
+    },
+    "unit": {
+      "@id": "chadwin:unit",
+      "@type": "xsd:string"
+    },
+    "value": {
+      "@id": "chadwin:value",
+      "@type": "xsd:string"
+    },
+    "value_operator": {
+      "@id": "chadwin:value_operator",
+      "@type": "xsd:string"
+    },
+    "source": {
+      "@id": "chadwin:source",
+      "@type": "@id"
+    },
+    "CompanyKpiSource": "chadwin:CompanyKpiSource",
+    "type": {
+      "@id": "chadwin:type",
+      "@type": "xsd:string"
+    },
+    "form": {
+      "@id": "chadwin:form",
+      "@type": "xsd:string"
+    },
+    "document": {
+      "@id": "chadwin:document",
+      "@type": "xsd:string"
+    },
+    "location": {
+      "@id": "chadwin:location",
+      "@type": "xsd:string"
+    },
+    "xbrl_concept": {
+      "@id": "chadwin:xbrl_concept",
+      "@type": "xsd:string"
+    },
+    "CompanyKpisBadRequest": "chadwin:CompanyKpisBadRequest",
+    "CompanyKpisUnauthorized": "chadwin:CompanyKpisUnauthorized",
+    "CompanyKpisNotEntitled": "chadwin:CompanyKpisNotEntitled",
+    "CompanyKpisCompanyNotFound": "chadwin:CompanyKpisCompanyNotFound",
+    "CompanyKpisTickerAmbiguous": "chadwin:CompanyKpisTickerAmbiguous",
+    "CompanyKpisTooManyRequests": "chadwin:CompanyKpisTooManyRequests",
+    "CompanyKpisInternalError": "chadwin:CompanyKpisInternalError",
+    "CompanyKpisUnavailable": "chadwin:CompanyKpisUnavailable",
+    "DatasetNotEntitledErrorResponse": "chadwin:DatasetNotEntitledErrorResponse",
+    "CompanyReportPage": "chadwin:CompanyReportPage",
+    "filings": {
+      "@id": "chadwin:filings",
+      "@container": "@list"
+    },
+    "next_cursor": {
+      "@id": "chadwin:next_cursor",
+      "@type": "xsd:string"
+    },
+    "has_more": {
+      "@id": "chadwin:has_more",
+      "@type": "xsd:boolean"
+    },
+    "CompanyReportResponse": "chadwin:CompanyReportResponse",
+    "accepted_at": {
+      "@id": "chadwin:accepted_at",
+      "@type": "xsd:dateTime"
+    },
+    "content_url": {
+      "@id": "chadwin:content_url",
+      "@type": "xsd:string"
+    },
+    "sec_url": {
+      "@id": "chadwin:sec_url",
+      "@type": "@id"
+    },
+    "CurrentReportFeedPage": "chadwin:CurrentReportFeedPage",
+    "updates": {
+      "@id": "chadwin:updates",
+      "@container": "@list"
+    },
+    "CurrentReportFeedUpdate": "chadwin:CurrentReportFeedUpdate",
+    "feed_event_id": {
+      "@id": "chadwin:feed_event_id",
+      "@type": "xsd:string"
+    },
+    "published_at": {
+      "@id": "chadwin:published_at",
+      "@type": "xsd:dateTime"
+    },
+    "filed_at": {
+      "@id": "chadwin:filed_at",
+      "@type": "xsd:date"
+    },
+    "event_date": {
+      "@id": "chadwin:event_date",
+      "@type": "xsd:date"
+    },
+    "report_date": {
+      "@id": "chadwin:report_date",
+      "@type": "xsd:date"
+    },
+    "item_codes": {
+      "@id": "chadwin:item_codes",
+      "@container": "@list"
+    },
+    "metadata_url": {
+      "@id": "chadwin:metadata_url",
+      "@type": "xsd:string"
+    },
+    "CurrentReportPage": "chadwin:CurrentReportPage",
+    "CurrentReport": "chadwin:CurrentReport",
+    "InsiderTransactionsResponse": "chadwin:InsiderTransactionsResponse",
+    "transactions": {
+      "@id": "chadwin:transactions",
+      "@container": "@list"
+    },
+    "InsiderTransactionListItem": "chadwin:InsiderTransactionListItem",
+    "row_kind": {
+      "@id": "chadwin:row_kind",
+      "@type": "xsd:string"
+    },
+    "source_row_index": {
+      "@id": "chadwin:source_row_index",
+      "@type": "xsd:integer"
+    },
+    "transaction_code": {
+      "@id": "chadwin:transaction_code",
+      "@type": "xsd:string"
+    },
+    "transaction_date": {
+      "@id": "chadwin:transaction_date",
+      "@type": "xsd:string"
+    },
+    "deemed_execution_date": {
+      "@id": "chadwin:deemed_execution_date",
+      "@type": "xsd:string"
+    },
+    "transaction_form_type": {
+      "@id": "chadwin:transaction_form_type",
+      "@type": "xsd:string"
+    },
+    "security": {
+      "@id": "chadwin:security",
+      "@type": "xsd:string"
+    },
+    "shares": {
+      "@id": "chadwin:shares",
+      "@type": "xsd:string"
+    },
+    "price": {
+      "@id": "chadwin:price",
+      "@type": "xsd:string"
+    },
+    "transaction_total_value": {
+      "@id": "chadwin:transaction_total_value",
+      "@type": "xsd:string"
+    },
+    "acquired_disposed_code": {
+      "@id": "chadwin:acquired_disposed_code",
+      "@type": "xsd:string"
+    },
+    "shares_owned_after": {
+      "@id": "chadwin:shares_owned_after",
+      "@type": "xsd:string"
+    },
+    "ownership_type": {
+      "@id": "chadwin:ownership_type",
+      "@type": "xsd:string"
+    },
+    "nature_of_ownership": {
+      "@id": "chadwin:nature_of_ownership",
+      "@type": "xsd:string"
+    },
+    "transaction_timeliness": {
+      "@id": "chadwin:transaction_timeliness",
+      "@type": "xsd:string"
+    },
+    "equity_swap_involved": {
+      "@id": "chadwin:equity_swap_involved",
+      "@type": "xsd:boolean"
+    },
+    "conversion_or_exercise_price": {
+      "@id": "chadwin:conversion_or_exercise_price",
+      "@type": "xsd:string"
+    },
+    "exercise_date": {
+      "@id": "chadwin:exercise_date",
+      "@type": "xsd:string"
+    },
+    "expiration_date": {
+      "@id": "chadwin:expiration_date",
+      "@type": "xsd:string"
+    },
+    "underlying_security": {
+      "@id": "chadwin:underlying_security",
+      "@type": "@id"
+    },
+    "footnote_ids": {
+      "@id": "chadwin:footnote_ids",
+      "@container": "@list"
+    },
+    "field_footnote_ids": {
+      "@id": "chadwin:field_footnote_ids",
+      "@type": "@id"
+    },
+    "footnotes": {
+      "@id": "chadwin:footnotes",
+      "@container": "@list"
+    },
+    "reporting_owners": {
+      "@id": "chadwin:reporting_owners",
+      "@container": "@list"
+    },
+    "InsiderIssuer": "chadwin:InsiderIssuer",
+    "InsiderUnderlyingSecurity": "chadwin:InsiderUnderlyingSecurity",
+    "title": {
+      "@id": "chadwin:title",
+      "@type": "xsd:string"
+    },
+    "InsiderTransactionFootnote": "chadwin:InsiderTransactionFootnote",
+    "id": {
+      "@id": "chadwin:id",
+      "@type": "xsd:string"
+    },
+    "text": {
+      "@id": "chadwin:text",
+      "@type": "xsd:string"
+    },
+    "InsiderTransactionReportingOwner": "chadwin:InsiderTransactionReportingOwner",
+    "address": {
+      "@id": "chadwin:address",
+      "@type": "@id"
+    },
+    "relationship": {
+      "@id": "chadwin:relationship",
+      "@type": "@id"
+    },
+    "InsiderReportingOwnerAddress": "chadwin:InsiderReportingOwnerAddress",
+    "street1": {
+      "@id": "chadwin:street1",
+      "@type": "xsd:string"
+    },
+    "street2": {
+      "@id": "chadwin:street2",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "chadwin:city",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "chadwin:state",
+      "@type": "xsd:string"
+    },
+    "zip_code": {
+      "@id": "chadwin:zip_code",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "chadwin:country",
+      "@type": "xsd:string"
+    },
+    "InsiderReportingOwnerRelationship": "chadwin:InsiderReportingOwnerRelationship",
+    "is_director": {
+      "@id": "chadwin:is_director",
+      "@type": "xsd:boolean"
+    },
+    "is_officer": {
+      "@id": "chadwin:is_officer",
+      "@type": "xsd:boolean"
+    },
+    "is_ten_percent_owner": {
+      "@id": "chadwin:is_ten_percent_owner",
+      "@type": "xsd:boolean"
+    },
+    "is_other": {
+      "@id": "chadwin:is_other",
+      "@type": "xsd:boolean"
+    },
+    "officer_title": {
+      "@id": "chadwin:officer_title",
+      "@type": "xsd:string"
+    },
+    "other_text": {
+      "@id": "chadwin:other_text",
+      "@type": "xsd:string"
+    },
+    "InsiderTransactionsBadRequestResponse": "chadwin:InsiderTransactionsBadRequestResponse",
+    "InsiderFilingDocument": "chadwin:InsiderFilingDocument",
+    "period_of_report": {
+      "@id": "chadwin:period_of_report",
+      "@type": "xsd:string"
+    },
+    "date_of_original_submission": {
+      "@id": "chadwin:date_of_original_submission",
+      "@type": "xsd:string"
+    },
+    "not_subject_to_section_16": {
+      "@id": "chadwin:not_subject_to_section_16",
+      "@type": "xsd:boolean"
+    },
+    "rule_10b5_1": {
+      "@id": "chadwin:rule_10b5_1",
+      "@type": "xsd:boolean"
+    },
+    "remarks": {
+      "@id": "chadwin:remarks",
+      "@type": "xsd:string"
+    },
+    "owner_signatures": {
+      "@id": "chadwin:owner_signatures",
+      "@container": "@list"
+    },
+    "non_derivative_transactions": {
+      "@id": "chadwin:non_derivative_transactions",
+      "@container": "@list"
+    },
+    "derivative_transactions": {
+      "@id": "chadwin:derivative_transactions",
+      "@container": "@list"
+    },
+    "non_derivative_holdings": {
+      "@id": "chadwin:non_derivative_holdings",
+      "@container": "@list"
+    },
+    "derivative_holdings": {
+      "@id": "chadwin:derivative_holdings",
+      "@container": "@list"
+    },
+    "InsiderFilingTransactionRow": "chadwin:InsiderFilingTransactionRow",
+    "InsiderOwnershipHoldingRow": "chadwin:InsiderOwnershipHoldingRow",
+    "late_holding_form_type": {
+      "@id": "chadwin:late_holding_form_type",
+      "@type": "xsd:string"
+    },
+    "value_owned_after": {
+      "@id": "chadwin:value_owned_after",
+      "@type": "xsd:string"
+    },
+    "ProposedSalesResponse": "chadwin:ProposedSalesResponse",
+    "proposed_sales": {
+      "@id": "chadwin:proposed_sales",
+      "@container": "@list"
+    },
+    "ProposedSaleFilingDetail": "chadwin:ProposedSaleFilingDetail",
+    "previous_accession_number": {
+      "@id": "chadwin:previous_accession_number",
+      "@type": "xsd:string"
+    },
+    "reporting_person": {
+      "@id": "chadwin:reporting_person"
+    },
+    "securities_to_be_sold": {
+      "@id": "chadwin:securities_to_be_sold",
+      "@container": "@list"
+    },
+    "nothing_to_report": {
+      "@id": "chadwin:nothing_to_report",
+      "@type": "xsd:boolean"
+    },
+    "past_three_month_sales": {
+      "@id": "chadwin:past_three_month_sales",
+      "@container": "@list"
+    },
+    "notice": {
+      "@id": "chadwin:notice"
+    },
+    "InsiderActivityFeedResponse": "chadwin:InsiderActivityFeedResponse",
+    "activities": {
+      "@id": "chadwin:activities",
+      "@container": "@list"
+    },
+    "InitialOwnershipActivity": "chadwin:InitialOwnershipActivity",
+    "no_securities_owned": {
+      "@id": "chadwin:no_securities_owned",
+      "@type": "xsd:boolean"
+    },
+    "non_derivative_holding_count": {
+      "@id": "chadwin:non_derivative_holding_count",
+      "@type": "xsd:integer"
+    },
+    "derivative_holding_count": {
+      "@id": "chadwin:derivative_holding_count",
+      "@type": "xsd:integer"
+    },
+    "ProposedSaleNoticeActivity": "chadwin:ProposedSaleNoticeActivity",
+    "amount": {
+      "@id": "chadwin:amount",
+      "@type": "xsd:string"
+    },
+    "market_value": {
+      "@id": "chadwin:market_value",
+      "@type": "xsd:string"
+    },
+    "approximate_sale_date": {
+      "@id": "chadwin:approximate_sale_date",
+      "@type": "xsd:string"
+    },
+    "InsiderActivityFeedBadRequestResponse": "chadwin:InsiderActivityFeedBadRequestResponse",
+    "InsiderTransactionFeedResponse": "chadwin:InsiderTransactionFeedResponse",
+    "InsiderTransactionFeedBadRequestResponse": "chadwin:InsiderTransactionFeedBadRequestResponse",
+    "InstitutionalFilingFeedResponse": "chadwin:InstitutionalFilingFeedResponse",
+    "InstitutionalHoldingFeedUpdate": "chadwin:InstitutionalHoldingFeedUpdate",
+    "report_type": {
+      "@id": "chadwin:report_type",
+      "@type": "xsd:string"
+    },
+    "manager": {
+      "@id": "chadwin:manager"
+    },
+    "InstitutionalHoldingFeedBadRequestResponse": "chadwin:InstitutionalHoldingFeedBadRequestResponse",
+    "InstitutionalManagersResponse": "chadwin:InstitutionalManagersResponse",
+    "managers": {
+      "@id": "chadwin:managers",
+      "@container": "@list"
+    },
+    "InstitutionalManagerListItem": "chadwin:InstitutionalManagerListItem",
+    "form_13f_file_number": {
+      "@id": "chadwin:form_13f_file_number",
+      "@type": "xsd:string"
+    },
+    "latest_period_of_report": {
+      "@id": "chadwin:latest_period_of_report",
+      "@type": "xsd:string"
+    },
+    "holding_count": {
+      "@id": "chadwin:holding_count",
+      "@type": "xsd:integer"
+    },
+    "total_value_usd": {
+      "@id": "chadwin:total_value_usd",
+      "@type": "xsd:string"
+    },
+    "latest_accepted_at": {
+      "@id": "chadwin:latest_accepted_at",
+      "@type": "xsd:string"
+    },
+    "InstitutionalHoldingsBadRequestResponse": "chadwin:InstitutionalHoldingsBadRequestResponse",
+    "InstitutionalManagerSearchResponse": "chadwin:InstitutionalManagerSearchResponse",
+    "InstitutionalManagerSearchBadRequestResponse": "chadwin:InstitutionalManagerSearchBadRequestResponse",
+    "InstitutionalManagerDetailResponse": "chadwin:InstitutionalManagerDetailResponse",
+    "latest_period": {
+      "@id": "chadwin:latest_period",
+      "@type": "@id"
+    },
+    "InstitutionalManagerDetail": "chadwin:InstitutionalManagerDetail",
+    "InstitutionalManagerLatestPeriod": "chadwin:InstitutionalManagerLatestPeriod",
+    "holdings": {
+      "@id": "chadwin:holdings"
+    },
+    "InstitutionalManagerPeriodsResponse": "chadwin:InstitutionalManagerPeriodsResponse",
+    "InstitutionalManagerPeriodSummary": "chadwin:InstitutionalManagerPeriodSummary",
+    "InstitutionalManagerHoldingsResponse": "chadwin:InstitutionalManagerHoldingsResponse",
+    "period": {
+      "@id": "chadwin:period"
+    },
+    "InstitutionalHoldingSecurity": "chadwin:InstitutionalHoldingSecurity",
+    "title_of_class": {
+      "@id": "chadwin:title_of_class",
+      "@type": "xsd:string"
+    },
+    "option_type": {
+      "@id": "chadwin:option_type",
+      "@type": "xsd:string"
+    },
+    "InstitutionalHoldingCompany": "chadwin:InstitutionalHoldingCompany",
+    "exchange": {
+      "@id": "chadwin:exchange",
+      "@type": "xsd:string"
+    },
+    "InstitutionalHoldingPosition": "chadwin:InstitutionalHoldingPosition",
+    "market_value_usd": {
+      "@id": "chadwin:market_value_usd",
+      "@type": "xsd:string"
+    },
+    "InstitutionalFilingOtherManager": "chadwin:InstitutionalFilingOtherManager",
+    "crd_number": {
+      "@id": "chadwin:crd_number",
+      "@type": "xsd:string"
+    },
+    "InstitutionalHoldingVotingAuthority": "chadwin:InstitutionalHoldingVotingAuthority",
+    "sole": {
+      "@id": "chadwin:sole",
+      "@type": "xsd:string"
+    },
+    "shared": {
+      "@id": "chadwin:shared",
+      "@type": "xsd:string"
+    },
+    "none": {
+      "@id": "chadwin:none",
+      "@type": "xsd:string"
+    },
+    "InstitutionalFilingHolding": "chadwin:InstitutionalFilingHolding",
+    "position": {
+      "@id": "chadwin:position",
+      "@type": "@id"
+    },
+    "investment_discretion": {
+      "@id": "chadwin:investment_discretion",
+      "@type": "xsd:string"
+    },
+    "other_managers": {
+      "@id": "chadwin:other_managers",
+      "@container": "@list"
+    },
+    "voting_authority": {
+      "@id": "chadwin:voting_authority",
+      "@type": "@id"
+    },
+    "InstitutionalManagerPositionsResponse": "chadwin:InstitutionalManagerPositionsResponse",
+    "positions": {
+      "@id": "chadwin:positions",
+      "@container": "@list"
+    },
+    "InstitutionalManagerPosition": "chadwin:InstitutionalManagerPosition",
+    "reported_holding_count": {
+      "@id": "chadwin:reported_holding_count",
+      "@type": "xsd:integer"
+    },
+    "InstitutionalFilingDetailResponse": "chadwin:InstitutionalFilingDetailResponse",
+    "amendment": {
+      "@id": "chadwin:amendment",
+      "@type": "@id"
+    },
+    "confidential_treatment_requested": {
+      "@id": "chadwin:confidential_treatment_requested",
+      "@type": "xsd:boolean"
+    },
+    "included_managers": {
+      "@id": "chadwin:included_managers",
+      "@container": "@list"
+    },
+    "other_reporting_managers": {
+      "@id": "chadwin:other_reporting_managers",
+      "@container": "@list"
+    },
+    "signature": {
+      "@id": "chadwin:signature",
+      "@type": "@id"
+    },
+    "InstitutionalFilingManagerAddress": "chadwin:InstitutionalFilingManagerAddress",
+    "state_or_country": {
+      "@id": "chadwin:state_or_country",
+      "@type": "xsd:string"
+    },
+    "InstitutionalManagerSourceIdentity": "chadwin:InstitutionalManagerSourceIdentity",
+    "InstitutionalFilingAmendment": "chadwin:InstitutionalFilingAmendment",
+    "number": {
+      "@id": "chadwin:number",
+      "@type": "xsd:string"
+    },
+    "confidential_denied_expired": {
+      "@id": "chadwin:confidential_denied_expired",
+      "@type": "xsd:boolean"
+    },
+    "date_denied_expired": {
+      "@id": "chadwin:date_denied_expired",
+      "@type": "xsd:string"
+    },
+    "date_reported": {
+      "@id": "chadwin:date_reported",
+      "@type": "xsd:string"
+    },
+    "reason_for_non_confidentiality": {
+      "@id": "chadwin:reason_for_non_confidentiality",
+      "@type": "xsd:string"
+    },
+    "InstitutionalFilingIncludedManager": "chadwin:InstitutionalFilingIncludedManager",
+    "InstitutionalFilingSignature": "chadwin:InstitutionalFilingSignature",
+    "phone": {
+      "@id": "chadwin:phone",
+      "@type": "xsd:string"
+    },
+    "signature_date": {
+      "@id": "chadwin:signature_date",
+      "@type": "xsd:string"
+    },
+    "InstitutionalFilingHoldingsSummary": "chadwin:InstitutionalFilingHoldingsSummary",
+    "total_count": {
+      "@id": "chadwin:total_count",
+      "@type": "xsd:integer"
+    },
+    "url": {
+      "@id": "chadwin:url",
+      "@type": "xsd:string"
+    },
+    "InstitutionalFilingHoldingsResponse": "chadwin:InstitutionalFilingHoldingsResponse"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Chadwin API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Chadwin's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-16) from openapi/_original/chadwin-api-openapi.json.",
+  "dcterms:created": "2026-10-16",
+  "dcterms:source": [
+    "openapi/_original/chadwin-api-openapi.json"
+  ]
+}

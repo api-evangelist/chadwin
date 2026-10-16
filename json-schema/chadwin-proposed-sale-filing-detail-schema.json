@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/chadwin/main/json-schema/chadwin-proposed-sale-filing-detail-schema.json",
+  "title": "ProposedSaleFilingDetail",
+  "x-generated": "2026-10-16",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/_original/chadwin-api-openapi.json#/components/schemas/ProposedSaleFilingDetail",
+  "type": "object",
+  "properties": {
+    "issuer": {
+      "type": "object",
+      "properties": {
+        "cik": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ticker": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "cik",
+        "name",
+        "ticker"
+      ]
+    },
+    "accession_number": {
+      "type": "string"
+    },
+    "form": {
+      "type": "string",
+      "enum": [
+        "144",
+        "144/A"
+      ]
+    },
+    "accepted_at": {
+      "type": "string"
+    },
+    "previous_accession_number": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reporting_person": {
+      "type": "object",
+      "properties": {
+        "cik": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "cik",
+        "name",
+        "relationships"
+      ]
+    },
+    "proposed_sales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_row_index": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "security": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "market_value": {
+            "type": "string"
+          },
+          "amount_outstanding": {
+            "type": "string"
+          },
+          "approximate_sale_date": {
+            "type": "string"
+          },
+          "broker_or_market_maker": {
+            "type": "string"
+          },
+          "intended_sale_exchange": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_row_index",
+          "security",
+          "amount",
+          "market_value",
+          "amount_outstanding",
+          "approximate_sale_date",
+          "broker_or_market_maker",
+          "intended_sale_exchange"
+        ]
+      }
+    },
+    "securities_to_be_sold": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_row_index": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "security": {
+            "type": "string"
+          },
+          "acquisition_date": {
+            "type": "string"
+          },
+          "acquisition_method": {
+            "type": "string"
+          },
+          "acquired_from": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "is_gift": {
+            "type": "boolean"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "donor_acquisition_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "payment_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "payment_method": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_row_index",
+          "security",
+          "acquisition_date",
+          "acquisition_method",
+          "acquired_from",
+          "is_gift",
+          "amount",
+          "donor_acquisition_date",
+          "payment_date",
+          "payment_method"
+        ]
+      }
+    },
+    "nothing_to_report": {
+      "type": "boolean"
+    },
+    "past_three_month_sales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_row_index": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "seller": {
+            "type": "string"
+          },
+          "security": {
+            "type": "string"
+          },
+          "sale_date": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "gross_proceeds": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_row_index",
+          "seller",
+          "security",
+          "sale_date",
+          "amount",
+          "gross_proceeds"
+        ]
+      }
+    },
+    "remarks": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "notice": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "plan_adoption_dates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "signature": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "date",
+        "plan_adoption_dates",
+        "signature"
+      ]
+    },
+    "sec_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "issuer",
+    "accession_number",
+    "form",
+    "accepted_at",
+    "previous_accession_number",
+    "reporting_person",
+    "proposed_sales",
+    "securities_to_be_sold",
+    "nothing_to_report",
+    "past_three_month_sales",
+    "remarks",
+    "notice",
+    "sec_url"
+  ]
+}

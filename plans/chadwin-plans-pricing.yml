@@ -1,0 +1,19 @@
+generated: '2026-10-16'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://www.chadwin.co/pricing
+sources:
+- https://www.chadwin.co/pricing
+name: Chadwin pricing
+audience: business-product
+pricing_basis: per-call
+plans:
+- name: Business
+  price_text: Starting at $250 /mo
+  price: 250
+  description: API calls per month 1,000,000
+- name: Personal
+  price_text: Flat price $20 /mo
+  price: 20
+  description: API calls per month 250,000
+docs: https://www.chadwin.co/pricing

@@ -1,0 +1,6 @@
+generated: '2026-10-16'
+method: derived
+source: apis.yml
+deployment:
+  mode: none
+  verified: derived

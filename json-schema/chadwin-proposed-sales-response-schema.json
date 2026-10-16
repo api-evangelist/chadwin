@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/chadwin/main/json-schema/chadwin-proposed-sales-response-schema.json",
+  "title": "ProposedSalesResponse",
+  "x-generated": "2026-10-16",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/_original/chadwin-api-openapi.json#/components/schemas/ProposedSalesResponse",
+  "type": "object",
+  "properties": {
+    "proposed_sales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issuer": {
+            "type": "object",
+            "properties": {
+              "cik": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "ticker": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "cik",
+              "name",
+              "ticker"
+            ]
+          },
+          "accession_number": {
+            "type": "string"
+          },
+          "source_row_index": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          },
+          "accepted_at": {
+            "type": "string"
+          },
+          "reporting_person": {
+            "type": "object",
+            "properties": {
+              "cik": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "relationships": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "cik",
+              "name",
+              "relationships"
+            ]
+          },
+          "security": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "market_value": {
+            "type": "string"
+          },
+          "approximate_sale_date": {
+            "type": "string"
+          },
+          "sec_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "issuer",
+          "accession_number",
+          "source_row_index",
+          "accepted_at",
+          "reporting_person",
+          "security",
+          "amount",
+          "market_value",
+          "approximate_sale_date",
+          "sec_url"
+        ]
+      }
+    },
+    "next_cursor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "has_more": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "proposed_sales",
+    "next_cursor",
+    "has_more"
+  ]
+}

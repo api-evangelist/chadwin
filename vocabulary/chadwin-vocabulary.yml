@@ -1,0 +1,437 @@
+generated: '2026-10-16'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/_original/chadwin-api-openapi.json
+vocabulary:
+  name: Chadwin Domain Vocabulary
+  description: 'Terms declared by Chadwin''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-16'
+  terms:
+  - term: Companies
+    definition: Search US-listed companies by name, ticker, or CIK, and retrieve company details.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Company KPIs
+    definition: Issuer-specific operating KPIs with annual, half-year and quarterly values from original SEC filing documents. Free subscriber
+      beta.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Company reports
+    definition: Retrieve annual and quarterly company reports as cleaned HTML, and follow updates for Forms 10-K, 10-Q, 20-F, and 40-F and their
+      amendments.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Current reports
+    definition: Retrieve 8-K and 6-K reports with readable exhibits in one HTML response, and follow new reports and amendments through the update
+      feed.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Normalized financial statements
+    definition: Annual financial statements and financial metrics.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Insider activity
+    definition: Find transactions on Forms 4 and 5, retrieve Form 3, 4, and 5 filings, and find proposed sales on Form 144. Use the insider activity
+      feed for new Forms 3, 4, 5, and 144, or the insider transaction feed for individual transactions on Forms 4 and 5.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: Institutional holdings
+    definition: Find institutional managers and reporting periods, retrieve Form 13F filings and holdings, and view a manager's holdings and consolidated
+      positions. Follow new Forms 13F-HR and 13F-NT and their amendments through the update feed.
+    tags:
+    - Resource Group
+    source: openapi/_original/chadwin-api-openapi.json
+  - term: ErrorResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/ErrorResponse
+  - term: CompanySearchResponse
+    definition: 'Object declared by the contract with fields: companies.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanySearchResponse
+  - term: CompanySearchResult
+    definition: 'Object declared by the contract with fields: name, cik, website_url, ir_website_url, fiscal_year_end, sic, listings.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanySearchResult
+  - term: CompanySearchBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanySearchBadRequestResponse
+  - term: CompanyReferenceTooManyRequestsResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReferenceTooManyRequestsResponse
+  - term: CompanyReferenceResponse
+    definition: 'Object declared by the contract with fields: company.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReferenceResponse
+  - term: CompanyReference
+    definition: 'Object declared by the contract with fields: name, cik, website_url, ir_website_url, fiscal_year_end, sic, listings.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReference
+  - term: CompanyFinancialStatementsResponse
+    definition: 'Object declared by the contract with fields: issuer, periods.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyFinancialStatementsResponse
+  - term: FinancialStatementIssuer
+    definition: 'Object declared by the contract with fields: cik, name, ticker.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementIssuer
+  - term: CompanyFinancialStatementPeriod
+    definition: 'Object declared by the contract with fields: fiscal_year, fiscal_period, period_end_date, accession_number, currency, balance_sheet,
+      income_statement, cash_flow_statement, metrics.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyFinancialStatementPeriod
+  - term: FinancialStatementBalanceSheet
+    definition: 'Object declared by the contract with fields: cash_and_cash_equivalents, short_term_investments, accounts_receivable_current,
+      other_receivables, inventory, restricted_cash, other_current_assets, total_current_assets, property_plant_and_equipment_net, operating_lease_right_of_use_assets,
+      long_term_investment, goodwill. (41 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementBalanceSheet
+  - term: FinancialStatementIncomeStatement
+    definition: 'Object declared by the contract with fields: revenue, cost_of_sales, gross_profit, selling_general_and_administrative_expense,
+      research_and_development_expense, total_operating_expenses, operating_income, income_before_income_taxes, income_tax_expense, net_income_from_continuing_operations,
+      net_income_from_discontinued_operations, net_income_attributable_to_parent. (11 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementIncomeStatement
+  - term: FinancialStatementCashFlowStatement
+    definition: 'Object declared by the contract with fields: net_income, depreciation_and_amortization_adjustment, share_based_compensation_adjustment,
+      deferred_income_tax_adjustment, other_operating_activities, change_in_accounts_receivable, change_in_inventory, change_in_accounts_payable,
+      change_in_unearned_revenue, change_in_other_net_operating_assets, net_cash_from_operating_activities, capital_expenditure. (22 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementCashFlowStatement
+  - term: FinancialStatementMetrics
+    definition: 'Object declared by the contract with fields: gross_margin, operating_margin, profit_margin, ebitda, ebitda_margin, ebit, ebit_margin,
+      effective_tax_rate, pretax_margin, return_on_equity, interest_coverage, return_on_assets. (20 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementMetrics
+  - term: FinancialStatementsBadRequest
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsBadRequest
+  - term: FinancialStatementsUnauthorized
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsUnauthorized
+  - term: FinancialStatementsNotEntitled
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsNotEntitled
+  - term: FinancialStatementsCompanyNotFound
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsCompanyNotFound
+  - term: FinancialStatementsTickerAmbiguous
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsTickerAmbiguous
+  - term: FinancialStatementsTooManyRequests
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsTooManyRequests
+  - term: FinancialStatementsInternalError
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsInternalError
+  - term: FinancialStatementsUnavailable
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/FinancialStatementsUnavailable
+  - term: CompanyKpisResponse
+    definition: 'Object declared by the contract with fields: issuer, periods.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisResponse
+  - term: CompanyKpiPeriod
+    definition: 'Object declared by the contract with fields: fiscal_year, fiscal_period, kpis.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpiPeriod
+  - term: CompanyKpi
+    definition: 'Object declared by the contract with fields: kpi_id, group, name, definition, unit, period_end_date, value, value_operator, source.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpi
+  - term: CompanyKpiSource
+    definition: 'Object declared by the contract with fields: type, form, accession_number, document, location, xbrl_concept.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpiSource
+  - term: CompanyKpisBadRequest
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisBadRequest
+  - term: CompanyKpisUnauthorized
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisUnauthorized
+  - term: CompanyKpisNotEntitled
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisNotEntitled
+  - term: CompanyKpisCompanyNotFound
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisCompanyNotFound
+  - term: CompanyKpisTickerAmbiguous
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisTickerAmbiguous
+  - term: CompanyKpisTooManyRequests
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisTooManyRequests
+  - term: CompanyKpisInternalError
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisInternalError
+  - term: CompanyKpisUnavailable
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyKpisUnavailable
+  - term: DatasetNotEntitledErrorResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/DatasetNotEntitledErrorResponse
+  - term: CompanyReportPage
+    definition: 'Object declared by the contract with fields: filings, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReportPage
+  - term: CompanyReportResponse
+    definition: 'Object declared by the contract with fields: issuer, fiscal_year, fiscal_period, form, period_end_date, accepted_at, accession_number,
+      content_url, sec_url.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReportResponse
+  - term: CurrentReportFeedPage
+    definition: 'Object declared by the contract with fields: updates, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CurrentReportFeedPage
+  - term: CurrentReportFeedUpdate
+    definition: 'Object declared by the contract with fields: issuer, feed_event_id, published_at, accession_number, form, filed_at, accepted_at,
+      event_date, report_date, fiscal_year, fiscal_period, item_codes. (3 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CurrentReportFeedUpdate
+  - term: CurrentReportPage
+    definition: 'Object declared by the contract with fields: filings, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CurrentReportPage
+  - term: CurrentReport
+    definition: 'Object declared by the contract with fields: issuer, accession_number, form, filed_at, accepted_at, event_date, report_date,
+      fiscal_year, fiscal_period, item_codes, content_url, sec_url.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/CurrentReport
+  - term: InsiderTransactionsResponse
+    definition: 'Object declared by the contract with fields: transactions, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionsResponse
+  - term: InsiderTransactionListItem
+    definition: 'Object declared by the contract with fields: issuer, accession_number, row_kind, source_row_index, transaction_code, accepted_at,
+      transaction_date, deemed_execution_date, transaction_form_type, security, shares, price. (16 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionListItem
+  - term: InsiderIssuer
+    definition: 'Object declared by the contract with fields: cik, name, ticker.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderIssuer
+  - term: InsiderUnderlyingSecurity
+    definition: 'Object declared by the contract with fields: title, shares, value.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderUnderlyingSecurity
+  - term: InsiderFieldFootnoteIds
+    definition: Map from API field name to the document-level footnote IDs that qualify that field. An absent key means the field has no filed
+      footnote reference.
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderFieldFootnoteIds
+  - term: InsiderTransactionFootnote
+    definition: 'Object declared by the contract with fields: id, text.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionFootnote
+  - term: InsiderTransactionReportingOwner
+    definition: 'Object declared by the contract with fields: cik, name, address, relationship.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionReportingOwner
+  - term: InsiderReportingOwnerAddress
+    definition: 'Object declared by the contract with fields: street1, street2, city, state, zip_code, country.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderReportingOwnerAddress
+  - term: InsiderReportingOwnerRelationship
+    definition: 'Object declared by the contract with fields: is_director, is_officer, is_ten_percent_owner, is_other, officer_title, other_text.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderReportingOwnerRelationship
+  - term: InsiderTransactionsBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionsBadRequestResponse
+  - term: InsiderFilingDocument
+    definition: 'Object declared by the contract with fields: issuer, accession_number, form, accepted_at, period_of_report, date_of_original_submission,
+      not_subject_to_section_16, rule_10b5_1, remarks, reporting_owners, owner_signatures, footnotes. (5 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderFilingDocument
+  - term: InsiderFilingTransactionRow
+    definition: 'Object declared by the contract with fields: source_row_index, transaction_code, transaction_date, deemed_execution_date, transaction_form_type,
+      security, shares, price, transaction_total_value, acquired_disposed_code, shares_owned_after, ownership_type. (9 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderFilingTransactionRow
+  - term: InsiderOwnershipHoldingRow
+    definition: 'Object declared by the contract with fields: source_row_index, late_holding_form_type, security, shares_owned_after, value_owned_after,
+      ownership_type, nature_of_ownership, conversion_or_exercise_price, exercise_date, expiration_date, underlying_security, footnote_ids. (1
+      more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderOwnershipHoldingRow
+  - term: ProposedSalesResponse
+    definition: 'Object declared by the contract with fields: proposed_sales, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/ProposedSalesResponse
+  - term: ProposedSaleFilingDetail
+    definition: 'Object declared by the contract with fields: issuer, accession_number, form, accepted_at, previous_accession_number, reporting_person,
+      proposed_sales, securities_to_be_sold, nothing_to_report, past_three_month_sales, remarks, notice. (1 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/ProposedSaleFilingDetail
+  - term: InsiderActivityFeedResponse
+    definition: 'Object declared by the contract with fields: activities, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderActivityFeedResponse
+  - term: InitialOwnershipActivity
+    definition: 'Object declared by the contract with fields: issuer, feed_event_id, published_at, form, accession_number, accepted_at, event_date,
+      reporting_owners, no_securities_owned, non_derivative_holding_count, derivative_holding_count, sec_url.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InitialOwnershipActivity
+  - term: ProposedSaleNoticeActivity
+    definition: 'Object declared by the contract with fields: issuer, feed_event_id, published_at, form, accession_number, source_row_index, accepted_at,
+      reporting_person, security, amount, market_value, approximate_sale_date. (1 more)'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/ProposedSaleNoticeActivity
+  - term: InsiderActivityFeedBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderActivityFeedBadRequestResponse
+  - term: InsiderTransactionFeedResponse
+    definition: 'Object declared by the contract with fields: transactions, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionFeedResponse
+  - term: InsiderTransactionFeedBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InsiderTransactionFeedBadRequestResponse
+  - term: InstitutionalFilingFeedResponse
+    definition: 'Object declared by the contract with fields: updates, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalFilingFeedResponse
+  - term: InstitutionalHoldingFeedUpdate
+    definition: 'Object declared by the contract with fields: feed_event_id, published_at, accession_number, form, report_type, period_of_report,
+      accepted_at, manager, sec_url.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalHoldingFeedUpdate
+  - term: InstitutionalHoldingFeedBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalHoldingFeedBadRequestResponse
+  - term: InstitutionalManagersResponse
+    definition: 'Object declared by the contract with fields: managers, next_cursor, has_more.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagersResponse
+  - term: InstitutionalManagerListItem
+    definition: 'Object declared by the contract with fields: name, form_13f_file_number, cik, latest_period_of_report, holding_count, total_value_usd,
+      latest_accepted_at.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerListItem
+  - term: InstitutionalHoldingsBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalHoldingsBadRequestResponse
+  - term: InstitutionalManagerSearchResponse
+    definition: 'Object declared by the contract with fields: managers.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerSearchResponse
+  - term: InstitutionalManagerSearchBadRequestResponse
+    definition: 'Object declared by the contract with fields: error.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerSearchBadRequestResponse
+  - term: InstitutionalManagerDetailResponse
+    definition: 'Object declared by the contract with fields: manager, latest_period.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerDetailResponse
+  - term: InstitutionalManagerDetail
+    definition: 'Object declared by the contract with fields: name, form_13f_file_number, cik.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerDetail
+  - term: InstitutionalManagerLatestPeriod
+    definition: 'Object declared by the contract with fields: period_of_report, accepted_at, holdings.'
+    tags:
+    - Object
+    source: openapi/_original/chadwin-api-openapi.json#/components/schemas/InstitutionalManagerLatestPeriod

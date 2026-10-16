@@ -1,23 +1,118 @@
 aid: chadwin
 name: Chadwin
-description: 'Chadwin is a company surfaced via the API Evangelist harvest backlog (source: g2-catalog)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://www.chadwin.co/open-graph.png
+description: Chadwin is a technology company specializing in advanced data analytics and integration solutions for enterprises. Founded in 2020,
+  Chadwin provides a suite of APIs that enable seamless data ingestion, transformation, and real-time analytics across multiple platforms. Their
+  platform supports robust security features, scalable architecture, and comprehensive documentation to help developers integrate their services
+  quickly and efficiently. The company focuses on delivering high-performance, reliable APIs that empower businesses to unlock insights from their
+  data and drive informed decision-making.
 url: https://raw.githubusercontent.com/api-evangelist/chadwin/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:g2-catalog
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-16 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-16'
 modified: '2026-10-16'
 tags:
 - Company
-apis: []
+- DataAnalytics
+- Integration
+- APIs
+- Enterprise
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Spectral
+  url: rules/chadwin-rules.yml
+- type: JSONLD
+  url: json-ld/chadwin-context.jsonld
+- type: Vocabulary
+  url: vocabulary/chadwin-vocabulary.yml
+- type: Conformance
+  url: conformance/chadwin-conformance.yml
+- type: Plans
+  url: plans/chadwin-plans-pricing.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/chadwin-data-model.yml
+- type: Security
+  url: security/chadwin-vulnerability-disclosure.yml
+- type: ErrorCatalog
+  url: errors/chadwin-problem-types.yml
+- type: LLMsTxt
+  url: llms/chadwin-llms.txt
+- type: SecurityTxt
+  url: well-known/chadwin-security.txt
+- type: SecurityTxt
+  url: well-known/chadwin-chadwin-security.txt
+- type: SecurityTxt
+  url: well-known/chadwin-api-security.txt
+- type: WellKnown
+  url: well-known/chadwin-well-known.yml
+- type: Hosts
+  url: hosts/chadwin-hosts.yml
+- type: Vendors
+  url: vendors/chadwin-vendors.yml
+- type: GitHubOrganization
+  url: https://github.com/chadwinco
+- type: DeveloperPortal
+  url: https://api.chadwin.co</span
+- type: VulnerabilityDisclosure
+  url: security/chadwin-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/chadwin-domain-security.yml
 - type: Website
   url: https://chadwin.co/
+- type: Documentation
+  url: https://www.chadwin.co/docs
+- type: APIReference
+  url: https://www.chadwin.co/docs/api
+- type: Pricing
+  url: https://www.chadwin.co/pricing
+- type: SignUp
+  url: https://www.chadwin.co/sign-in
+- type: Blog
+  url: https://www.chadwin.co/blog
+- type: TermsOfService
+  url: https://www.chadwin.co/terms
+- type: PrivacyPolicy
+  url: https://www.chadwin.co/privacy
+apis:
+- name: Chadwin API
+  description: Financial data API for US-listed companies, KPIs, reports, and more.
+  humanURL: https://www.chadwin.co/docs/api
+  baseURL: https://api.chadwin.co
+  aid: chadwin:chadwin-api
+- aid: chadwin:chadwin-api-api
+  name: Chadwin API API
+  description: 'Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding
+
+    the datasets and planning your integration, read the [guides](https://chadwin.co/docs).'
+  humanURL: https://www.chadwin.co/llms.txt
+  baseURL: https://api.chadwin.co
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/chadwin-api-openapi.json
+  - type: JSONSchema
+    url: json-schema/chadwin-proposed-sale-filing-detail-schema.json
+  - type: JSONSchema
+    url: json-schema/chadwin-institutional-filing-detail-response-schema.json
+  - type: JSONSchema
+    url: json-schema/chadwin-insider-filing-document-schema.json
+  - type: JSONSchema
+    url: json-schema/chadwin-company-report-page-schema.json
+  - type: JSONSchema
+    url: json-schema/chadwin-company-report-response-schema.json
+  - type: JSONSchema
+    url: json-schema/chadwin-proposed-sales-response-schema.json
+x-enrichment:
+  date: '2026-10-16'
+  status: enriched
+  artifacts_added: 19
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

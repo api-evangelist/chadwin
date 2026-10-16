@@ -1,0 +1,44 @@
+generated: '2026-10-16'
+method: probed
+source: https://www.chadwin.co/privacy
+signals:
+  data_subject_request:
+    evidence:
+      - source: https://www.chadwin.co/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "You may ask us to give you access to your personal data, correct it, erase it, restrict its use, or provide it in a portable format."
+    note: Provides data subject rights for access, correction, erasure, restriction and portability.
+    section: "5. Your rights"
+  data_retention:
+    evidence:
+      - source: https://www.chadwin.co/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "When a retention purpose ends, we delete or anonymize the data unless a dispute, legal hold, or other lawful obligation requires continued retention."
+    note: Describes retention periods and deletion policy.
+    section: "4. How long we keep data"
+  subprocessors:
+    evidence:
+      - source: https://www.chadwin.co/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "We use the following providers to operate Chadwin: Cloudflare ... Supabase ... Stripe ... PostHog ... Google Workspace ..."
+    note: Lists subprocessors and their roles.
+    section: "3. Service providers and international transfers"
+  incident_notification:
+    evidence:
+      - source: https://www.chadwin.co/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "If a personal-data breach requires notification, we will notify the competent authority and affected people as required by law."
+    note: Commitment to breach notification.
+    section: "6. Security and changes"
+  data_residency:
+    evidence:
+      - source: https://www.chadwin.co/privacy
+        http_status: 200
+        fetched: "true"
+        quote: "Where a recipient processes personal data outside the EEA, the transfer is protected by an applicable adequacy decision, the EU-US Data Privacy Framework, or contractual safeguards such as the European Commission's Standard Contractual Clauses."
+    note: Describes cross-border data transfer safeguards.
+    section: "3. Service providers and international transfers"

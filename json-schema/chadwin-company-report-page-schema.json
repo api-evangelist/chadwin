@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/chadwin/main/json-schema/chadwin-company-report-page-schema.json",
+  "title": "CompanyReportPage",
+  "x-generated": "2026-10-16",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/_original/chadwin-api-openapi.json#/components/schemas/CompanyReportPage",
+  "type": "object",
+  "properties": {
+    "filings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issuer": {
+            "type": "object",
+            "properties": {
+              "cik": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "ticker": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "cik",
+              "name",
+              "ticker"
+            ]
+          },
+          "fiscal_year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "fiscal_period": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "FY",
+              "Q1",
+              "Q2",
+              "Q3",
+              null
+            ]
+          },
+          "form": {
+            "type": "string",
+            "enum": [
+              "10-K",
+              "10-K/A",
+              "10-Q",
+              "10-Q/A",
+              "20-F",
+              "20-F/A",
+              "40-F",
+              "40-F/A"
+            ]
+          },
+          "period_end_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "filed_at": {
+            "type": "string",
+            "format": "date"
+          },
+          "accepted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "accession_number": {
+            "type": "string"
+          },
+          "content_url": {
+            "type": "string",
+            "description": "Relative authenticated API URL for the cleaned report HTML. Send the same bearer token when requesting it."
+          },
+          "sec_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "issuer",
+          "fiscal_year",
+          "fiscal_period",
+          "form",
+          "period_end_date",
+          "filed_at",
+          "accepted_at",
+          "accession_number",
+          "content_url",
+          "sec_url"
+        ]
+      }
+    },
+    "next_cursor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "has_more": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "filings",
+    "next_cursor",
+    "has_more"
+  ]
+}
