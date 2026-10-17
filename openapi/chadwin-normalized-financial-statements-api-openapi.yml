@@ -1,0 +1,837 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Normalized financial statements API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Normalized financial statements
+  description: Annual financial statements and financial metrics.
+  externalDocs:
+    description: Read the normalized financial statements beta guide
+    url: https://chadwin.co/docs/financial-statements
+paths:
+  /v1/companies/financial-statements:
+    get:
+      tags:
+      - Normalized financial statements
+      operationId: getCompanyFinancialStatements
+      summary: Get financial statements
+      description: Returns annual financial statements and metrics from SEC filings.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: Current or former ticker selecting the full approved company history.
+          example: IBM
+        required: false
+        description: Current or former ticker selecting the full approved company history.
+        name: ticker
+        in: query
+      - schema:
+          type: string
+          description: Current or predecessor CIK selecting the full approved company history.
+          example: '0000051143'
+          examples:
+          - '0002115436'
+          - 0000034088
+        required: false
+        description: Current or predecessor CIK selecting the full approved company history.
+        name: cik
+        in: query
+      - schema:
+          type: integer
+          minimum: 1900
+          maximum: 9999
+          description: One fiscal year from 1900 through 9999; cannot be combined with limit.
+          example: 2024
+        required: false
+        description: One fiscal year from 1900 through 9999; cannot be combined with limit.
+        name: fiscal_year
+        in: query
+      - schema:
+          type: string
+          enum:
+          - annual
+          description: Only annual financial statements are supported. Defaults to annual.
+          example: annual
+          x-enumDescriptions:
+            annual: FY values
+        required: false
+        description: Only annual financial statements are supported. Defaults to annual.
+        name: period
+        in: query
+      - schema:
+          type: integer
+          minimum: 1
+          maximum: 80
+          description: Consecutive fiscal years to return, ending at the latest stored year. Missing years remain missing. Defaults to 1.
+          example: 5
+        required: false
+        description: Consecutive fiscal years to return, ending at the latest stored year. Missing years remain missing. Defaults to 1.
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Financial statements
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyFinancialStatementsResponse'
+              example:
+                issuer:
+                  cik: 0000320193
+                  name: Apple Inc.
+                  ticker: AAPL
+                periods:
+                - fiscal_year: 2025
+                  fiscal_period: FY
+                  period_end_date: '2025-09-27'
+                  accession_number: 0000320193-25-000079
+                  currency: USD
+                  balance_sheet:
+                    cash_and_cash_equivalents: '35934000000'
+                    short_term_investments: '18763000000'
+                    accounts_receivable_current: '39777000000'
+                    inventory: '5718000000'
+                    total_current_assets: '147957000000'
+                    property_plant_and_equipment_net: '49834000000'
+                    total_assets: '359241000000'
+                    accounts_payable_current: '69860000000'
+                    current_borrowings: '20329000000'
+                    current_portion_of_long_term_debt: '12350000000'
+                    total_current_liabilities: '165631000000'
+                    long_term_debt_noncurrent: '78328000000'
+                    total_liabilities: '285508000000'
+                    equity_attributable_to_parent: '73733000000'
+                  income_statement:
+                    revenue: '416161000000'
+                    cost_of_sales: '220960000000'
+                    gross_profit: '195201000000'
+                    research_and_development_expense: '34550000000'
+                    selling_general_and_administrative_expense: '27601000000'
+                    total_operating_expenses: '62151000000'
+                    operating_income: '133050000000'
+                    nonoperating_income_expense: '-321000000'
+                    income_before_income_taxes: '132729000000'
+                    income_tax_expense: '20719000000'
+                    net_income_attributable_to_parent: '112010000000'
+                    basic_earnings_per_share: '7.49'
+                    diluted_earnings_per_share: '7.46'
+                    basic_weighted_average_shares: '14948500000'
+                    diluted_weighted_average_shares: '15004697000'
+                  cash_flow_statement:
+                    depreciation_and_amortization_adjustment: '11698000000'
+                    share_based_compensation_adjustment: '12863000000'
+                    net_cash_from_operating_activities: '111482000000'
+                    capital_expenditure: '12715000000'
+                    net_cash_from_investing_activities: '15195000000'
+                    common_stock_repurchases: '90711000000'
+                    net_cash_from_financing_activities: '-120686000000'
+                    net_change_in_cash_cash_equivalents_and_restricted_cash_including_exchange_rate_effect: '5991000000'
+                  metrics:
+                    working_capital: '-17674000000'
+                    current_ratio: '0.89'
+                    cash_ratio: '0.33'
+                    operating_margin: '31.97'
+                    pretax_margin: '31.89'
+                    effective_tax_rate: '15.61'
+                    profit_margin: '26.92'
+                    return_on_equity: '171.42'
+                    operating_cash_flow_margin: '26.79'
+                    quick_ratio: '0.57'
+                    gross_margin: '46.91'
+                    return_on_assets: '30.93'
+                    asset_turnover: '1.15'
+                    free_cash_flow: '98767000000'
+                    free_cash_flow_margin: '23.73'
+                    operating_cash_flow_to_net_income: '1.00'
+        '400':
+          description: The identifier or query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsBadRequest'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsUnauthorized'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsNotEntitled'
+        '404':
+          description: No company matches the requested ticker
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsCompanyNotFound'
+        '409':
+          description: The ticker matches more than one retained CIK and has no explicit resolving override
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsTickerAmbiguous'
+        '429':
+          description: The request exceeded a rate limit or monthly quota
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsTooManyRequests'
+        '500':
+          description: A stored result cannot map to the public schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsInternalError'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatementsUnavailable'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.financialStatements.get({\n  ticker: \"IBM\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/companies/financial-statements?ticker=IBM' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    CompanyFinancialStatementPeriod:
+      type: object
+      properties:
+        fiscal_year:
+          type: integer
+          minimum: 1900
+          maximum: 9999
+        fiscal_period:
+          type: string
+          enum:
+          - FY
+        period_end_date:
+          type: string
+          format: date
+        accession_number:
+          type: string
+          description: SEC filing used as the source for this period. When verified stock-split transitions exist, share counts and per-share values use the latest verified split basis across published annual filings. Otherwise they retain this filing's basis. Accounting amounts retain the selected filing's basis; unavailable adjusted values are omitted rather than mixed with original-basis values.
+        currency:
+          type: string
+        balance_sheet:
+          $ref: '#/components/schemas/FinancialStatementBalanceSheet'
+        income_statement:
+          $ref: '#/components/schemas/FinancialStatementIncomeStatement'
+        cash_flow_statement:
+          $ref: '#/components/schemas/FinancialStatementCashFlowStatement'
+        metrics:
+          $ref: '#/components/schemas/FinancialStatementMetrics'
+      required:
+      - fiscal_year
+      - fiscal_period
+      - period_end_date
+      - accession_number
+      - currency
+      - balance_sheet
+      - income_statement
+      - cash_flow_statement
+      - metrics
+      additionalProperties: false
+    FinancialStatementIssuer:
+      type: object
+      properties:
+        cik:
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        ticker:
+          type:
+          - string
+          - 'null'
+      required:
+      - cik
+      - name
+      - ticker
+      additionalProperties: false
+    FinancialStatementsTickerAmbiguous:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - company_ambiguous
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementsNotEntitled:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - dataset_not_entitled
+      required:
+      - error
+      additionalProperties: false
+    CompanyFinancialStatementsResponse:
+      type: object
+      properties:
+        issuer:
+          $ref: '#/components/schemas/FinancialStatementIssuer'
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyFinancialStatementPeriod'
+          maxItems: 20
+      required:
+      - issuer
+      - periods
+      additionalProperties: false
+    FinancialStatementIncomeStatement:
+      type: object
+      properties:
+        revenue:
+          type: string
+          description: Revenue recognized from the entity's ordinary operating activities under its U.S. GAAP accounting policies, including sales of goods, services, licensing, and leasing, net of returns, allowances, and discounts. Includes qualifying operating revenue outside the revenue-from-contracts-with-customers model; an ASC 606 revenue subtotal is not necessarily the complete target. Includes or excludes taxes assessed by governments according to the filer's U.S. GAAP policy. Excludes interest classified as nonoperating, equity-method earnings, and gains from transactions outside ordinary operations. Use consolidated continuing operations; exclude revenue of discontinued operations.
+        cost_of_sales:
+          type: string
+          description: All costs the filer deducts from consolidated continuing-operations revenue in determining gross profit, including separately presented production-related restructuring or impairment charges and allocated overhead, depreciation, and amortization when included in that subtotal. When gross profit is not presented, use costs classified as cost of goods sold or cost of services under the filer's accounting policy. Excludes selling, general, administrative, and other expenses presented below gross profit. A separately presented cost-of-sales line is incomplete when additional costs enter the gross-profit subtotal. Do not reinterpret this as variable or direct costs alone.
+        gross_profit:
+          type: string
+          description: Consolidated continuing-operations revenue less all costs the filer deducts in determining gross profit, including production-related charges presented separately from the cost-of-sales line. Uses the same cost scope as normalized cost of sales. Excludes selling, general, administrative, and other expenses presented below gross profit. Do not substitute contribution margin.
+        selling_general_and_administrative_expense:
+          type: string
+          description: Operating expenses for selling, general corporate, and administrative activities. Excludes cost of sales and nonoperating expenses. Separately reported selling and marketing expense and general and administrative expense can establish this fact through a complete nonoverlapping composition. A single component is an exact match only when the filing establishes that it covers the whole target. Use consolidated continuing operations. Exclude R&D presented as a separate additive operating-expense category. Preserve R&D included within reported SG&A and disclosed only as a supplemental note breakdown; do not subtract that breakdown or add it again when reconciling operating expenses. Optional functional breakdown of operating expenses. A statement presented by expense nature need not supply a complete functional allocation; do not assign all personnel, professional fees or other mixed-function costs to SG&A merely to force a subtotal.
+        research_and_development_expense:
+          type: string
+          description: 'Research and development costs recognized as expense within continuing operations. Excludes capitalized amounts. Include expensed acquired in-process research and development only when the filing classifies it within this R&D expense category; do not exclude an expense solely because it arose in an acquisition. Supplemental expense disclosure: costs included in cost of sales must not also be added to operating expenses after gross profit. Its total is not an unconditional additive row in that bridge. R&D disclosed within SG&A or cost of revenue is an optional breakdown of that reported category, not an additional expense. A later filing may establish a historical comparative amount only through an explicit source-filing reference with the same period and accounting scope.'
+        total_operating_expenses:
+          type: string
+          description: Net operating expenses presented after gross profit and before operating income or loss within continuing operations. Includes selling, general and administrative expense, research and development expense, and other operating expenses, less operating gains and credits in that interval. Excludes cost of revenue, nonoperating items, income taxes, and discontinued operations. Expenses are positive and net operating credits are negative. Require a complete nonoverlapping bridge; a filed total that includes cost of revenue is not an exact match. For a statement that reports operating expenses by nature without a separate cost-of-revenue or gross-profit boundary, retain the complete reported operating-expense subtotal. This does not establish zero cost of revenue or a gross-profit amount; do not add a separately inferred cost category to that subtotal.
+        operating_income:
+          type: string
+          description: Consolidated continuing-operations revenue less costs and expenses, plus gains and credits, that the filer classifies within operating income or loss. Excludes nonoperating income and expense, income taxes, discontinued operations, and allocation to noncontrolling interests.
+        income_before_income_taxes:
+          type: string
+          description: The filer's consolidated continuing-operations subtotal immediately before current or deferred income tax expense or benefit. Follows the reported tax boundary when equity-method earnings are presented after that subtotal, and preserves explicitly immaterial, unquantified ownership allocations embedded in that reported subtotal. The tax boundary alone does not prove a before-NCI-allocation amount. Excludes discontinued operations.
+        income_tax_expense:
+          type: string
+          description: Current and deferred income tax expense or benefit assigned to continuing operations. Expense is positive and benefit is negative. Excludes tax assigned to discontinued operations, other comprehensive income, or direct equity transactions.
+        net_income_from_continuing_operations:
+          type: string
+          description: Consolidated after-tax income or loss from continuing operations, on the same reported ownership basis as consolidated net income. Use the before-NCI-allocation amount when reported or recoverable. Includes equity-method earnings assigned to continuing operations even when presented below the reported pretax subtotal. Excludes discontinued operations and other comprehensive income. Pretax less tax is not complete when additional continuing items appear below the tax boundary. Preserve the reported income-statement treatment of an explicitly immaterial, unquantified noncontrolling-interest allocation embedded within earnings when a complete before-allocation amount cannot be recovered. This limited reported-basis convention does not establish zero NCI income. A separately quantified allocation must be included once in the consolidated total; a parent-only amount is not a general substitute.
+        net_income_from_discontinued_operations:
+          type: string
+          description: Consolidated after-tax income or loss from discontinued operations, including disposal gains and losses, on the same reported ownership basis as consolidated net income and continuing income. Use the before-NCI-allocation amount when reported or recoverable. Excludes continuing operations and other comprehensive income. A missing separate disclosure does not itself prove zero. Preserve the reported income-statement treatment of an explicitly immaterial, unquantified noncontrolling-interest allocation embedded within earnings when a complete before-allocation amount cannot be recovered. This limited reported-basis convention does not establish zero NCI income. A separately quantified allocation must be included once in the consolidated total; a parent-only amount is not a general substitute.
+        net_income_attributable_to_parent:
+          type: string
+          description: Consolidated net income or loss after removing the portion attributable to noncontrolling interests. Includes continuing and discontinued operations. Excludes other comprehensive income. A consolidated amount before attribution can establish this fact when the filing establishes that no income or loss is attributable to noncontrolling interests for the reporting period. A missing separate allocation alone does not establish equivalence.
+        net_income_to_common:
+          type: string
+          description: Net income or loss available to parent common shareholders after preferred claims and other allocations under the reported common-earnings reconciliation. Includes discontinued operations when included in that reconciliation. Excludes earnings allocated to noncontrolling interests and participating securities where required. Income is positive and loss is negative. A parent-attributable amount can establish this fact when the filing establishes that no preferred claims, participating-security allocations, or other common-earnings adjustments apply for the reporting period. Missing separate allocation lines alone do not establish equivalence.
+        basic_weighted_average_shares:
+          type: string
+          description: 'Weighted-average common shares in the reported basic earnings-per-share denominator for the selected common class or compatible common-class group, on the selected filing''s stock-split basis. Preserve the reported two-class allocation: participating securities can affect earnings allocation without becoming common denominator shares. Do not add preferred shares or combine classes merely because their earnings participate. Unavailable when class or split compatibility is not established. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.'
+        diluted_weighted_average_shares:
+          type: string
+          description: Weighted-average common shares in the reported diluted earnings-per-share denominator for the selected common class or compatible common-class group, including dilutive potential common shares and excluding antidilutive instruments. Use the same selected-filing class and stock-split basis as diluted EPS. Preserve both the reported denominator and any separate diluted numerator adjustment; do not assume basic common earnings are the diluted numerator. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        basic_earnings_per_share:
+          type: string
+          description: Net income or loss available to each weighted-average common share under the U.S. GAAP basic earnings-per-share calculation, including the two-class method when applicable. Excludes effects of dilutive potential common shares. Preserve the reported common class or compatible class group and selected-filing stock-split basis. Do not combine incompatible classes or derive from an unmatched earnings numerator and share denominator. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        diluted_earnings_per_share:
+          type: string
+          description: Net income or loss available to each weighted-average common share after the U.S. GAAP numerator and denominator effects of dilutive potential common shares. Excludes antidilutive instruments. Preserve the reported common class or compatible class group and selected-filing stock-split basis. Do not combine incompatible classes or derive from an unmatched earnings numerator and share denominator. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        dividend_per_share:
+          type: string
+          description: Dividends declared per common share during the fiscal year, expressed in currency per share, for a consistent share class and split basis. Includes special dividends and reported monetary amounts of noncash dividends. Excludes stock-dividend percentages and share distributions. Use the reported full-year amount or complete same-class declarations; dividends paid are not a substitute for dividends declared. Do not divide cash dividends paid by weighted-average shares or mix calendar-year and fiscal-year amounts. Use the selected filing's reported split basis consistently with the same-class share and EPS data; leave unavailable if that basis cannot be established. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        nonoperating_income_expense:
+          type: string
+          description: The complete net income or expense the filer presents between operating income or loss and income or loss before income taxes. Income is positive and expense is negative.
+        interest_expense:
+          type: string
+          description: Interest and financing cost recognized in consolidated continuing operations on the reported basis, including debt-discount and financing-cost amortization. Prefer a separately reported gross amount or a complete reconstruction from net interest and its disclosed interest-income offset. When the filing reports only net interest, retain that amount, expense-positive, including a negative amount for net interest income. Exclude capitalized interest not yet recognized as expense. The reported basis may retain other financing costs included in the interest category; do not add financing-cost amortization again as depreciation and amortization in EBITDA. Exclude separately identified debt-extinguishment and noninterest gains or losses. Previously capitalized interest released to expense is included. A partial business-segment amount does not establish a consolidated total.
+        depreciation_and_amortization_expense:
+          type: string
+          description: Depreciation, depletion and amortization of productive tangible and intangible assets expensed in consolidated continuing operations, across all expense locations without double counting. Includes finance-lease asset depreciation, acquired intangible assets, software, content, hosted-service implementation and deferred major maintenance. Excludes amortization of costs to obtain or fulfill customer contracts, including sales commissions and customer incentives; acquired customer-relationship intangible assets remain included. Also excludes prepaid goods and services, capitalized amounts not yet expensed, discontinued operations, operating lease expense, accretion, financing-cost amortization and impairment write-downs. Accelerated depreciation due to a shorter useful life remains included. A reported combined D&A and impairment amount may be used only after filing review establishes that impairment is explicitly immaterial and no separately quantified material exclusion is known; preserve that reported basis rather than infer zero impairment. Do not add this supplemental expense again to cost of revenue or other functional expense totals.
+        net_income_attributable_to_noncontrolling_interests:
+          type: string
+          description: The portion of consolidated net income or loss, including continuing and discontinued operations, attributable to noncontrolling ownership interests. Excludes other comprehensive income. Supplemental ownership breakdown. An immaterial allocation embedded in reported earnings remains unknown unless independently quantified; equality of reported-basis total and parent income does not establish zero. Investigate this input when needed to construct a core income fact or settle an ownership inconsistency.
+        net_income_including_noncontrolling_interests:
+          type: string
+          description: Consolidated income-statement net income or loss, including continuing and discontinued operations and excluding other comprehensive income. Use the amount before allocation between parent and noncontrolling interests when separately reported or recoverable. Preserve the reported income-statement treatment of an explicitly immaterial, unquantified noncontrolling-interest allocation embedded within earnings when a complete before-allocation amount cannot be recovered. This limited reported-basis convention does not establish zero NCI income. A separately quantified allocation must be included once in the consolidated total; a parent-only amount is not a general substitute.
+      additionalProperties: false
+    FinancialStatementBalanceSheet:
+      type: object
+      properties:
+        cash_and_cash_equivalents:
+          type: string
+          description: Cash on hand, demand deposits, and short-term highly liquid investments readily convertible to known cash amounts and subject to insignificant value-change risk. Includes unrestricted cash and cash equivalents within consolidated disposal groups or assets held for sale, regardless of balance-sheet caption. Excludes restricted cash and investments that do not qualify as cash equivalents. Classification as held for sale does not itself make cash restricted. Use the cash population recognized under the filing's cash-equivalent accounting policy and cash-flow reconciliation. Exclude holdings accounted for in a separate investment or capital-construction fund outside that population, even when its underlying holdings are described as cash-like; classify the fund in investments.
+        short_term_investments:
+          type: string
+          description: Unrestricted investments classified as current that do not qualify as cash equivalents, including current investment securities and term deposits. Excludes restricted cash and restricted investments, cash equivalents, current receivables, and noncurrent investments. Use the carrying amount at period end; do not count the same investment within both cash equivalents and short-term investments.
+        accounts_receivable_current:
+          type: string
+          description: Net current accounts receivable, including a combined reported accounts-and-notes receivable category, on the filing's reported-category basis, after applicable allowances. Retain noncustomer amounts embedded in the main reported accounts-receivable category, including rebates, delivery-platform, interest or insurance receivables. Include unconditional unbilled customer receivables. Do not add separately classified tax receivables, financing receivables or contract assets, or any noncurrent balance. Supplemental breakdowns inside this category must not be counted again in other current assets.
+        other_receivables:
+          type: string
+          description: Separately established net current other receivables outside the main reported accounts-receivable category and separately classified contract assets. May include tax, interest, insurance or financing receivables disclosed separately. This optional breakdown does not assert an exhaustive total of all noncustomer receivables. Exclude amounts already retained within accounts receivable and all noncurrent amounts. It is supplemental within other current assets and is not added again to total current assets.
+        inventory:
+          type: string
+          description: Goods held for sale, in production, or consumed in producing goods or services, classified as current under the filer's U.S. GAAP operating-cycle policy and net of valuation allowances. Excludes noncurrent inventory. Do not assign a separately reported noncurrent inventory balance to the reported Other noncurrent assets category unless it is included there by the filer.
+        restricted_cash:
+          type: string
+          description: Total cash and cash equivalents restricted as to withdrawal or use, including current and noncurrent amounts once each. Includes restricted cash and cash equivalents within consolidated disposal groups or assets held for sale. Determine restriction from the actual withdrawal or use restrictions, not the balance-sheet caption; exclude unrestricted disposal-group cash. This total overlaps its current and noncurrent components. Use the cash population recognized under the filing's cash-equivalent accounting policy and cash-flow reconciliation. Exclude holdings accounted for in a separate investment or capital-construction fund outside that population, even when its underlying holdings are described as cash-like; classify the fund in investments. This does not exclude cash merely because it is restricted or held for sale.
+        other_current_assets:
+          type: string
+          description: Current assets remaining after unrestricted cash and cash equivalents, short-term investments, reported accounts receivable and inventory. Includes current restricted cash, contract assets, other receivables, prepayments and all other current assets. These included balances are supplemental breakdowns and must not be added again. This is an explicitly calculated normalized remainder, not a reported Other caption. Its fixed scope applies to every filer. Establish this amount either from the total and every excluded category on the same accounting basis, or from a complete reconciled filed current-asset breakdown with the same scope. Preserve reported Other, prepaid and current held-for-sale categories unless filing evidence identifies an excluded balance within them; known excluded balances must not remain embedded or be counted twice. A missing narrower normalized value is not assumed to be zero.
+        total_current_assets:
+          type: string
+          description: All assets the filer classifies as current under its U.S. GAAP operating-cycle policy. Includes current components not separately named in this catalog. Excludes every noncurrent asset. Unavailable when the filing does not establish a current classification; absence of a current subtotal is not zero.
+        property_plant_and_equipment_net:
+          type: string
+          description: Property, plant and equipment as presented by the filer, net of accumulated depreciation and impairment. Includes finance lease right-of-use assets when the filer classifies them within property, plant and equipment. Excludes separately presented operating lease right-of-use assets, goodwill, and other intangible assets.
+        operating_lease_right_of_use_assets:
+          type: string
+          description: Recognized carrying amount of operating lease right-of-use assets, net of impairment and accumulated reductions. Excludes finance lease assets, which follow the filing's property and equipment classification, and excludes lease liabilities. Do not add a lease asset already included in another selected asset total.
+        long_term_investment:
+          type: string
+          description: Total carrying amount of investments classified as noncurrent, including noncurrent debt and equity securities and equity-method investments. Includes separately presented qualifying investment categories only through a complete nonoverlapping composition. Excludes current investments, cash equivalents, productive property, and intangible assets. Includes restricted noncurrent investment securities and equity-method investments when classified as investments; exclude restricted cash. Do not apply the unrestricted-only scope of short_term_investments to this noncurrent category. Include the full carrying amount of a noncurrent investment or capital-construction fund accounted for outside the filing's cash-flow cash population, including its underlying liquid holdings. Do not include the same fund assets in normalized cash. Include them once within the enclosing other-long-term-assets total; this supplemental investment breakdown is not an additional asset. Supplemental breakdown included within other long-term assets; do not add or subtract it again in the normalized statement totals.
+        goodwill:
+          type: string
+          description: Acquisition consideration allocated to future economic benefits that are not individually identified and separately recognized, net of impairment.
+        intangible_assets_net_excluding_goodwill:
+          type: string
+          description: Finite-lived and indefinite-lived identifiable intangible assets classified as such by the filer, net of accumulated amortization and impairment. Includes qualifying acquired rights and software within that category. Excludes goodwill, software already classified in property and equipment, operating lease right-of-use assets, and separately classified content assets, capitalized contract costs and hosted-service implementation costs. Do not treat every nonphysical capitalized cost as an identifiable intangible asset. Exclusion from this balance-sheet category does not exclude genuine amortization expense from depreciation_and_amortization_expense.
+        long_term_deferred_tax_assets:
+          type: string
+          description: Recognized noncurrent deferred tax asset carrying amount after valuation allowances and legally permitted offsetting within a tax-paying component and jurisdiction. Excludes deferred tax liabilities reported separately and current income tax receivables. Do not combine gross assets with their net subtotal. Supplemental breakdown included within other long-term assets; do not add or subtract it again in the normalized statement totals.
+        other_long_term_assets:
+          type: string
+          description: Long-term assets remaining after current assets, property, plant and equipment, separately established operating lease right-of-use assets, goodwill and separately established identifiable intangible assets. Includes long-term investments, deferred tax assets, restricted cash and the remaining reported other-asset categories. Exclude identifiable intangible balances established in the notes as well as on the balance sheet. Unquantified operating lease right-of-use assets and identifiable intangible assets embedded in an unallocated reported other-assets category remain in this remainder. This does not establish a zero for either component or permit calculations requiring their separate balances. Exclude any separately established component, whether found on the balance sheet or in the notes, and never add an embedded component again to total assets. Supplemental investment, tax and restricted-cash breakdowns are not added again to total assets. Require a complete nonoverlapping breakdown on the same accounting basis.
+        total_assets:
+          type: string
+          description: All recognized current and noncurrent assets of the consolidated entity. Excludes debit balances classified as reductions of liabilities or equity.
+        accounts_payable_current:
+          type: string
+          description: Amounts owed to suppliers for goods and services received and classified as current. Excludes accrued expenses, current debt, and noncurrent payables.
+        accrued_expenses:
+          type: string
+          description: Current balances reported as accrued expenses or accrued liabilities, including separately reported compensation and other accrual categories, without overlap. Follow the reported category rather than reconstructing every incurred obligation elsewhere in the filing. Exclude trade payables, borrowings, leases, income taxes, customer contract liabilities and other non-accrual categories when separately presented outside the accrued balances. Retain components embedded in an explicitly reported accrual category, including taxes or customer advances, even when a note separately quantifies them; record their known scope in the evidence. Do not substitute an arbitrary other-current-liabilities total or add a disclosed component to its parent again. This reported-category measure is not necessarily disjoint from separately normalized tax, lease or contract-liability disclosures. Supplemental reported category in the normalized balance sheet. Do not add it to accounts payable, debt, taxes, lease liabilities, contract liabilities or the normalized other-current-liabilities remainder; its components may already be included in those rows.
+        debt_and_finance_lease_liabilities_current:
+          type: string
+          description: 'Combined carrying amount of short-term borrowings, current maturities of long-term debt, and current finance lease liabilities. Excludes operating lease liabilities and noncurrent obligations. Follow the reported carrying-amount basis of total debt: an otherwise complete reported debt amount does not require an undisclosed finance-lease breakdown or an assertion that leases do not exist. Retain finance leases already included and add separately disclosed excluded finance leases once, on the same maturity basis. Missing lease detail does not establish a zero lease liability. Exclude operating leases and obligations outside this maturity category.'
+        current_borrowings:
+          type: string
+          description: Carrying amount of borrowings due within one year or the operating cycle, including current maturities of long-term debt. Excludes finance and operating lease liabilities. The current portion of long-term debt is already included and must not be added again. Convertible debt is included in borrowings. A filed convertible-debt amount can represent the entire normalized fact when the filing establishes that it covers all included current borrowings. Otherwise, it represents only a component. Use carrying amount, not principal or fair value. Includes contractual borrowing with a zero stated coupon; an absence of stated interest does not remove a borrowing from this scope. Supplemental borrowing-only breakdown of the corresponding debt-and-finance-lease total; do not add the two rows together.
+        current_portion_of_long_term_debt:
+          type: string
+          description: Carrying amount of long-term debt classified as current, including the effect of discounts, premiums, and debt issuance costs. Excludes short-term borrowings and current lease liabilities.
+        current_taxes_payable:
+          type: string
+          description: Recognized current tax-payable liabilities, including income taxes and non-income taxes such as value-added, sales, use, property, mining and payroll taxes. Include taxes collected or withheld for remittance when included in the reported tax-payable category. Exclude deferred income taxes, noncurrent obligations, and non-tax compensation or fees. Use a complete reported current tax-payable category or a complete nonoverlapping construction of separately reported tax categories. An income-only balance or a specific tax component does not establish the broader total when other current taxes are separately reported or its completeness is not established. Do not substitute a combined taxes-and-fees or payroll-and-tax balance without a supported split. Do not net tax receivables against tax liabilities. This measure may overlap taxes embedded in reported accrued liabilities and must not be added to that parent again. Supplemental breakdown included within other current liabilities; do not add or subtract it again in the normalized statement totals.
+        current_unearned_revenue:
+          type: string
+          description: Current obligations to transfer goods or services for consideration already received or due from customers. Includes current deferred or unearned revenue and customer deposits with that scope. Excludes refund liabilities, noncurrent contract liabilities, and unrelated deposits. Supplemental breakdown included within other current liabilities; do not add or subtract it again in normalized statement totals.
+        other_current_liabilities:
+          type: string
+          description: Current liabilities remaining after accounts payable and current debt including finance lease liabilities. Includes operating lease liabilities, customer contract liabilities, taxes, accruals and all other liabilities of the same maturity. Operating leases, contract liabilities, taxes and reported accrued liabilities are supplemental overlapping breakdowns; do not add them again. This is a calculated normalized remainder with fixed scope, not a reported Other caption. Require the total and every excluded category on the same accounting basis; missing inputs are never zero. A complete reconciled tagged liability breakdown can also establish this remainder without first resolving every narrower excluded component. Retaining operating leases in this remainder does not establish their amount or change the separate Total debt and lease liabilities measure.
+        total_current_liabilities:
+          type: string
+          description: All obligations the filer classifies as current under its U.S. GAAP operating-cycle policy. Includes current components not separately named in this catalog. Excludes every noncurrent liability. Unavailable when the filing does not establish a current classification; absence of a current subtotal is not zero.
+        long_term_debt_and_finance_lease_liabilities_noncurrent:
+          type: string
+          description: 'Combined carrying amount of noncurrent long-term debt and noncurrent finance lease liabilities. Excludes current obligations and operating lease liabilities. Follow the reported carrying-amount basis of total debt: an otherwise complete reported debt amount does not require an undisclosed finance-lease breakdown or an assertion that leases do not exist. Retain finance leases already included and add separately disclosed excluded finance leases once, on the same maturity basis. Missing lease detail does not establish a zero lease liability. Exclude operating leases and obligations outside this maturity category.'
+        long_term_debt_noncurrent:
+          type: string
+          description: Carrying amount of borrowing classified as noncurrent, including contractually short-term instruments classified as noncurrent under an established refinancing arrangement, including debt issued at a discount and the carrying-value effects of unamortized discounts, premiums, and debt issuance costs. Excludes current maturities and all lease liabilities. Convertible debt is included in borrowings. A filed convertible-debt amount can represent the entire normalized fact when the filing establishes that it covers all included noncurrent borrowings. Otherwise, it represents only a component. Use carrying amount, not principal or fair value. Includes contractual borrowing with a zero stated coupon; an absence of stated interest does not remove a borrowing from this scope. Includes noncurrent financing obligations from failed sale-and-leaseback transactions accounted for as debt; they are not operating or finance lease liabilities. Supplemental borrowing-only breakdown of the corresponding debt-and-finance-lease total; do not add the two rows together.
+        long_term_unearned_revenue:
+          type: string
+          description: Noncurrent obligations to transfer goods or services for consideration already received or due from customers. Includes noncurrent deferred or unearned revenue. Excludes refund liabilities and current contract liabilities. Supplemental breakdown included within other long-term liabilities; do not add or subtract it again in normalized statement totals.
+        long_term_deferred_tax_liabilities:
+          type: string
+          description: Recognized noncurrent deferred tax liability carrying amount after legally permitted offsetting within a tax-paying component and jurisdiction. Excludes deferred tax assets reported separately and current income taxes payable. Supplemental breakdown included within other long-term liabilities; do not add or subtract it again in the normalized statement totals.
+        other_long_term_liabilities:
+          type: string
+          description: Noncurrent liabilities remaining after noncurrent debt including finance lease liabilities. Includes operating lease liabilities, customer contract liabilities, taxes, accruals and all other liabilities of the same maturity. Operating leases, contract liabilities, taxes and reported accrued liabilities are supplemental overlapping breakdowns; do not add them again. This is a calculated normalized remainder with fixed scope, not a reported Other caption. Require the total and every excluded category on the same accounting basis; missing inputs are never zero. A complete reconciled tagged liability breakdown can also establish this remainder without first resolving every narrower excluded component. Retaining operating leases in this remainder does not establish their amount or change the separate Total debt and lease liabilities measure.
+        total_liabilities:
+          type: string
+          description: All recognized current and noncurrent obligations of the consolidated entity. Excludes temporary and permanent equity.
+        common_stock:
+          type: string
+          description: Reported par or stated value of issued common stock. Excludes additional paid-in capital and preferred stock. A combined common-stock-and-additional-paid-in-capital balance is not an exact match. Use the filed balance for no-par stock; outstanding shares excluding treasury stock are not a universal substitute. Includes issued shares held in treasury; an outstanding-share value that excludes treasury shares is not equivalent. The parent-equity equation deducts treasury stock separately.
+        additional_paid_in_capital:
+          type: string
+          description: Permanent parent equity contributed in excess of the par or stated value of issued stock, including amounts the filing classifies as additional paid-in capital. Excludes common and preferred stock par or stated value, retained earnings, accumulated other comprehensive income, treasury stock, noncontrolling interests, and temporary equity. A combined stock-and-paid-in-capital balance does not establish either component separately.
+        treasury_stock:
+          type: string
+          description: Carrying amount of the parent's own shares held in treasury and deducted from permanent equity, under the filing's accounting method. Report the equity deduction as a negative amount. Excludes retired shares, current-period cash repurchases, and preferred redemptions. Do not substitute a period cash-flow amount for this instant balance.
+        preferred_equity:
+          type: string
+          description: Reported carrying amount of preferred interests within permanent parent equity, including separately identified preferred paid-in capital and net of preferred treasury stock. A par-value line is not the complete amount when the filing identifies additional preferred capital. Do not allocate unsplit generic paid-in capital by assumption. Excludes liabilities, temporary equity, liquidation preferences and market values. A complete classified permanent-equity breakdown with no preferred contribution establishes zero; absence of a preferred tag alone does not. Used for common carrying book value. Preferred paid-in capital may overlap the additional-paid-in-capital fact, so do not add both without eliminating that overlap.
+        temporary_equity:
+          type: string
+          description: Carrying amount of consolidated equity interests classified outside both liabilities and permanent equity, including redeemable preferred equity and redeemable noncontrolling interests when so classified under U.S. GAAP. Excludes instruments classified as liabilities and excludes permanent equity. Redeemability alone does not establish temporary-equity classification.
+        retained_earnings_accumulated_deficit:
+          type: string
+          description: Cumulative undistributed earnings attributable to the parent after dividends and other adjustments, or the cumulative deficit when negative. Excludes accumulated other comprehensive income or loss, additional paid-in capital, treasury stock, and amounts attributable to noncontrolling interests.
+        comprehensive_income_other:
+          type: string
+          description: Accumulated other comprehensive income or loss in permanent equity attributable to the parent. Excludes current-period comprehensive income, retained earnings, and noncontrolling interests. Accumulated gains are positive and accumulated losses are negative.
+        equity_attributable_to_parent:
+          type: string
+          description: Permanent equity attributable to the parent's stockholders, including preferred stock, common stock, additional paid-in capital, retained earnings or accumulated deficit, accumulated other comprehensive income or loss, and treasury stock attributable to the parent. Excludes noncontrolling interests and temporary equity.
+        total_liabilities_and_equity:
+          type: string
+          description: 'Total recognized consolidated liabilities, temporary equity, and permanent equity attributable to the parent and noncontrolling interests. Includes temporary equity exactly once even when presented between liabilities and permanent equity. This is the full balance-sheet funding total corresponding to total assets. Do not substitute a subtotal excluding temporary equity unless the filing establishes that no temporary equity exists. A filed total-assets fact is not an exact semantic match: the accounting equation establishes equal amounts, not the same accounting concept.'
+        total_debt:
+          type: string
+          description: Reported carrying amount of borrowings and finance lease liabilities, excluding operating lease liabilities. Use a complete reported debt total or construct it from complete current and noncurrent borrowing components. Retain finance leases already included in reported debt and add separately disclosed finance lease liabilities when excluded from that total, without double-counting. An undisclosed finance-lease breakdown does not prevent use of an otherwise complete reported debt amount and does not establish a zero lease balance. Includes separately identified financing obligations from failed sale-and-leaseback transactions that the filer accounts for as debt, even when presented outside its debt caption. Excludes book overdrafts classified as accounts payable rather than actual bank borrowings.
+        total_common_shares_outstanding:
+          type: string
+          description: Common shares outstanding at the financial period end, excluding treasury shares and all preferred securities. Use the common class or compatible common-class group established by the filing; combine classes only when their economic rights and disclosed conversion basis support one common-share denominator. Use the selected filing's stock-split presentation consistently with its EPS and other per-share values, including retrospective adjustment for in-year splits where reported. Do not mix class-specific EPS with an incompatible aggregate share count. Unavailable when the filing does not establish a compatible basis. Do not substitute weighted-average EPS shares or a later filing-date share count. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        restricted_cash_current:
+          type: string
+          description: Cash and cash equivalents restricted as to withdrawal or use and classified as current, including qualifying amounts within consolidated disposal groups or assets held for sale. Require evidence of both restriction and current classification; the held-for-sale caption alone does not establish either. Supplemental component of normalized other current assets.
+        restricted_cash_noncurrent:
+          type: string
+          description: Cash and cash equivalents restricted as to withdrawal or use and classified as noncurrent, including qualifying amounts within consolidated disposal groups or assets held for sale. Require evidence of both restriction and noncurrent classification; the held-for-sale caption alone does not establish either. Supplemental component of normalized other noncurrent assets.
+        cash_cash_equivalents_and_restricted_cash:
+          type: string
+          description: Total consolidated cash and cash equivalents, including amounts restricted as to withdrawal or use and amounts within disposal groups or assets held for sale, regardless of balance-sheet caption. Includes each amount once and equals normalized cash and cash equivalents plus normalized restricted cash. Transfers between balance-sheet captions do not change this total. Use the cash population recognized under the filing's cash-equivalent accounting policy and cash-flow reconciliation. Exclude holdings accounted for in a separate investment or capital-construction fund outside that population, even when its underlying holdings are described as cash-like; classify the fund in investments. This does not exclude cash merely because it is restricted or held for sale.
+        contract_assets_current:
+          type: string
+          description: Conditional rights to consideration from customers for goods or services transferred in ordinary operations and classified as current. Includes current unbilled contract assets and retainage only when payment remains conditional on performance other than the passage of time. Excludes unconditional accounts receivable and every noncurrent contract asset. Supplemental component of normalized other current assets; do not add it again in the current-assets equation.
+        total_debt_and_lease_liabilities:
+          type: string
+          description: Reported carrying amount of borrowings, finance lease liabilities and operating lease liabilities. Uses the same reported-debt basis as Total debt and adds recognized operating lease liabilities once. Retain leases already included in a reported combined total without double-counting. An undisclosed finance-lease breakdown does not block an otherwise complete reported debt total or establish a zero finance-lease balance. Excludes undiscounted future payments, unused borrowing capacity, and book overdrafts classified as accounts payable.
+        equity_attributable_to_noncontrolling_interests:
+          type: string
+          description: The portion of permanent consolidated equity attributable to noncontrolling ownership interests. Excludes temporary equity.
+        equity_including_noncontrolling_interests:
+          type: string
+          description: Permanent equity attributable to the parent's stockholders and noncontrolling ownership interests. Excludes temporary equity.
+        finance_lease_liability_current:
+          type: string
+          description: Carrying amount of finance lease liabilities classified as current. Excludes operating lease liabilities and noncurrent finance lease liabilities.
+        finance_lease_liability_noncurrent:
+          type: string
+          description: Carrying amount of finance lease liabilities classified as noncurrent. Excludes operating lease liabilities and current finance lease liabilities.
+        operating_lease_liability_current:
+          type: string
+          description: Carrying amount of operating lease liabilities classified as current. Excludes finance lease liabilities and noncurrent operating lease liabilities. Supplemental breakdown included in the corresponding Other liabilities remainder; do not add it again in the primary balance-sheet equation.
+        operating_lease_liability_noncurrent:
+          type: string
+          description: Carrying amount of operating lease liabilities classified as noncurrent. Excludes finance lease liabilities and current operating lease liabilities. Supplemental breakdown included in the corresponding Other liabilities remainder; do not add it again in the primary balance-sheet equation.
+      additionalProperties: false
+    FinancialStatementsBadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_query_parameters
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementsTooManyRequests:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - rate_limited
+          - billing_period_quota_exceeded
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementsCompanyNotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - company_not_found
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementsUnauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementCashFlowStatement:
+      type: object
+      properties:
+        net_income:
+          type: string
+          description: Reported net income or loss used as the starting point of the operating cash-flow reconciliation, with the filing's ownership and operations scope. This is a cash-flow-statement fact and is not automatically interchangeable with parent or consolidated income-statement net income. Income is positive and loss is negative.
+        depreciation_and_amortization_adjustment:
+          type: string
+          description: 'The reported depreciation, depletion and amortization category in the operating cash-flow reconciliation. Combine separately reported depreciation and ordinary amortization components without overlap. Retain impairment embedded in a combined D&A-and-impairment caption and record that scope; exclude separately reported impairment, content amortization, contract-cost or hosted-service-cost amortization, financing-cost amortization, accretion, and separate operating-lease adjustments. Those separate adjustments belong in other operating adjustments. This reported category is not the EBITDA expense input: use depreciation_and_amortization_expense, accepting a cash-flow amount only when filing evidence establishes its complete expense and operations scope.'
+        share_based_compensation_adjustment:
+          type: string
+          description: Share-based compensation expense added back as a noncash adjustment in reconciling net income to operating cash flow.
+        deferred_income_tax_adjustment:
+          type: string
+          description: Signed deferred income tax and income-tax-credit adjustment included in reconciling the filed net-income starting amount to operating cash flow. Preserve a reported combined deferred-tax-and-tax-credit adjustment without requiring an undisclosed split. An expense added back is positive and a benefit deducted is negative. Use the same ownership and continuing/discontinued-operations scope as that reconciliation. A tax-note expense does not establish the cash-flow adjustment without filing evidence. Excludes current income tax expense, cash tax payments or refunds, and deferred tax balance-sheet movements arising from acquisitions, other comprehensive income, exchange rates, or other changes outside the operating reconciliation. Separately reported tax credits are not automatically deferred taxes; this category includes them when reported in the combined deferred-tax reconciliation amount.
+        other_operating_activities:
+          type: string
+          description: Signed noncash and other operating reconciliation adjustments outside the separately classified net-income starting amount, depreciation and amortization, share-based compensation, deferred income tax and tax-credit adjustments, and working-capital adjustments. Exclude separately established deferred income tax and tax-credit adjustments, including amounts established within an Other subtotal. An unallocated reported Other operating adjustment can remain in this remainder when a complete filed bridge places the separately established named categories outside it; do not infer its undisclosed tax or operating-balance components. Require a complete nonoverlapping filed bridge; do not include an adjustment in both this category and a working-capital category. Cash increases are positive and decreases are negative. The filer may present qualifying components separately from its Other line. Include all components within this definition, regardless of their presentation. A filed Other subtotal is an exact match only when its inclusions and exclusions match this normalized category. Includes separately reported content, contract-cost and hosted-service implementation-cost amortization, and separately reported impairment, outside the reported D&A adjustment category. Never add charges already embedded in that D&A category again.
+        change_in_accounts_receivable:
+          type: string
+          description: Signed operating cash-flow effect of the change in the filing's reported accounts-receivable category, consistent with accounts receivable on a reported-category basis. Retain embedded noncustomer receivables rather than estimating a customer-only movement. Exclude separately reported tax, financing and contract-asset movements. Use the operating cash-flow reconciliation adjustment, not an unadjusted balance-sheet difference; cash increases are positive and decreases negative.
+        change_in_inventory:
+          type: string
+          description: Signed operating cash-flow adjustment for the reported inventory category. Prefer a separately reported inventory movement. When the filer reports inventory and other operating assets as one movement without a separate inventory movement, retain that combined category; do not also include its embedded other assets in change in other operating assets and liabilities. Cash increases are positive and decreases are negative. Use the filed cash-flow adjustment; do not substitute an unadjusted balance-sheet difference.
+        change_in_accounts_payable:
+          type: string
+          description: Signed operating cash-flow effect of the filing's reported payable category. Use a separately reported trade-payable movement when available, or the reported combined movement in accounts payable and accrued or other operating liabilities when the filing presents them together. Retain the combined category without estimating a trade-only split. Exclude separately reported accrual, operating-tax, contract-liability and other liability movements; those belong in change in other operating assets and liabilities. This cash-flow category can be broader than the balance-sheet trade-payable fact. Cash increases are positive and decreases negative. Use the filed operating cash-flow adjustment, not an unadjusted balance-sheet difference.
+        change_in_unearned_revenue:
+          type: string
+          description: Signed operating cash-flow adjustment for changes in deferred or unearned revenue and other customer contract liabilities. Cash increases are positive and decreases are negative. Excludes refund liabilities and unadjusted balance-sheet changes. Supplemental breakdown included within change in other operating assets and liabilities; do not add or subtract it again in the normalized statement totals.
+        change_in_other_net_operating_assets:
+          type: string
+          description: Signed cash-flow effect of the reported operating-asset and liability movements outside the separately classified reported receivable, inventory and payable categories. Includes separately reported contract assets, customer contract liabilities, operating tax balances, accrued expenses and other operating balances. Retain combined operating-balance rows intact; do not require an undisclosed split of their embedded amounts. A combined payable-and-accrual movement belongs in change in accounts payable and accruals, and its embedded accruals must not appear again here. Change in deferred revenue is a supplemental breakdown, not an additional operating-cash-flow component. An undivided working-capital total can supply the unallocated operating-balance category when the filer does not report separate receivable, inventory or payable movements; do not also count that total in those categories. Use a complete nonoverlapping bridge of the reported categories. Exclude separately reported noncash adjustments and cash payments that are not operating-balance movements, investing and financing cash flows, and unadjusted balance-sheet differences. Where the filer reports only a continuing-operations breakdown, retain those reported category amounts; undivided discontinued-operating cash flow remains in other operating adjustments, without inventing its component movements. Cash increases are positive; decreases are negative.
+        net_cash_from_operating_activities:
+          type: string
+          description: Net cash inflow or outflow from transactions and events not classified as investing or financing activities. Includes operating cash flows of discontinued operations whether included in the subtotal directly or combined from a separately reported amount.
+        capital_expenditure:
+          type: string
+          description: Reported investing cash payments to acquire or improve productive long-lived assets, including physical property, plant and equipment and separately reported capitalized software or productive intangible assets. Preserve an inseparable business-and-asset acquisition payment in Acquisitions, net; do not require or estimate its asset component to complete capital expenditure. When a complete cash allocation is established, include only the productive-asset portion here and exclude it from acquisitions. Use explicitly reported gross purchases when available; otherwise retain an explicitly reported purchase amount net of asset disposals, preserving that basis in source evidence. Do not net separately reported disposal proceeds against gross purchases. Excludes the acquisition cash category, investment securities, noncash asset acquisitions, and financing cash flows including finance-lease principal. Cash paid is positive; a disclosed net receipt is negative. Disposal proceeds already netted here must not also enter Other investing.
+        business_acquisitions_net:
+          type: string
+          description: Reported investing cash paid for acquisitions, net of cash and cash equivalents acquired. Includes an inseparable reported business-and-asset acquisition category without requiring its productive-asset portion to be estimated. Excludes productive-asset payments separately allocated to capital expenditure and purchases of investment securities. A complete disclosed cash allocation may separate productive assets into capital expenditure, provided each amount appears once. Preserve acquired-cash netting in the reported acquisition category; a gross acquisition payment alone does not establish the net amount when acquired cash is unknown. Excludes divestiture proceeds. Cash paid is positive; net acquired cash exceeding cash consideration is negative. A single acquisition-date amount does not establish the complete annual cash flow without evidence covering the reporting period. This reported category is not necessarily a business-combinations-only measure.
+        investment_in_securities:
+          type: string
+          description: Net cash inflow from separately reported investment purchases, sales, maturities and returns of capital classified in investing activities. Includes marketable and nonmarketable securities, equity-method and joint-venture investments, and the filer's broader reported investment category. Excludes business acquisitions, productive-asset purchases, separately identified loans and notes receivable, and cash-equivalent transfers. Unallocated amounts within reported Other investing activities remain in Other; do not assume they contain no investments. Use a complete reported net category or a complete nonoverlapping filed investing breakdown; a gross purchase amount alone does not establish a net flow. Positive amounts are net inflows and negative amounts are net outflows.
+        other_investing_activities:
+          type: string
+          description: Signed investing cash flows outside capital expenditure, reported acquisitions net of cash acquired (including retained combined business-and-asset categories), and separately reported investment purchases and disposals. Includes reported Other investing activities without requiring a split of unallocated embedded transactions, separately reported loans and notes receivable, and disposal proceeds not already netted in capital expenditure. Include qualifying separately presented components once. Use a complete nonoverlapping filed classification or a reconciled remainder; an Other line alone is not the complete normalized remainder when other qualifying components are presented separately. Positive amounts are inflows and negative amounts are outflows.
+        net_cash_from_investing_activities:
+          type: string
+          description: Net cash inflow or outflow from acquiring and disposing of long-lived productive assets, investments, loans, and businesses. Includes investing cash flows of discontinued operations.
+        short_term_debt_issued:
+          type: string
+          description: Cash proceeds from borrowing with an original term no longer than one year or the operating cycle, whichever is longer. Excludes long-term borrowing, lease liabilities, interest, and noncash issuance. A net short-term borrowing disclosure does not establish proceeds before principal repayments. Proceeds are positive. Retain the reported treatment of cash issuance fees. Prefer an explicitly reported before-fee total when available, but do not reconstruct it solely to populate this target. Do not subtract separately paid issuance fees from the selected proceeds. Preserve the disclosed fee basis in source evidence.
+        long_term_debt_issued:
+          type: string
+          description: Cash proceeds from borrowing with an original term longer than one year or the operating cycle, whichever is longer. Excludes short-term borrowing, lease liabilities, interest, and noncash issuance. Proceeds are positive. Convertible-debt proceeds are included when the borrowing has an original term longer than one year or the operating cycle, whichever is longer. They represent the entire normalized fact only when the filing establishes that they cover all included long-term borrowing proceeds during the reporting period. No borrowings outstanding at year-end does not establish that no borrowing occurred during the year. Retain the reported treatment of cash issuance fees. Prefer an explicitly reported before-fee total when available, but do not reconstruct it solely to populate this target. Do not subtract separately paid issuance fees from the selected proceeds. Preserve the disclosed fee basis in source evidence.
+        proceeds_from_debt_issuance:
+          type: string
+          description: Cash proceeds received from issuing or drawing short-term and long-term borrowings, without netting principal repayments. Use cash proceeds, not debt face value including noncash issuance discounts. Excludes equity issuance, lease financing, interest, and noncash transactions. Proceeds are positive. Convertible-debt proceeds are included. They represent the entire normalized fact only when the filing establishes that they cover all included borrowing proceeds during the reporting period. No borrowings outstanding at year-end does not establish that no borrowing occurred during the year. Retain the reported treatment of cash issuance fees. Prefer an explicitly reported before-fee total when available, but do not reconstruct it solely to populate this target. Do not subtract separately paid issuance fees from the selected proceeds. Preserve the disclosed fee basis in source evidence.
+        short_term_debt_repaid:
+          type: string
+          description: Gross cash paid to repay or settle borrowing with an original term no longer than one year or the operating cycle, whichever is longer. Excludes long-term debt repayments, interest, separately presented lease principal, and noncash extinguishments. A net borrowing disclosure does not establish gross repayments. Cash paid is positive. Preserve the financing statement's reported borrowing categories, including finance-lease principal embedded in a borrowing repayment category. Do not remove that embedded principal using a supplemental lease-note amount. Separately presented lease payments remain outside borrowing and enter Other financing once. Exclude interest and noncash debt or lease changes. Retain redemption premiums embedded in the reported debt-repayment category. Separately presented premiums and financing fees belong in Other financing; do not reconstruct a face-principal-only amount from debt balances.
+        long_term_debt_repaid:
+          type: string
+          description: Gross cash paid to repay or settle borrowing with an original term longer than one year or the operating cycle, whichever is longer, including repayment of its current maturities. Excludes short-term borrowing, interest, separately presented lease principal, and noncash extinguishments. Cash paid is positive. Preserve the financing statement's reported borrowing categories, including finance-lease principal embedded in a borrowing repayment category. Do not remove that embedded principal using a supplemental lease-note amount. Separately presented lease payments remain outside borrowing and enter Other financing once. Exclude interest and noncash debt or lease changes. Retain redemption premiums embedded in the reported debt-repayment category. Separately presented premiums and financing fees belong in Other financing; do not reconstruct a face-principal-only amount from debt balances.
+        repayments_of_debt:
+          type: string
+          description: Cash paid to repay or settle short-term and long-term borrowings. Excludes separately presented lease payments, interest and noncash extinguishments. Includes contractual borrowing with a zero stated coupon; an absence of stated interest does not remove a borrowing from this scope. Preserve the financing statement's reported borrowing categories, including finance-lease principal embedded in a borrowing repayment category. Do not remove that embedded principal using a supplemental lease-note amount. Separately presented lease payments remain outside borrowing and enter Other financing once. Exclude interest and noncash debt or lease changes. Retain redemption premiums embedded in the reported debt-repayment category. Separately presented premiums and financing fees belong in Other financing; do not reconstruct a face-principal-only amount from debt balances.
+        net_debt_issued_repaid:
+          type: string
+          description: Cash proceeds from short-term and long-term borrowings less reported cash repayments for the same period. Includes reported net short-term borrowing flows and complete nonoverlapping gross borrowing components. Preserve the financing statement's reported borrowing categories, including finance-lease principal embedded in a borrowing repayment category. Do not remove that embedded principal using a supplemental lease-note amount. Separately presented lease payments remain outside borrowing and enter Other financing once. Exclude interest and noncash debt or lease changes. Exclude the balance-sheet movement in debt. Positive means net borrowing and negative means net repayment. A directly reported net amount can establish this fact without separate gross proceeds and repayments. Retain the reported treatment of cash issuance fees. Prefer an explicitly reported before-fee total when available, but do not reconstruct it solely to populate this target. Do not subtract separately paid issuance fees from the selected proceeds. Preserve the disclosed fee basis in source evidence. Issuance costs already netted in proceeds must not be deducted again through another financing component. Retain redemption premiums embedded in the reported debt-repayment category. Separately presented premiums and financing fees belong in Other financing; do not reconstruct a face-principal-only amount from debt balances.
+        stock_issuance:
+          type: string
+          description: 'Reported financing cash flow from issuing the parent''s common stock and employee stock plans, including cash option and warrant exercises. Preserve net employee-settlement deductions and issuance costs included in the reported cash-flow amount; do not reconstruct an undisclosed gross receipt or deduct separately reported employee withholding. Prefer the complete financing-statement amount over gross receipts disclosed only in a note. Excludes separately reported stock repurchases, preferred-stock issuance, subsidiary equity, noncash awards and excess tax benefits. Receipts are positive; an explicitly reported net employee-plan payment is negative. This is a reported-basis category, not a uniformly gross or net measure across issuers. Count withholding and fees once: embedded amounts stay here; separate cash flows belong in their own financing categories.'
+        common_stock_repurchases:
+          type: string
+          description: Reported cash payments to repurchase the parent's common stock, including employee share withholding or settlement payments embedded in the reported repurchase amount. Preserve the filed cash-flow scope and included transaction costs or excise taxes; do not require a discretionary-buyback-only split. Do not add employee withholding reported separately or already netted within stock issuance. Excludes preferred-stock redemptions, subsidiary equity transactions and noncash treasury-stock movements. Cash paid is positive. Separately reported withholding, fees and excise taxes remain in Other financing cash flow; optional breakdowns must not be counted again.
+        employee_share_award_tax_payments:
+          type: string
+          description: Cash paid in financing activities to satisfy employees' personal tax-withholding obligations through the net-share settlement, withholding, or repurchase of shares associated with share-based awards. Includes qualifying settlement on vesting or exercise. Cash paid is positive. Excludes ordinary common-stock repurchases, noncash share withholding without a cash tax payment, taxes on nonemployee awards, and the company's own payroll or income taxes. A combined repurchase-and-employee-tax-withholding amount requires a disclosed split. Do not substitute grant-date compensation expense, award fair value, or share value for the cash paid. Optional breakdown of withholding already included in stock issuance, stock repurchases or Other financing cash flow according to the filed presentation. Do not add or subtract it again in normalized statement totals.
+        dividends_paid:
+          type: string
+          description: Reported cash dividends and capital distributions paid to common stockholders, preferred stockholders and noncontrolling interests. Use the reported consolidated distribution total, or combine separately reported distribution categories without overlap. Do not require every share-class breakdown when the filing reports a dividend category; include separately disclosed preferred, noncontrolling and capital-distribution payments rather than silently omit them. Excludes noncash dividends, equity repurchases or redemptions, and purchases of noncontrolling interests. Use cash payments, not dividends declared. Common dividends paid is an optional breakdown and must not be added again. An absent breakdown is not a reported zero; no reported dividend or distribution amount means this numeric target remains unresolved.
+        common_dividends_paid:
+          type: string
+          description: Cash dividends and equivalent distributions paid on the parent's common stock. Excludes preferred dividends, noncash dividends, and distributions to noncontrolling interests. Optional breakdown of dividends and distributions paid. Do not add it again to the financing total.
+        other_financing_activities:
+          type: string
+          description: Signed financing cash flows outside net borrowing (or its gross components), reported-basis stock issuance, reported-basis stock repurchases and consolidated dividends and capital distributions. Include employee stock-award tax payments only when reported separately from issuance and repurchases. Preserve amounts already embedded in those categories; never subtract or add them twice. Include separately presented redemption premiums and financing fees, separately presented finance-lease principal, noncommon equity issuance and redemption flows and other qualifying financing items. Exclude costs already netted from stock or debt proceeds or included in repurchases. Cash inflows are positive; outflows negative. Require complete nonoverlapping scope; include debt totals or their components once. A filed Other line is a direct match only when it covers this entire remainder; otherwise combine the additional filed components. Missing breakdowns are not zero. Retain unallocated reported Other financing amounts within a complete filed financing breakdown. The absence of separately reported borrowing or stock-issuance detail does not prevent that breakdown from resolving this remainder and does not establish zero for those categories. Finance-lease principal embedded in a reported borrowing repayment category remains in borrowing; a supplemental lease-note disclosure must not add it again here. Exclude common, preferred and noncontrolling dividends and capital distributions, which belong in Dividends and distributions paid. Purchases of noncontrolling interests remain here; they acquire ownership rather than distribute capital.
+        net_cash_from_financing_activities:
+          type: string
+          description: Net cash inflow or outflow from debt, equity, dividends, distributions, and other financing transactions. Includes financing cash flows of discontinued operations.
+        net_change_in_cash_cash_equivalents_and_restricted_cash_including_exchange_rate_effect:
+          type: string
+          description: The signed period increase or decrease in consolidated cash, cash equivalents, and restricted cash, including exchange-rate effects. Includes the cash population within consolidated disposal groups and assets held for sale on the same scope as the normalized opening and closing cash totals. Excludes changes caused solely by transfers between balance-sheet captions; a held-for-sale reclassification does not change the consolidated cash total.
+        cash_interest_paid:
+          type: string
+          description: Cash interest paid as disclosed for the period in the cash-flow statement or supplemental disclosures. Preserve the reported treatment of capitalized interest, whether included or netted, and retain that basis in the source evidence. Excludes accrual interest expense and noncash interest. Prefer an explicitly disclosed total when both total and net amounts are reported. Do not gross up a disclosed net-of-capitalization amount. Cash payments are positive; preserve an explicitly reported negative net-of-capitalization residual without interpreting it as negative gross payments.
+        cash_income_tax_paid:
+          type: string
+          description: Supplemental disclosure of cash income taxes paid for the reported period and scope, on the basis reported by the company. Preserve disclosed refund netting and prefer an explicit net total when available. When gross payments and refunds are both disclosed on the same basis, subtract refunds; when only payments are disclosed, use that reported amount without assuming refunds are zero. Cash paid is positive and net refunds are negative. Excludes accrual tax expense, deferred taxes, and non-income taxes.
+        effect_of_exchange_rate_on_cash:
+          type: string
+          description: The signed effect of exchange-rate changes on consolidated cash, cash equivalents, and restricted cash held in currencies other than the reporting currency, including qualifying amounts within consolidated disposal groups and assets held for sale. Uses the same cash population as the normalized cash totals and cash changes. Excludes changes caused solely by transfers between balance-sheet captions.
+      additionalProperties: false
+    FinancialStatementsUnavailable:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - database_unavailable
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementsInternalError:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - internal_server_error
+      required:
+      - error
+      additionalProperties: false
+    FinancialStatementMetrics:
+      type: object
+      properties:
+        gross_margin:
+          type: string
+          description: Gross profit divided by revenue from consolidated continuing operations for the same annual period. Unavailable when a required input is missing or revenue is nonpositive.
+        operating_margin:
+          type: string
+          description: Operating income from consolidated continuing operations divided by revenue from consolidated continuing operations for the same annual period. Unavailable when a required input is missing or revenue is nonpositive.
+        profit_margin:
+          type: string
+          description: Consolidated after-tax income from continuing operations, including the portion attributable to noncontrolling interests, divided by consolidated continuing-operations revenue for the same annual period. Excludes discontinued earnings. Unavailable when an input is missing or revenue is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        ebitda:
+          type: string
+          description: Reported-basis EBIT from continuing operations plus the defined productive-asset depreciation, depletion and amortization expense. Excludes customer-contract origination and fulfillment amortization, share-based compensation, accretion and financing-cost amortization already included in interest. Uses the D&A target reported-basis convention for explicitly immaterial unseparated impairment; this does not assert zero impairment. Excludes other impairment and issuer-specific adjusted-EBITDA adjustments. Unavailable when any input is missing. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        ebitda_margin:
+          type: string
+          description: EBITDA from consolidated continuing operations divided by continuing-operations revenue for the same annual period. Uses the matching continuing D&A expense, not an unqualified cash-flow add-back. Unavailable when an input is missing or revenue is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        ebit:
+          type: string
+          description: Consolidated income from continuing operations after tax plus income tax expense and the defined interest-expense amount included in those earnings. Uses gross interest when separately reported or reconstructable; otherwise uses reported net interest, so interest income is retained only on the gross basis. Includes equity-method earnings even when presented below the reported pretax subtotal. This is reported-basis EBIT from continuing operations, not operating income or issuer-adjusted earnings. Unavailable when any input is missing. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        ebit_margin:
+          type: string
+          description: EBIT from consolidated continuing operations divided by continuing-operations revenue for the same annual period. Unavailable when an input is missing or revenue is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        effective_tax_rate:
+          type: string
+          description: Income tax expense or benefit divided by income or loss before income taxes for the same annual period. The result remains signed when pretax income is negative. Unavailable when a required input is missing or a denominator is zero. A loss-period rate is not a normalized future tax assumption.
+        pretax_margin:
+          type: string
+          description: Income before income taxes from consolidated continuing operations divided by revenue from consolidated continuing operations for the same annual period. Unavailable when a required input is missing or revenue is nonpositive.
+        return_on_equity:
+          type: string
+          description: Net income attributable to the parent, including discontinued operations, divided by average beginning and ending permanent parent equity, including permanent preferred equity. This is parent return on equity, not a common-equity-only return. Use the same annual period. Unavailable when an input is missing or either opening or closing parent equity is nonpositive.
+        interest_coverage:
+          type: string
+          description: Reported-basis EBIT from consolidated continuing operations divided by the defined interest-expense amount for the same annual period. Uses gross interest when available and reported net interest otherwise. Negative EBIT can produce negative coverage. Unavailable when any input is missing or interest expense is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        return_on_assets:
+          type: string
+          description: Consolidated net income including noncontrolling interests and discontinued operations divided by average beginning and ending consolidated total assets for the same annual period. Do not substitute the cash-flow reconciliation starting amount or an arbitrary parent-only amount. Unavailable when any input is missing or either asset balance is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        asset_turnover:
+          type: string
+          description: Annual continuing-operations revenue divided by average beginning and ending consolidated total assets. Unavailable when a required input is missing or either opening or closing assets are nonpositive.
+        cash_short_term_investments:
+          type: string
+          description: Reported cash and short-term investments at period end. Excludes restricted balances and noncurrent investments. Unavailable when a required input is missing. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback.
+        net_cash_debt:
+          type: string
+          description: Reported cash and short-term investments, less the carrying amount of consolidated borrowings and finance-lease liabilities at period end. Excludes noncurrent investments, restricted balances, operating-lease liabilities, and derivative positions. Positive values indicate net cash; negative values indicate net debt. Unavailable when a required input is missing. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback.
+        net_cash_per_share:
+          type: string
+          description: Net cash or debt divided by compatible period-end common shares outstanding. Net cash equals reported cash and short-term investments, less the carrying amount of consolidated borrowings and finance-lease liabilities. Excludes noncurrent investments, restricted balances, operating-lease liabilities, and derivative positions. Positive means net cash per share. Unavailable when a required input is missing or a denominator is zero. Use a compatible common class or class group and the selected filing's stock-split basis. The consolidated numerator is not allocated solely to common shareholders and does not represent distributable cash. Unavailable if the common-share basis is unproven or the share denominator is nonpositive. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        working_capital:
+          type: string
+          description: Total current assets less total current liabilities at the filing period end. Unavailable when a required input is missing.
+        book_value_per_share:
+          type: string
+          description: Permanent parent equity less the carrying amount attributable to permanent preferred equity, divided by compatible period-end common shares on the selected filing's class and stock-split basis. Temporary equity is already excluded from parent permanent equity and is not subtracted again. This is common carrying book value, not market or liquidation value. Unavailable when an input or compatible share basis is missing or shares are nonpositive. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        tangible_book_value:
+          type: string
+          description: Consolidated permanent equity, including noncontrolling and permanent preferred interests, less consolidated goodwill and other identifiable intangible assets. This is consolidated tangible equity, not tangible common equity attributable solely to parent shareholders. Negative values remain valid. Unavailable when any input is missing. The intangible deduction follows the identifiable-intangible target; do not deduct separately classified content, contract-cost or hosted-service assets solely because they are nonphysical.
+        current_ratio:
+          type: string
+          description: Total current assets divided by total current liabilities at the filing period end. Unavailable when a required input is missing or current liabilities are nonpositive.
+        cash_ratio:
+          type: string
+          description: Reported cash and short-term investments divided by current liabilities at period end. Excludes restricted cash. Unavailable when a required input is missing or current liabilities are nonpositive. Current investments are not necessarily cash equivalents or immediately liquid; the formula includes the defined current-investment balance without assuming otherwise. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback.
+        quick_ratio:
+          type: string
+          description: Reported cash and short-term investments and current accounts receivable on the filing's reported-category basis divided by total current liabilities at the filing period end. Includes noncustomer balances embedded in the main reported accounts-receivable category; excludes separately classified other receivables, restricted cash, inventory, contract assets and noncurrent assets. Unavailable when a required input is missing or current liabilities are nonpositive. Current investments are not necessarily cash equivalents or immediately liquid; the formula includes the defined current-investment balance without assuming otherwise. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback.
+        debt_to_assets:
+          type: string
+          description: Total debt, including finance lease liabilities but excluding operating lease liabilities, divided by consolidated total assets at the filing period end. Unavailable when a required input is missing or total assets are nonpositive.
+        debt_to_parent_equity:
+          type: string
+          description: Total debt, including finance lease liabilities but excluding operating lease liabilities, divided by permanent equity attributable to the parent at the same reporting date. Parent equity includes preferred equity and excludes noncontrolling interests and temporary equity. Unavailable when a required input is missing or parent equity is nonpositive.
+        free_cash_flow:
+          type: string
+          description: 'Consolidated net cash from operating activities less reported investing capital expenditure, including separately reported software and productive intangible payments. Preserve the capex/acquisition boundary: do not subtract embedded assets in a retained combined acquisition category again. Excludes financing cash flows such as finance-lease principal from capex. Operating cash flow includes discontinued operations when included in the filed subtotal. Unavailable when a required input is missing. Capex retains its disclosed gross or net-of-disposal basis; do not subtract embedded disposal proceeds twice.'
+        free_cash_flow_margin:
+          type: string
+          description: Free cash flow, calculated as consolidated operating cash flow less productive-asset capital expenditure, divided by consolidated continuing-operations revenue for the same annual period. Unavailable when a required input is missing or revenue is nonpositive. The numerator includes all operations while revenue excludes discontinued operations; this stated convention is not a continuing-operations cash-flow margin and does not switch across issuers.
+        free_cash_flow_per_share:
+          type: string
+          description: Operating cash flow less reported productive-asset capital expenditure, divided by weighted-average diluted shares for the same annual period. Capital expenditure uses positive spending amounts. Unavailable when a required input is missing or a denominator is zero. Use a compatible common class or class group and the selected filing's stock-split basis. The consolidated numerator is not allocated solely to common shareholders and does not represent distributable cash. Unavailable if the common-share basis is unproven or the share denominator is nonpositive. Capital expenditure retains an explicitly reported net-of-disposal basis when gross purchases are unavailable; do not subtract embedded disposal proceeds twice. API presentation uses the latest verified stock-split basis across published annual filings. Original filing values remain retained; per-share metrics use adjusted inputs.
+        operating_cash_flow_margin:
+          type: string
+          description: Consolidated net cash from operating activities, including discontinued operations when included in the filed subtotal, divided by consolidated continuing-operations revenue for the same annual period. Unavailable when a required input is missing or revenue is nonpositive. The numerator includes all operations while revenue excludes discontinued operations; this stated convention is not a continuing-operations cash-flow margin and does not switch across issuers.
+        operating_cash_flow_to_net_income:
+          type: string
+          description: Consolidated operating cash flow divided by consolidated income-statement net income including noncontrolling interests, with both amounts including continuing and discontinued operations for the same period. Do not use an arbitrary parent-only or variable-scope cash-flow reconciliation starting amount. Unavailable when any input is missing or net income is nonpositive. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        capital_expenditure_to_revenue:
+          type: string
+          description: Reported cash productive-asset capital expenditure divided by consolidated continuing-operations revenue for the same annual period. Capital expenditure follows the investing cash-flow target and can include discontinued operations; it excludes noncash financed acquisitions. Unavailable when an input is missing or revenue is nonpositive. Capital expenditure retains an explicitly reported net-of-disposal basis when gross purchases are unavailable; do not subtract embedded disposal proceeds twice.
+        debt_to_ebitda:
+          type: string
+          description: Period-end total debt, including finance leases and excluding operating leases, divided by full-year EBITDA from consolidated continuing operations. Unavailable when an input is missing or EBITDA is nonpositive. This fixed analytical ratio is not issuer covenant leverage. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+        net_debt_to_ebitda:
+          type: string
+          description: Period-end carrying amount of consolidated borrowings and finance-lease liabilities less reported cash and short-term investments, divided by full-year EBITDA from consolidated continuing operations. Excludes noncurrent investments, restricted balances, operating-lease liabilities, and derivative positions from net debt. Negative net debt denotes net cash and can produce a negative ratio. Unavailable when an input is missing or EBITDA is nonpositive. This is not issuer covenant leverage. The liquidity amount uses reported cash and separately identifiable unrestricted current investment categories. A complete classified current-asset breakdown can establish a cash-only aggregate without establishing zero for an undisclosed standalone investment balance. Unknown categories or incomplete breakdowns do not permit a cash fallback. Uses the income targets' reported-basis convention for explicitly immaterial, unquantified NCI allocations embedded in earnings; separately quantified NCI remains included. This does not assume zero NCI income.
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.

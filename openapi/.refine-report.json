@@ -1,0 +1,24 @@
+{
+  "provider": "chadwin",
+  "sources": [
+    "_original/chadwin-api-openapi.json"
+  ],
+  "outputs": [
+    "chadwin-companies-api-openapi.yml",
+    "chadwin-company-kpis-api-openapi.yml",
+    "chadwin-company-reports-api-openapi.yml",
+    "chadwin-current-reports-api-openapi.yml",
+    "chadwin-insider-activity-api-openapi.yml",
+    "chadwin-institutional-holdings-api-openapi.yml",
+    "chadwin-normalized-financial-statements-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "chadwin-api-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+7 apis, 8 total)"
+  ],
+  "skipped": []
+}

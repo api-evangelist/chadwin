@@ -1,0 +1,880 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Company reports API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Company reports
+  description: Retrieve annual and quarterly company reports as cleaned HTML, and follow updates for Forms 10-K, 10-Q, 20-F, and 40-F and their amendments.
+  externalDocs:
+    description: Read the company reports guide
+    url: https://chadwin.co/docs/company-reports
+paths:
+  /v1/company-reports:
+    get:
+      tags:
+      - Company reports
+      operationId: listCompanyReports
+      summary: List company reports
+      description: Lists annual and quarterly company reports. A current/former ticker or current/predecessor CIK selects the full company history across approved CIK links, not only that filer. Items retain their original filing issuer. Cursors require unchanged filters and an unchanged resolved company chain. Unfiltered lists and exact accession reads retain their existing scope.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          format: date
+          example: '2025-01-01'
+          description: Include filings from this date (YYYY-MM-DD)
+        required: true
+        description: Include filings from this date (YYYY-MM-DD)
+        name: from
+        in: query
+      - schema:
+          type: string
+          example: AAPL
+          description: Current or former ticker; includes the full approved company history and is mutually exclusive with cik
+        required: false
+        description: Current or former ticker; includes the full approved company history and is mutually exclusive with cik
+        name: ticker
+        in: query
+      - schema:
+          type: string
+          example: '0002115436'
+          examples:
+          - '0002115436'
+          - 0000034088
+          description: Current or predecessor company CIK, up to ten digits; includes the full approved history and is mutually exclusive with ticker
+        required: false
+        description: Current or predecessor company CIK, up to ten digits; includes the full approved history and is mutually exclusive with ticker
+        name: cik
+        in: query
+      - schema:
+          type: string
+          description: Fiscal year from 1900 through 9999
+          example: '2024'
+        required: false
+        description: Fiscal year from 1900 through 9999
+        name: fiscal_year
+        in: query
+      - schema:
+          type: string
+          enum:
+          - FY
+          - Q1
+          - Q2
+          - Q3
+          description: Filter by fiscal period
+          example: FY
+        required: false
+        description: Filter by fiscal period
+        name: fiscal_period
+        in: query
+      - schema:
+          type: string
+          format: date
+          example: '2025-12-31'
+          description: Include filings through this date (YYYY-MM-DD); defaults to today
+        required: false
+        description: Include filings through this date (YYYY-MM-DD); defaults to today
+        name: until
+        in: query
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - 10-K
+            - 10-K/A
+            - 10-Q
+            - 10-Q/A
+            - 20-F
+            - 20-F/A
+            - 40-F
+            - 40-F/A
+          example:
+          - 10-K
+          - 10-K/A
+          description: Filter by form; comma-separated. Includes all forms by default.
+        required: false
+        description: Filter by form; comma-separated. Includes all forms by default.
+        name: forms
+        in: query
+        style: form
+        explode: false
+      - schema:
+          type: string
+          example: cur_opaque_continuation
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+      - schema:
+          type: string
+          example: '500'
+          description: Page size 1–1000; default 500
+        required: false
+        description: Page size 1–1000; default 500
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Company reports
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyReportPage'
+              example:
+                filings:
+                - issuer:
+                    cik: 0000320193
+                    name: Apple Inc.
+                    ticker: AAPL
+                  fiscal_year: 2025
+                  fiscal_period: Q3
+                  form: 10-Q
+                  period_end_date: '2025-06-28'
+                  filed_at: '2025-08-01'
+                  accepted_at: '2025-08-01T10:00:42.000Z'
+                  accession_number: 0000320193-25-000073
+                  content_url: /v1/company-reports/0000320193-25-000073/content.html
+                  sec_url: https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/0000320193-25-000073-index.htm
+                next_cursor: null
+                has_more: false
+        '400':
+          description: Invalid identifier, filters, limit or cursor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The ticker was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The ticker identifies more than one company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.companyReports.list({\n  ticker: \"AAPL\",\n  from: \"2025-01-01\",\n  until: \"2025-12-31\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/company-reports?from=2025-01-01&ticker=AAPL&until=2025-12-31' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/company-reports/{accession}:
+    get:
+      tags:
+      - Company reports
+      operationId: getCompanyReportByAccession
+      summary: Get company report
+      description: Returns metadata for one annual or quarterly report or amendment. Retrieve the report content from the separate endpoint in `content_url`.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          example: 0000320193-24-000123
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+      responses:
+        '200':
+          description: Company report metadata
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyReportResponse'
+              example:
+                issuer:
+                  cik: 0000320193
+                  name: Apple Inc.
+                  ticker: AAPL
+                fiscal_year: 2025
+                fiscal_period: Q3
+                form: 10-Q
+                period_end_date: '2025-06-28'
+                accepted_at: '2025-08-01T10:00:42.000Z'
+                accession_number: 0000320193-25-000073
+                content_url: /v1/company-reports/0000320193-25-000073/content.html
+                sec_url: https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/0000320193-25-000073-index.htm
+        '400':
+          description: The accession is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The company report was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The filing catalog is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.companyReports.getByAccession({\n  accessionNumber: \"0000320193-24-000123\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/company-reports/0000320193-24-000123' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/company-reports/{accession}/content.html:
+    get:
+      tags:
+      - Company reports
+      operationId: getCompanyReportHtml
+      summary: Get company report HTML
+      description: Returns the full annual or quarterly report or amendment as HTML.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          example: 0000320193-24-000123
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+      responses:
+        '200':
+          description: Company report HTML
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+            Content-Security-Policy:
+              schema:
+                type: string
+            X-Content-Type-Options:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            text/html:
+              schema:
+                type: string
+              example: <!doctype html><html><body><h1>Company report</h1></body></html>
+        '400':
+          description: The accession is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The company report was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The catalog or prepared HTML is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.companyReports.getHtml({\n  accessionNumber: \"0000320193-24-000123\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/company-reports/0000320193-24-000123/content.html' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/company-reports/feed:
+    get:
+      tags:
+      - Company reports
+      operationId: listCompanyReportFeed
+      summary: List company report updates
+      description: Returns one event per newly published 10-K, 10-Q, 20-F, or 40-F report or amendment in publication order. Form filters select filing families and include their /A amendments. Without cursor or start, the response contains the most recent matching events up to limit and a cursor at the current feed head.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - 10-K
+            - 10-Q
+            - 20-F
+            - 40-F
+          example:
+          - 10-Q
+          description: Filter by report family; comma-separated. Includes all families by default and their /A amendments.
+        required: false
+        description: Filter by report family; comma-separated. Includes all families by default and their /A amendments.
+        name: forms
+        in: query
+        style: form
+        explode: false
+      - schema:
+          type: string
+          example: now
+          description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        required: false
+        description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        name: start
+        in: query
+      - schema:
+          type: string
+          example: cur_request_bound_example
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+      - schema:
+          type: string
+          default: '500'
+          example: '500'
+          description: Page size from 1 through 1000.
+        required: false
+        description: Page size from 1 through 1000.
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Company report updates
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updates:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        issuer:
+                          type: object
+                          properties:
+                            cik:
+                              type: string
+                            name:
+                              type:
+                              - string
+                              - 'null'
+                            ticker:
+                              type:
+                              - string
+                              - 'null'
+                          required:
+                          - cik
+                          - name
+                          - ticker
+                        feed_event_id:
+                          type: string
+                          description: Stable idempotency key for this publication event.
+                        published_at:
+                          type: string
+                          format: date-time
+                          description: Time Chadwin first published the prepared report.
+                        accession_number:
+                          type: string
+                        form:
+                          type: string
+                          enum:
+                          - 10-K
+                          - 10-K/A
+                          - 10-Q
+                          - 10-Q/A
+                          - 20-F
+                          - 20-F/A
+                          - 40-F
+                          - 40-F/A
+                        accepted_at:
+                          type: string
+                          format: date-time
+                          description: SEC acceptance timestamp normalized to UTC.
+                        period_end_date:
+                          type:
+                          - string
+                          - 'null'
+                          format: date
+                        fiscal_year:
+                          type:
+                          - integer
+                          - 'null'
+                        fiscal_period:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - FY
+                          - Q1
+                          - Q2
+                          - Q3
+                          - null
+                        content_url:
+                          type: string
+                          description: Relative authenticated API URL for the cleaned report HTML.
+                        sec_url:
+                          type: string
+                          format: uri
+                      required:
+                      - issuer
+                      - feed_event_id
+                      - published_at
+                      - accession_number
+                      - form
+                      - accepted_at
+                      - period_end_date
+                      - fiscal_year
+                      - fiscal_period
+                      - content_url
+                      - sec_url
+                  next_cursor:
+                    type: string
+                  has_more:
+                    type: boolean
+                required:
+                - updates
+                - next_cursor
+                - has_more
+              example:
+                updates:
+                - issuer:
+                    cik: 0000320193
+                    name: Apple Inc.
+                    ticker: AAPL
+                  feed_event_id: crfe_000000012345
+                  published_at: '2026-08-12T08:15:30.000Z'
+                  accession_number: 0000320193-25-000073
+                  form: 10-Q
+                  accepted_at: '2025-08-01T10:00:42.000Z'
+                  period_end_date: '2025-06-28'
+                  fiscal_year: 2025
+                  fiscal_period: Q3
+                  content_url: /v1/company-reports/0000320193-25-000073/content.html
+                  sec_url: https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/0000320193-25-000073-index.htm
+                next_cursor: cur_request_bound_example
+                has_more: false
+        '400':
+          description: The feed query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: const result = await client.feeds.companyReports.listLatest();
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/company-reports/feed' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: unauthorized
+      required:
+      - error
+    CompanyReportResponse:
+      type: object
+      properties:
+        issuer:
+          type: object
+          properties:
+            cik:
+              type: string
+            name:
+              type:
+              - string
+              - 'null'
+            ticker:
+              type:
+              - string
+              - 'null'
+          required:
+          - cik
+          - name
+          - ticker
+        fiscal_year:
+          type:
+          - integer
+          - 'null'
+        fiscal_period:
+          type:
+          - string
+          - 'null'
+          enum:
+          - FY
+          - Q1
+          - Q2
+          - Q3
+          - null
+        form:
+          type: string
+          enum:
+          - 10-K
+          - 10-K/A
+          - 10-Q
+          - 10-Q/A
+          - 20-F
+          - 20-F/A
+          - 40-F
+          - 40-F/A
+        period_end_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          description: End date of the fiscal period covered by the report, or null when the SEC filing does not provide one.
+        accepted_at:
+          type: string
+          format: date-time
+          description: SEC acceptance timestamp normalized to UTC.
+        accession_number:
+          type: string
+        content_url:
+          type: string
+          description: Relative authenticated API URL for the cleaned report HTML. Send the same bearer token when requesting it.
+          example: /v1/company-reports/0000320193-24-000123/content.html
+        sec_url:
+          type: string
+          format: uri
+      required:
+      - issuer
+      - fiscal_year
+      - fiscal_period
+      - form
+      - period_end_date
+      - accepted_at
+      - accession_number
+      - content_url
+      - sec_url
+    DatasetNotEntitledErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - dataset_not_entitled
+      required:
+      - error
+    CompanyReportPage:
+      type: object
+      properties:
+        filings:
+          type: array
+          items:
+            type: object
+            properties:
+              issuer:
+                type: object
+                properties:
+                  cik:
+                    type: string
+                  name:
+                    type:
+                    - string
+                    - 'null'
+                  ticker:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - cik
+                - name
+                - ticker
+              fiscal_year:
+                type:
+                - integer
+                - 'null'
+              fiscal_period:
+                type:
+                - string
+                - 'null'
+                enum:
+                - FY
+                - Q1
+                - Q2
+                - Q3
+                - null
+              form:
+                type: string
+                enum:
+                - 10-K
+                - 10-K/A
+                - 10-Q
+                - 10-Q/A
+                - 20-F
+                - 20-F/A
+                - 40-F
+                - 40-F/A
+              period_end_date:
+                type:
+                - string
+                - 'null'
+                format: date
+              filed_at:
+                type: string
+                format: date
+              accepted_at:
+                type: string
+                format: date-time
+              accession_number:
+                type: string
+              content_url:
+                type: string
+                description: Relative authenticated API URL for the cleaned report HTML. Send the same bearer token when requesting it.
+                example: /v1/company-reports/0000320193-24-000123/content.html
+              sec_url:
+                type: string
+                format: uri
+            required:
+            - issuer
+            - fiscal_year
+            - fiscal_period
+            - form
+            - period_end_date
+            - filed_at
+            - accepted_at
+            - accession_number
+            - content_url
+            - sec_url
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - filings
+      - next_cursor
+      - has_more
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.

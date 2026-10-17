@@ -1,0 +1,470 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Companies API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Companies
+  description: Search US-listed companies by name, ticker, or CIK, and retrieve company details.
+paths:
+  /v1/companies/search:
+    get:
+      tags:
+      - Companies
+      operationId: searchCompanies
+      summary: Search companies
+      description: Returns at most 25 stored companies ranked by ticker, CIK, and company name matches, including historical companies and companies without listings.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: IBM
+          description: Company name, ticker, or padded or unpadded CIK.
+        required: true
+        description: Company name, ticker, or padded or unpadded CIK.
+        name: query
+        in: query
+      responses:
+        '200':
+          description: Company matches
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySearchResponse'
+              example:
+                companies:
+                - name: International Business Machines Corporation
+                  cik: '0000051143'
+                  website_url: https://www.ibm.com
+                  ir_website_url: https://www.ibm.com/investor
+                  fiscal_year_end: '1231'
+                  sic:
+                    code: '3570'
+                    office: Office of Technology
+                    industry_title: COMPUTER & OFFICE EQUIPMENT
+                  listings:
+                  - ticker: IBM
+                    exchange: NYSE
+                    share_class_figi: BBG001S5S399
+        '400':
+          description: The query is missing, invalid, or has unsupported keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySearchBadRequestResponse'
+              example:
+                error: invalid_query
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyReferenceTooManyRequestsResponse'
+              example:
+                error: rate_limited
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: database_unavailable
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: 'const result = await client.companies.search({ query: "IBM" });'
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/companies/search?query=IBM' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/companies:
+    get:
+      tags:
+      - Companies
+      operationId: getCompany
+      summary: Get company
+      description: Returns a single company.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: Supply one ticker; letters normalize to uppercase.
+          example: IBM
+        required: false
+        description: Supply one ticker; letters normalize to uppercase.
+        name: ticker
+        in: query
+      - schema:
+          type: string
+          description: Supply one CIK; CIKs normalize to ten digits.
+          example: '0000051143'
+        required: false
+        description: Supply one CIK; CIKs normalize to ten digits.
+        name: cik
+        in: query
+      responses:
+        '200':
+          description: Company
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyReferenceResponse'
+              example:
+                company:
+                  name: International Business Machines Corporation
+                  cik: '0000051143'
+                  website_url: https://www.ibm.com
+                  ir_website_url: https://www.ibm.com/investor
+                  fiscal_year_end: '1231'
+                  sic:
+                    code: '3570'
+                    office: Office of Technology
+                    industry_title: COMPUTER & OFFICE EQUIPMENT
+                  listings:
+                  - ticker: IBM
+                    exchange: NYSE
+                    share_class_figi: BBG001S5S399
+        '400':
+          description: Supply exactly one valid ticker or CIK and no other query keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - invalid_query_parameters
+                required:
+                - error
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The ticker does not resolve, or the selected CIK has no stored company profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: company_not_found
+        '409':
+          description: The ticker matches multiple CIKs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - company_ambiguous
+                required:
+                - error
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyReferenceTooManyRequestsResponse'
+              example:
+                error: rate_limited
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: database_unavailable
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: 'const result = await client.companies.get({ ticker: "IBM" });'
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/companies?ticker=IBM' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    CompanyReference:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company display name.
+          example: INTERNATIONAL BUSINESS MACHINES CORP
+        cik:
+          type: string
+          minLength: 10
+          maxLength: 10
+          description: Zero-padded SEC Central Index Key.
+          example: '0000051143'
+        website_url:
+          type:
+          - string
+          - 'null'
+          description: Company main website URL, or null when unknown.
+          example: https://www.ibm.com
+        ir_website_url:
+          type:
+          - string
+          - 'null'
+          description: Company investor-relations website URL, or null when unknown.
+          example: https://www.ibm.com/investor
+        fiscal_year_end:
+          type:
+          - string
+          - 'null'
+          minLength: 4
+          maxLength: 4
+          description: Stored fiscal year end in MMDD form, or null.
+          example: '1231'
+        sic:
+          type:
+          - object
+          - 'null'
+          properties:
+            code:
+              type: string
+            office:
+              type: string
+            industry_title:
+              type: string
+          required:
+          - code
+          - office
+          - industry_title
+        listings:
+          type: array
+          items:
+            type: object
+            properties:
+              ticker:
+                type: string
+              exchange:
+                type:
+                - string
+                - 'null'
+                description: Source exchange label.
+              share_class_figi:
+                type:
+                - string
+                - 'null'
+            required:
+            - ticker
+            - exchange
+            - share_class_figi
+      required:
+      - name
+      - cik
+      - website_url
+      - ir_website_url
+      - fiscal_year_end
+      - sic
+      - listings
+    CompanyReferenceResponse:
+      type: object
+      properties:
+        company:
+          $ref: '#/components/schemas/CompanyReference'
+      required:
+      - company
+    CompanySearchBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_query
+          - invalid_query_parameters
+      required:
+      - error
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: unauthorized
+      required:
+      - error
+    CompanySearchResponse:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanySearchResult'
+          maxItems: 25
+      required:
+      - companies
+    CompanySearchResult:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Company display name.
+          example: INTERNATIONAL BUSINESS MACHINES CORP
+        cik:
+          type: string
+          minLength: 10
+          maxLength: 10
+          description: Zero-padded SEC Central Index Key.
+          example: '0000051143'
+        website_url:
+          type:
+          - string
+          - 'null'
+          description: Company main website URL, or null when unknown.
+          example: https://www.ibm.com
+        ir_website_url:
+          type:
+          - string
+          - 'null'
+          description: Company investor-relations website URL, or null when unknown.
+          example: https://www.ibm.com/investor
+        fiscal_year_end:
+          type:
+          - string
+          - 'null'
+          minLength: 4
+          maxLength: 4
+          description: Stored fiscal year end in MMDD form, or null.
+          example: '1231'
+        sic:
+          type:
+          - object
+          - 'null'
+          properties:
+            code:
+              type: string
+            office:
+              type: string
+            industry_title:
+              type: string
+          required:
+          - code
+          - office
+          - industry_title
+        listings:
+          type: array
+          items:
+            type: object
+            properties:
+              ticker:
+                type: string
+              exchange:
+                type:
+                - string
+                - 'null'
+                description: Source exchange label.
+              share_class_figi:
+                type:
+                - string
+                - 'null'
+            required:
+            - ticker
+            - exchange
+            - share_class_figi
+          description: All stored ticker and exchange associations for this CIK, including historical associations. May be empty; does not establish currentness or effective dates.
+      required:
+      - name
+      - cik
+      - website_url
+      - ir_website_url
+      - fiscal_year_end
+      - sic
+      - listings
+    CompanyReferenceTooManyRequestsResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - rate_limited
+          - billing_period_quota_exceeded
+      required:
+      - error
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.

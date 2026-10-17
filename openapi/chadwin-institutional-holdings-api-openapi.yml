@@ -1,0 +1,2239 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Institutional holdings API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Institutional holdings
+  description: Find institutional managers and reporting periods, retrieve Form 13F filings and holdings, and view a manager's holdings and consolidated positions. Follow new Forms 13F-HR and 13F-NT and their amendments through the update feed.
+  externalDocs:
+    description: Read the institutional holdings guide
+    url: https://chadwin.co/docs/institutional-holdings
+paths:
+  /v1/institutional-managers:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalManagers
+      summary: List institutional managers
+      description: Returns institutional managers ordered by name and Form 13F file number. Optional CIK and Form 13F file-number filters resolve the source filer associated with each manager profile.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: Optional manager CIK filter for source filers associated with a manager profile.
+        required: false
+        description: Optional manager CIK filter for source filers associated with a manager profile.
+        name: cik
+        in: query
+        examples:
+          default:
+            value: 0001067983
+            x-disabled: false
+      - schema:
+          type: string
+          description: Optional Form 13F file-number filter for source filers associated with a manager profile.
+        required: false
+        description: Optional Form 13F file-number filter for source filers associated with a manager profile.
+        name: form_13f_file_number
+        in: query
+        examples:
+          default:
+            value: 028-04545
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '500'
+          description: Page size from 1 through 1000.
+        required: false
+        description: Page size from 1 through 1000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '500'
+            x-disabled: false
+      responses:
+        '200':
+          description: Institutional managers
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagersResponse'
+              example:
+                managers:
+                - name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                  latest_period_of_report: '2026-03-31'
+                  holding_count: 124
+                  total_value_usd: '267891234567'
+                  latest_accepted_at: '2026-05-15T20:12:34.000Z'
+                next_cursor: cur_request_bound_example
+                has_more: false
+        '400':
+          description: The query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: const result = await client.institutionalManagers.list();
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-managers/search:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: searchInstitutionalManagers
+      summary: Search institutional managers
+      description: Returns at most 25 institutional managers ranked by Form 13F file number, CIK, and manager or source-filer name matches. The result has no pagination or configurable limit.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Manager name, current source-filer name, Form 13F file number, or padded or unpadded CIK.
+        required: true
+        description: Manager name, current source-filer name, Form 13F file number, or padded or unpadded CIK.
+        name: query
+        in: query
+        examples:
+          default:
+            value: Berkshire
+            x-disabled: false
+      responses:
+        '200':
+          description: Institutional manager matches
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerSearchResponse'
+              example:
+                managers:
+                - name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                  latest_period_of_report: '2026-03-31'
+                  holding_count: 124
+                  total_value_usd: '267891234567'
+                  latest_accepted_at: '2026-05-15T20:12:34.000Z'
+        '400':
+          description: The query is missing, invalid, or has unsupported keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerSearchBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalManagers.search({\n  query: \"Berkshire\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers/search?query=Berkshire' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-managers/{form_13f_file_number}:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: getInstitutionalManager
+      summary: Get institutional manager
+      description: Returns one institutional manager identified by Form 13F file number and its latest effective holdings period when available.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC Form 13F file number
+        required: true
+        description: SEC Form 13F file number
+        name: form_13f_file_number
+        in: path
+        examples:
+          default:
+            value: 028-04545
+            x-disabled: false
+      responses:
+        '200':
+          description: Institutional manager
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerDetailResponse'
+              example:
+                manager:
+                  name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                latest_period:
+                  period_of_report: '2026-03-31'
+                  accepted_at: '2026-05-15T20:12:34.000Z'
+                  holdings:
+                    total_count: 124
+                    total_value_usd: '267891234567'
+                    url: /v1/institutional-managers/028-04545/holdings?period=2026-03-31
+        '400':
+          description: The Form 13F file number is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested manager was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalManagers.get({\n  form13fFileNumber: \"028-04545\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers/028-04545' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-managers/{form_13f_file_number}/periods:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalManagerPeriods
+      summary: List manager periods
+      description: Returns the report periods with effective holdings for one institutional manager, ordered from newest to oldest.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC Form 13F file number
+        required: true
+        description: SEC Form 13F file number
+        name: form_13f_file_number
+        in: path
+        examples:
+          default:
+            value: 028-04545
+            x-disabled: false
+      responses:
+        '200':
+          description: Manager periods
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerPeriodsResponse'
+              example:
+                manager:
+                  name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                periods:
+                - period_of_report: '2026-03-31'
+                  accepted_at: '2026-05-15T20:12:34.000Z'
+                  holdings:
+                    total_count: 124
+                    total_value_usd: '267891234567'
+                    url: /v1/institutional-managers/028-04545/holdings?period=2026-03-31
+        '400':
+          description: The Form 13F file number is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested manager was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalManagers.listPeriods({\n  form13fFileNumber: \"028-04545\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers/028-04545/periods' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-managers/{form_13f_file_number}/holdings:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalManagerHoldings
+      summary: List manager holdings
+      description: Returns effective holdings for one institutional manager and report period. Restatements replace the active set and new-holdings amendments append their as-filed rows; each result identifies its source accession.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC Form 13F file number
+        required: true
+        description: SEC Form 13F file number
+        name: form_13f_file_number
+        in: path
+        examples:
+          default:
+            value: 028-04545
+            x-disabled: false
+      - schema:
+          type: string
+          description: Required report period. Use latest for the latest available manager period, or YYYY-MM-DD for a concrete period.
+        required: true
+        description: Required report period. Use latest for the latest available manager period, or YYYY-MM-DD for a concrete period.
+        name: period
+        in: query
+        examples:
+          default:
+            value: latest
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '1000'
+          description: Page size from 1 through 5000.
+        required: false
+        description: Page size from 1 through 5000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '1000'
+            x-disabled: false
+      responses:
+        '200':
+          description: Manager holdings
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerHoldingsResponse'
+              example:
+                manager:
+                  name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                period:
+                  period_of_report: '2026-03-31'
+                  accepted_at: '2026-05-15T20:12:34.000Z'
+                holdings:
+                - security:
+                    issuer: APPLE INC
+                    title_of_class: COM
+                    company:
+                      name: Apple Inc.
+                      cik: 0000320193
+                      ticker: AAPL
+                      exchange: NASDAQ
+                    option_type: null
+                  position:
+                    amount: '1245000'
+                    type: shares
+                    market_value_usd: '221563000'
+                  investment_discretion: SOLE
+                  other_managers: []
+                  voting_authority:
+                    sole: '1245000'
+                    shared: '0'
+                    none: '0'
+                  source:
+                    accession_number: 0000950123-26-004321
+                next_cursor: cur_request_bound_example
+                has_more: false
+        '400':
+          description: The query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested manager or report period was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The manager-period holdings changed after the cursor was issued. Restart pagination from the first page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: The response could not be constructed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalManagers.listHoldings({\n  form13fFileNumber: \"028-04545\",\n  period: \"latest\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers/028-04545/holdings?period=latest' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-managers/{form_13f_file_number}/positions:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalManagerPositions
+      summary: List manager positions
+      description: Returns consolidated economic positions for one institutional manager and report period. The complete effective holdings set is grouped by valid CUSIP or CINS, quantity type, and option type before pagination. Use the manager holdings endpoint for reported-row allocation and source-accession details.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC Form 13F file number
+        required: true
+        description: SEC Form 13F file number
+        name: form_13f_file_number
+        in: path
+        examples:
+          default:
+            value: 028-04545
+            x-disabled: false
+      - schema:
+          type: string
+          description: Required report period. Use latest for the latest available manager period, or YYYY-MM-DD for a concrete period.
+        required: true
+        description: Required report period. Use latest for the latest available manager period, or YYYY-MM-DD for a concrete period.
+        name: period
+        in: query
+        examples:
+          default:
+            value: latest
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '1000'
+          description: Page size from 1 through 5000.
+        required: false
+        description: Page size from 1 through 5000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '1000'
+            x-disabled: false
+      responses:
+        '200':
+          description: Manager positions
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalManagerPositionsResponse'
+              example:
+                manager:
+                  name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                period:
+                  period_of_report: '2026-03-31'
+                  accepted_at: '2026-05-15T20:12:34.000Z'
+                positions:
+                - security:
+                    issuer: APPLE INC
+                    title_of_class: COM
+                    company:
+                      name: Apple Inc.
+                      cik: 0000320193
+                      ticker: AAPL
+                      exchange: NASDAQ
+                    option_type: null
+                  position:
+                    amount: '1245000'
+                    type: shares
+                    market_value_usd: '221563000'
+                  voting_authority:
+                    sole: '1245000'
+                    shared: '0'
+                    none: '0'
+                  reported_holding_count: 3
+                next_cursor: null
+                has_more: false
+        '400':
+          description: The query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested manager or report period was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The manager-period holdings changed after the cursor was issued. Restart pagination from the first page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalManagers.listPositions({\n  form13fFileNumber: \"028-04545\",\n  period: \"latest\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-managers/028-04545/positions?period=latest' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-filings/{accession}:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: getInstitutionalFiling
+      summary: Get institutional filing
+      description: Returns as-filed metadata for one 13F-HR, 13F-HR/A, 13F-NT, or 13F-NT/A accession. Holdings reports link to a separate paginated information-table endpoint; notice filings have no holdings rows.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+        examples:
+          default:
+            value: 0000950123-26-004321
+            x-disabled: false
+      responses:
+        '200':
+          description: Institutional filing
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalFilingDetailResponse'
+              example:
+                accession_number: 0000950123-26-004321
+                form: 13F-HR
+                report_type: 13F HOLDINGS REPORT
+                period_of_report: '2026-03-31'
+                accepted_at: '2026-05-15T20:12:34.000Z'
+                manager:
+                  name: Berkshire Hathaway Inc.
+                  form_13f_file_number: 028-04545
+                  cik: 0001067983
+                  crd_number: null
+                  address:
+                    street1: 3555 FARNAM STREET
+                    street2: null
+                    city: OMAHA
+                    state_or_country: NE
+                    zip_code: '68131'
+                amendment: null
+                confidential_treatment_requested: false
+                remarks: null
+                included_managers: []
+                other_reporting_managers: []
+                signature: null
+                holdings:
+                  total_count: 124
+                  total_value_usd: '267891234567'
+                  url: /v1/institutional-filings/0000950123-26-004321/holdings
+        '400':
+          description: The accession number is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested institutional filing was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalFilings.get({\n  accessionNumber: \"0000950123-26-004321\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-filings/0000950123-26-004321' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-filings/{accession}/holdings:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalFilingHoldings
+      summary: List filing holdings
+      description: Returns the as-filed information-table rows for one 13F-HR or 13F-HR/A accession in source order. This endpoint does not combine the filing with other amendments for the same manager and period.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+        examples:
+          default:
+            value: 0000950123-26-004321
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '1000'
+          description: Page size from 1 through 5000.
+        required: false
+        description: Page size from 1 through 5000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '1000'
+            x-disabled: false
+      responses:
+        '200':
+          description: Filing holdings
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalFilingHoldingsResponse'
+              example:
+                accession_number: 0000950123-26-004321
+                form: 13F-HR
+                report_type: 13F HOLDINGS REPORT
+                period_of_report: '2026-03-31'
+                holdings:
+                - security:
+                    issuer: APPLE INC
+                    title_of_class: COM
+                    company:
+                      name: Apple Inc.
+                      cik: 0000320193
+                      ticker: AAPL
+                      exchange: NASDAQ
+                    option_type: null
+                  position:
+                    amount: '1245000'
+                    type: shares
+                    market_value_usd: '221563000'
+                  investment_discretion: SOLE
+                  other_managers: []
+                  voting_authority:
+                    sole: '1245000'
+                    shared: '0'
+                    none: '0'
+                next_cursor: cur_request_bound_example
+                has_more: false
+        '400':
+          description: The query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested institutional filing was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The filing holdings changed after the cursor was issued. Restart pagination from the first page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: The response could not be constructed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.institutionalFilings.listHoldings({\n  accessionNumber: \"0000950123-26-004321\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-filings/0000950123-26-004321/holdings' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/institutional-filings/feed:
+    get:
+      tags:
+      - Institutional holdings
+      operationId: listInstitutionalFilingFeed
+      summary: List institutional filing updates
+      description: Returns one feed event per processed 13F-HR, 13F-HR/A, 13F-NT, or 13F-NT/A accession in publication order. Without cursor or start, the response contains the most recent matching filing events up to limit and a cursor at the current feed head. Notice filings create feed events but do not update effective manager-period holdings.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - 13F-HR
+            - 13F-HR/A
+            - 13F-NT
+            - 13F-NT/A
+          description: Filter by form; comma-separated. Includes all forms by default.
+        required: false
+        description: Filter by form; comma-separated. Includes all forms by default.
+        name: forms
+        in: query
+        style: form
+        explode: false
+        examples:
+          default:
+            value:
+            - 13F-HR
+            - 13F-HR/A
+            x-disabled: false
+      - schema:
+          type: string
+          description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        required: false
+        description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        name: start
+        in: query
+        examples:
+          default:
+            value: now
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '500'
+          description: Page size from 1 through 1000.
+        required: false
+        description: Page size from 1 through 1000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '500'
+            x-disabled: false
+      responses:
+        '200':
+          description: Institutional filing updates
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalFilingFeedResponse'
+              examples:
+                holdings_report:
+                  summary: Published holdings report filing
+                  value:
+                    updates:
+                    - feed_event_id: ihfe_000000000787
+                      published_at: '2026-07-20T19:10:06.976Z'
+                      accession_number: 0001214659-26-008712
+                      form: 13F-HR
+                      report_type: 13F HOLDINGS REPORT
+                      period_of_report: '2026-06-30'
+                      accepted_at: '2026-07-20T17:56:51.000Z'
+                      manager:
+                        name: Envestnet Portfolio Solutions, Inc.
+                        form_13f_file_number: 028-23431
+                        cik: 0001998033
+                      sec_url: https://www.sec.gov/Archives/edgar/data/1998033/000121465926008712/0001214659-26-008712-index.htm
+                    next_cursor: cur_eyJ2IjoxLCJhZnRlciI6Nzg3fQ
+                    has_more: false
+                notice_filing:
+                  summary: Published notice filing
+                  value:
+                    updates:
+                    - feed_event_id: ihfe_000000000782
+                      published_at: '2026-07-20T19:09:51.749Z'
+                      accession_number: 0001140361-26-028944
+                      form: 13F-NT
+                      report_type: 13F NOTICE
+                      period_of_report: '2026-06-30'
+                      accepted_at: '2026-07-20T18:00:52.000Z'
+                      manager:
+                        name: Rich Land Bancorp, Inc.
+                        form_13f_file_number: 028-26150
+                        cik: '0002107431'
+                      sec_url: https://www.sec.gov/Archives/edgar/data/2107431/000114036126028944/0001140361-26-028944-index.htm
+                    next_cursor: cur_eyJ2IjoxLCJhZnRlciI6NzgyfQ
+                    has_more: false
+                start_now:
+                  summary: Bootstrap future-only polling
+                  value:
+                    updates: []
+                    next_cursor: cur_eyJ2IjoxLCJhZnRlciI6Nzg3fQ
+                    has_more: false
+        '400':
+          description: The feed query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionalHoldingFeedBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: const result = await client.feeds.institutionalFilings.listLatest();
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/institutional-filings/feed' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    InstitutionalManagerListItem:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Berkshire Hathaway Inc.
+        form_13f_file_number:
+          type: string
+          example: 028-04545
+        cik:
+          type: string
+          example: 0001067983
+        latest_period_of_report:
+          type:
+          - string
+          - 'null'
+          example: '2026-03-31'
+        holding_count:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+          example: 124
+        total_value_usd:
+          type:
+          - string
+          - 'null'
+          example: '267891234567'
+        latest_accepted_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-15T20:12:34.000Z'
+      required:
+      - name
+      - form_13f_file_number
+      - cik
+      - latest_period_of_report
+      - holding_count
+      - total_value_usd
+      - latest_accepted_at
+    InstitutionalHoldingVotingAuthority:
+      type: object
+      properties:
+        sole:
+          type:
+          - string
+          - 'null'
+          example: '1245000'
+          description: Quantity over which the manager reports sole voting authority, or null.
+        shared:
+          type:
+          - string
+          - 'null'
+          example: '0'
+          description: Quantity over which the manager reports shared voting authority, or null.
+        none:
+          type:
+          - string
+          - 'null'
+          example: '0'
+          description: Quantity over which the manager reports no voting authority, or null.
+      required:
+      - sole
+      - shared
+      - none
+    InstitutionalManagerHolding:
+      allOf:
+      - $ref: '#/components/schemas/InstitutionalFilingHolding'
+      - type: object
+        properties:
+          source:
+            type: object
+            properties:
+              accession_number:
+                type: string
+                example: 0000950123-26-004321
+            required:
+            - accession_number
+        required:
+        - source
+    InstitutionalFilingHoldingsResponse:
+      type: object
+      properties:
+        accession_number:
+          type: string
+        form:
+          type: string
+          enum:
+          - 13F-HR
+          - 13F-HR/A
+          - 13F-NT
+          - 13F-NT/A
+        report_type:
+          type:
+          - string
+          - 'null'
+          example: 13F HOLDINGS REPORT
+          description: 'Form 13F cover-page report type: 13F HOLDINGS REPORT when all holdings are reported in this filing, 13F NOTICE when all holdings are reported by other managers, 13F COMBINATION REPORT when holdings are split between this filing and other managers, or null when absent.'
+        period_of_report:
+          type:
+          - string
+          - 'null'
+        holdings:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalFilingHolding'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - accession_number
+      - form
+      - report_type
+      - period_of_report
+      - holdings
+      - next_cursor
+      - has_more
+    InstitutionalManagerDetailResponse:
+      type: object
+      properties:
+        manager:
+          $ref: '#/components/schemas/InstitutionalManagerDetail'
+        latest_period:
+          $ref: '#/components/schemas/InstitutionalManagerLatestPeriod'
+      required:
+      - manager
+      - latest_period
+    InstitutionalHoldingCompany:
+      type:
+      - object
+      - 'null'
+      properties:
+        name:
+          type: string
+          example: Apple Inc.
+        cik:
+          type: string
+          example: 0000320193
+        ticker:
+          type: string
+          example: AAPL
+        exchange:
+          type:
+          - string
+          - 'null'
+          example: NASDAQ
+      required:
+      - name
+      - cik
+      - ticker
+      - exchange
+      description: Matched listed company, or null when the reported security cannot be mapped confidently.
+    InstitutionalFilingFeedResponse:
+      type: object
+      properties:
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalHoldingFeedUpdate'
+        next_cursor:
+          type: string
+          example: cur_request_bound_example
+          description: Cursor to send after the current page has been processed successfully.
+        has_more:
+          type: boolean
+          example: false
+          description: Whether another filing-event page is already available.
+      required:
+      - updates
+      - next_cursor
+      - has_more
+    InstitutionalFilingHolding:
+      type: object
+      properties:
+        security:
+          $ref: '#/components/schemas/InstitutionalHoldingSecurity'
+        position:
+          $ref: '#/components/schemas/InstitutionalHoldingPosition'
+        investment_discretion:
+          type:
+          - string
+          - 'null'
+          example: SOLE
+          description: 'Filed SEC investment-discretion code: SOLE for sole discretion, DFND for shared-defined discretion, OTR for shared-other discretion, or null when absent.'
+        other_managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalFilingOtherManager'
+          description: Other managers associated with the filed investment discretion, in SEC source order.
+        voting_authority:
+          $ref: '#/components/schemas/InstitutionalHoldingVotingAuthority'
+      required:
+      - security
+      - position
+      - investment_discretion
+      - other_managers
+      - voting_authority
+    InstitutionalFilingIncludedManager:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          example: Example Reporting Manager LLC
+        form_13f_file_number:
+          type:
+          - string
+          - 'null'
+          example: 028-22280
+        cik:
+          type:
+          - string
+          - 'null'
+          example: 0001911876
+        crd_number:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - name
+      - form_13f_file_number
+      - cik
+      - crd_number
+      description: Manager whose holdings are included in the filing's information table.
+    InstitutionalManagersResponse:
+      type: object
+      properties:
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalManagerListItem'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - managers
+      - next_cursor
+      - has_more
+    InstitutionalFilingManagerAddress:
+      type:
+      - object
+      - 'null'
+      properties:
+        street1:
+          type:
+          - string
+          - 'null'
+          example: 50 HUDSON YARDS
+        street2:
+          type:
+          - string
+          - 'null'
+          example: null
+        city:
+          type:
+          - string
+          - 'null'
+          example: NEW YORK
+        state_or_country:
+          type:
+          - string
+          - 'null'
+          example: NY
+        zip_code:
+          type:
+          - string
+          - 'null'
+          example: '10001'
+      required:
+      - street1
+      - street2
+      - city
+      - state_or_country
+      - zip_code
+    InstitutionalManagerLatestPeriod:
+      type:
+      - object
+      - 'null'
+      properties:
+        period_of_report:
+          type: string
+          example: '2026-03-31'
+        accepted_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-15T20:12:34.000Z'
+        holdings:
+          type: object
+          properties:
+            total_count:
+              type: integer
+              minimum: 0
+              example: 124
+            total_value_usd:
+              type:
+              - string
+              - 'null'
+              example: '267891234567'
+            url:
+              type: string
+              example: /v1/institutional-managers/028-04545/holdings?period=2026-03-31
+          required:
+          - total_count
+          - total_value_usd
+          - url
+      required:
+      - period_of_report
+      - accepted_at
+      - holdings
+    InstitutionalManagerSearchResponse:
+      type: object
+      properties:
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalManagerListItem'
+          maxItems: 25
+      required:
+      - managers
+    InstitutionalManagerSearchBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_query
+          - invalid_query_parameters
+          example: invalid_query
+      required:
+      - error
+    InstitutionalFilingDetailResponse:
+      type: object
+      properties:
+        accession_number:
+          type: string
+        form:
+          type: string
+          enum:
+          - 13F-HR
+          - 13F-HR/A
+          - 13F-NT
+          - 13F-NT/A
+          description: Filed Form 13F type.
+        report_type:
+          type:
+          - string
+          - 'null'
+          example: 13F HOLDINGS REPORT
+          description: 'Form 13F cover-page report type: 13F HOLDINGS REPORT when all holdings are reported in this filing, 13F NOTICE when all holdings are reported by other managers, 13F COMBINATION REPORT when holdings are split between this filing and other managers, or null when absent.'
+        period_of_report:
+          type:
+          - string
+          - 'null'
+          description: Quarter-end period described by the filing, or null when absent.
+        accepted_at:
+          type: string
+          format: date-time
+        manager:
+          $ref: '#/components/schemas/InstitutionalFilingManager'
+        amendment:
+          $ref: '#/components/schemas/InstitutionalFilingAmendment'
+        confidential_treatment_requested:
+          type:
+          - boolean
+          - 'null'
+          example: false
+        remarks:
+          type:
+          - string
+          - 'null'
+          example: null
+        included_managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalFilingIncludedManager'
+          description: Managers whose holdings are included in the information table.
+        other_reporting_managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalFilingOtherManager'
+          description: Other reporting managers named on the filing.
+        signature:
+          $ref: '#/components/schemas/InstitutionalFilingSignature'
+        holdings:
+          $ref: '#/components/schemas/InstitutionalFilingHoldingsSummary'
+      required:
+      - accession_number
+      - form
+      - report_type
+      - period_of_report
+      - accepted_at
+      - manager
+      - amendment
+      - confidential_treatment_requested
+      - remarks
+      - included_managers
+      - other_reporting_managers
+      - signature
+      - holdings
+    InstitutionalFilingManager:
+      allOf:
+      - $ref: '#/components/schemas/InstitutionalManagerSourceIdentity'
+      - type: object
+        properties:
+          crd_number:
+            type:
+            - string
+            - 'null'
+            example: '000105503'
+          address:
+            $ref: '#/components/schemas/InstitutionalFilingManagerAddress'
+        required:
+        - crd_number
+        - address
+    InstitutionalManagerDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Berkshire Hathaway Inc.
+        form_13f_file_number:
+          type: string
+          example: 028-04545
+        cik:
+          type: string
+          example: 0001067983
+      required:
+      - name
+      - form_13f_file_number
+      - cik
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: unauthorized
+      required:
+      - error
+    InstitutionalHoldingSecurity:
+      type: object
+      properties:
+        issuer:
+          type: string
+          example: APPLE INC
+          description: Issuer name reported in the information table.
+        title_of_class:
+          type: string
+          example: COM
+          description: Security class title reported in the information table.
+        option_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - put
+          - call
+          - null
+          description: put or call for an option position, otherwise null.
+        company:
+          $ref: '#/components/schemas/InstitutionalHoldingCompany'
+      required:
+      - issuer
+      - title_of_class
+      - option_type
+      - company
+    InstitutionalManagerPeriodsResponse:
+      type: object
+      properties:
+        manager:
+          $ref: '#/components/schemas/InstitutionalManagerDetail'
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalManagerPeriodSummary'
+      required:
+      - manager
+      - periods
+    InstitutionalFilingAmendment:
+      type:
+      - object
+      - 'null'
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          example: '1'
+          description: Amendment number reported on the cover page, or null.
+        type:
+          type:
+          - string
+          - 'null'
+          example: RESTATEMENT
+          description: RESTATEMENT when the complete corrected filing supersedes the active set, NEW HOLDINGS when rows supplement it, or null when absent.
+        confidential_denied_expired:
+          type:
+          - boolean
+          - 'null'
+          example: null
+        date_denied_expired:
+          type:
+          - string
+          - 'null'
+          example: null
+        date_reported:
+          type:
+          - string
+          - 'null'
+          example: null
+        reason_for_non_confidentiality:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - number
+      - type
+      - confidential_denied_expired
+      - date_denied_expired
+      - date_reported
+      - reason_for_non_confidentiality
+    InstitutionalManagerPeriodSummary:
+      type: object
+      properties:
+        period_of_report:
+          type: string
+          example: '2026-03-31'
+        accepted_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-15T20:12:34.000Z'
+        holdings:
+          type: object
+          properties:
+            total_count:
+              type: integer
+              minimum: 0
+              example: 124
+            total_value_usd:
+              type:
+              - string
+              - 'null'
+              example: '267891234567'
+            url:
+              type: string
+              example: /v1/institutional-managers/028-04545/holdings?period=2026-03-31
+          required:
+          - total_count
+          - total_value_usd
+          - url
+      required:
+      - period_of_report
+      - accepted_at
+      - holdings
+    InstitutionalFilingSignature:
+      type:
+      - object
+      - 'null'
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          example: Authorized Signatory
+        title:
+          type:
+          - string
+          - 'null'
+          example: Authorized Signatory
+        phone:
+          type:
+          - string
+          - 'null'
+          example: 212-810-5300
+        signature:
+          type:
+          - string
+          - 'null'
+          example: Authorized Signatory
+        city:
+          type:
+          - string
+          - 'null'
+          example: New York
+        state_or_country:
+          type:
+          - string
+          - 'null'
+          example: NY
+        signature_date:
+          type:
+          - string
+          - 'null'
+          example: '2024-08-13'
+      required:
+      - name
+      - title
+      - phone
+      - signature
+      - city
+      - state_or_country
+      - signature_date
+    InstitutionalHoldingFeedUpdate:
+      type: object
+      properties:
+        feed_event_id:
+          type: string
+          example: ihfe_000000000787
+          description: Stable idempotency key for this processed filing event.
+        published_at:
+          type: string
+          example: '2026-07-20T19:10:06.976Z'
+          description: Timestamp assigned to the database transaction that published this event to the feed.
+        accession_number:
+          type: string
+          example: 0001214659-26-008712
+        form:
+          type: string
+          enum:
+          - 13F-HR
+          - 13F-HR/A
+          - 13F-NT
+          - 13F-NT/A
+          example: 13F-HR
+          description: Filed Form 13F type, including amendments and notice reports.
+        report_type:
+          type:
+          - string
+          - 'null'
+          example: 13F HOLDINGS REPORT
+          description: 'Form 13F cover-page report type: 13F HOLDINGS REPORT when all holdings are reported in this filing, 13F NOTICE when all holdings are reported by other managers, 13F COMBINATION REPORT when holdings are split between this filing and other managers, or null when absent.'
+        period_of_report:
+          type:
+          - string
+          - 'null'
+          example: '2026-06-30'
+          description: Quarter-end period described by the filing, or null for a filing without a report period.
+        accepted_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-07-20T17:56:51.000Z'
+          description: SEC acceptance timestamp, or null when source metadata is unavailable.
+        manager:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Envestnet Portfolio Solutions, Inc.
+            form_13f_file_number:
+              type: string
+              example: 028-23431
+            cik:
+              type: string
+              example: 0001998033
+          required:
+          - name
+          - form_13f_file_number
+          - cik
+        sec_url:
+          type: string
+          example: https://www.sec.gov/Archives/edgar/data/1998033/000121465926008712/0001214659-26-008712-index.htm
+          description: SEC filing index URL for this accession.
+      required:
+      - feed_event_id
+      - published_at
+      - accession_number
+      - form
+      - report_type
+      - period_of_report
+      - accepted_at
+      - manager
+      - sec_url
+    DatasetNotEntitledErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - dataset_not_entitled
+      required:
+      - error
+    InstitutionalFilingOtherManager:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          example: Example Reporting Manager LLC
+        form_13f_file_number:
+          type:
+          - string
+          - 'null'
+          example: 028-22280
+        cik:
+          type:
+          - string
+          - 'null'
+          example: 0001911876
+        crd_number:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - name
+      - form_13f_file_number
+      - cik
+      - crd_number
+    InstitutionalManagerHoldingsResponse:
+      type: object
+      properties:
+        manager:
+          $ref: '#/components/schemas/InstitutionalManagerDetail'
+        period:
+          type: object
+          properties:
+            period_of_report:
+              type: string
+            accepted_at:
+              type:
+              - string
+              - 'null'
+          required:
+          - period_of_report
+          - accepted_at
+        holdings:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalManagerHolding'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - manager
+      - period
+      - holdings
+      - next_cursor
+      - has_more
+    InstitutionalHoldingsBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_accession
+          - invalid_cik
+          - invalid_cursor
+          - invalid_form_13f_file_number
+          - invalid_limit
+          - invalid_period
+          - unsupported_cursor
+          example: invalid_cursor
+      required:
+      - error
+    InstitutionalManagerSourceIdentity:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Berkshire Hathaway Inc.
+        form_13f_file_number:
+          type: string
+          example: 028-04545
+          description: SEC Form 13F file number used as the manager endpoint identifier.
+        cik:
+          type: string
+          example: 0001067983
+          description: SEC CIK of the reporting manager's source filer.
+      required:
+      - name
+      - form_13f_file_number
+      - cik
+    InstitutionalHoldingFeedBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_cursor
+          - invalid_forms
+          - invalid_limit
+          - invalid_start
+          - unsupported_cursor
+          example: invalid_forms
+      required:
+      - error
+    InstitutionalManagerPosition:
+      type: object
+      properties:
+        security:
+          $ref: '#/components/schemas/InstitutionalHoldingSecurity'
+        position:
+          $ref: '#/components/schemas/InstitutionalHoldingPosition'
+        voting_authority:
+          $ref: '#/components/schemas/InstitutionalHoldingVotingAuthority'
+        reported_holding_count:
+          type: integer
+          exclusiveMinimum: 0
+          example: 3
+          description: Number of effective reported holdings combined into this position.
+      required:
+      - security
+      - position
+      - voting_authority
+      - reported_holding_count
+    InstitutionalFilingHoldingsSummary:
+      type:
+      - object
+      - 'null'
+      properties:
+        total_count:
+          type: integer
+          minimum: 0
+          description: Number of information-table rows reported by the filing.
+        total_value_usd:
+          type:
+          - string
+          - 'null'
+          example: '4312516304'
+        url:
+          type:
+          - string
+          - 'null'
+          description: Relative URL for paginated as-filed holdings, or null when the filing has no information table.
+      required:
+      - total_count
+      - total_value_usd
+      - url
+    InstitutionalManagerPositionsResponse:
+      type: object
+      properties:
+        manager:
+          $ref: '#/components/schemas/InstitutionalManagerDetail'
+        period:
+          type: object
+          properties:
+            period_of_report:
+              type: string
+            accepted_at:
+              type:
+              - string
+              - 'null'
+          required:
+          - period_of_report
+          - accepted_at
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstitutionalManagerPosition'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - manager
+      - period
+      - positions
+      - next_cursor
+      - has_more
+    InstitutionalHoldingPosition:
+      type: object
+      properties:
+        amount:
+          type:
+          - string
+          - 'null'
+          example: '1245000'
+          description: Reported position quantity as an exact decimal string, or null.
+        type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - shares
+          - principal_amount
+          - null
+          description: shares for a share quantity, principal_amount for the principal amount of a debt position, or null when absent.
+        market_value_usd:
+          type:
+          - string
+          - 'null'
+          example: '221563000'
+          description: Reported market value in whole US dollars as an exact decimal string. Values from filings submitted before January 3, 2023 are normalized from the SEC's former thousands-of-dollars unit, or null when absent.
+      required:
+      - amount
+      - type
+      - market_value_usd
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.

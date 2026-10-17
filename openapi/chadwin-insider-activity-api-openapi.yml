@@ -1,0 +1,2680 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Insider activity API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Insider activity
+  description: Find transactions on Forms 4 and 5, retrieve Form 3, 4, and 5 filings, and find proposed sales on Form 144. Use the insider activity feed for new Forms 3, 4, 5, and 144, or the insider transaction feed for individual transactions on Forms 4 and 5.
+  externalDocs:
+    description: Read the insider filings guide
+    url: https://chadwin.co/docs/insider-filings
+paths:
+  /v1/insider-transactions:
+    get:
+      tags:
+      - Insider activity
+      operationId: listInsiderTransactions
+      summary: List insider transactions
+      description: Lists transactions from Forms 4 and 5, including amendments. Filter by ticker, CIK, transaction code, or filing date.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: Include filings from this date (YYYY-MM-DD)
+        required: true
+        description: Include filings from this date (YYYY-MM-DD)
+        name: from
+        in: query
+        examples:
+          default:
+            value: '2026-05-01'
+            x-disabled: false
+      - schema:
+          type: string
+          description: Comma-separated ticker filter. Mutually exclusive with ciks.
+        required: false
+        description: Comma-separated ticker filter. Mutually exclusive with ciks.
+        name: tickers
+        in: query
+        examples:
+          default:
+            value: AAPL,MSFT
+            x-disabled: false
+      - schema:
+          type: string
+          example: 0000320193,0000789019
+          description: Filing entity CIKs. Mutually exclusive with tickers; reference rows are not required.
+        required: false
+        description: Filing entity CIKs. Mutually exclusive with tickers; reference rows are not required.
+        name: ciks
+        in: query
+      - schema:
+          type: string
+          description: Include filings through this date (YYYY-MM-DD); defaults to today
+        required: false
+        description: Include filings through this date (YYYY-MM-DD); defaults to today
+        name: until
+        in: query
+        examples:
+          default:
+            value: '2026-05-31'
+            x-disabled: false
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - A
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+            - I
+            - J
+            - K
+            - L
+            - M
+            - O
+            - P
+            - S
+            - U
+            - V
+            - W
+            - X
+            - Z
+          description: Filter by SEC transaction code; comma-separated. Includes all codes by default.
+        required: false
+        description: Filter by SEC transaction code; comma-separated. Includes all codes by default.
+        name: transaction_codes
+        in: query
+        style: form
+        explode: false
+        examples:
+          default:
+            value:
+            - P
+            - S
+            - M
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_eyJ2IjoxLCJvcGVyYXRpb24iOiJpbnNpZGVyX3RyYW5zYWN0aW9ucyJ9
+            x-disabled: false
+      - schema:
+          type: string
+          description: Rows per page from 1 through 1000. Defaults to 1000.
+        required: false
+        description: Rows per page from 1 through 1000. Defaults to 1000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '1000'
+            x-disabled: false
+      responses:
+        '200':
+          description: Insider transactions
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderTransactionsResponse'
+              example:
+                transactions:
+                - issuer:
+                    cik: 0000320193
+                    name: Apple Inc.
+                    ticker: AAPL
+                  accession_number: 0001140361-26-023363
+                  row_kind: nonderivative_transaction
+                  accepted_at: '2026-05-29T22:30:27.000Z'
+                  footnotes:
+                  - id: F1
+                    text: This transaction was executed in multiple trades at prices ranging from $310.76 to $311.42; the price reported above reflects the weighted average sale price. The reporting person hereby undertakes to provide full information regarding the number of shares and prices at which the transactions were effected upon request to the SEC staff, Apple, or a security holder of Apple.
+                  reporting_owners:
+                  - cik: 0001214128
+                    name: LEVINSON ARTHUR D
+                    address:
+                      street1: ONE APPLE PARK WAY
+                      street2: null
+                      city: CUPERTINO
+                      state: CA
+                      zip_code: '95014'
+                      country: null
+                    relationship:
+                      is_director: true
+                      is_officer: null
+                      is_ten_percent_owner: null
+                      is_other: null
+                      officer_title: null
+                      other_text: null
+                  source_row_index: 1
+                  transaction_code: S
+                  transaction_date: '2026-05-27'
+                  deemed_execution_date: null
+                  transaction_form_type: '4'
+                  security: Common Stock
+                  shares: '50000'
+                  price: '311.02'
+                  transaction_total_value: null
+                  acquired_disposed_code: D
+                  shares_owned_after: '3764576'
+                  ownership_type: direct
+                  nature_of_ownership: null
+                  transaction_timeliness: null
+                  equity_swap_involved: false
+                  conversion_or_exercise_price: null
+                  exercise_date: null
+                  expiration_date: null
+                  underlying_security: null
+                  footnote_ids:
+                  - F1
+                  field_footnote_ids:
+                    price:
+                    - F1
+                  sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+                - issuer:
+                    cik: 0000320193
+                    name: Apple Inc.
+                    ticker: AAPL
+                  accession_number: 0001140361-26-023363
+                  row_kind: nonderivative_transaction
+                  accepted_at: '2026-05-29T22:30:27.000Z'
+                  footnotes: []
+                  reporting_owners:
+                  - cik: 0001214128
+                    name: LEVINSON ARTHUR D
+                    address:
+                      street1: ONE APPLE PARK WAY
+                      street2: null
+                      city: CUPERTINO
+                      state: CA
+                      zip_code: '95014'
+                      country: null
+                    relationship:
+                      is_director: true
+                      is_officer: null
+                      is_ten_percent_owner: null
+                      is_other: null
+                      officer_title: null
+                      other_text: null
+                  source_row_index: 2
+                  transaction_code: G
+                  transaction_date: '2026-05-27'
+                  deemed_execution_date: null
+                  transaction_form_type: '4'
+                  security: Common Stock
+                  shares: '65000'
+                  price: '0'
+                  transaction_total_value: null
+                  acquired_disposed_code: D
+                  shares_owned_after: '3699576'
+                  ownership_type: direct
+                  nature_of_ownership: null
+                  transaction_timeliness: null
+                  equity_swap_involved: false
+                  conversion_or_exercise_price: null
+                  exercise_date: null
+                  expiration_date: null
+                  underlying_security: null
+                  footnote_ids: []
+                  field_footnote_ids: {}
+                  sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+                next_cursor: null
+                has_more: false
+        '400':
+          description: The query parameters or pagination cursor are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderTransactionsBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: A ticker was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: A ticker resolves to multiple companies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.insiderTransactions.list({\n  from: \"2026-05-01\",\n  until: \"2026-05-31\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/insider-transactions?from=2026-05-01&until=2026-05-31' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/insider-filings/{accession}:
+    get:
+      tags:
+      - Insider activity
+      operationId: getInsiderFiling
+      summary: Get insider filing
+      description: Returns one parsed Section 16 ownership filing (Form 3, Form 4, or Form 5) as filed, including filing metadata, reporting owners, footnotes, transaction rows, and standalone holding rows. Amendments remain separate accessions.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+        examples:
+          default:
+            value: 0001140361-26-023363
+            x-disabled: false
+      responses:
+        '200':
+          description: Insider filing
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderFilingDocument'
+              example:
+                issuer:
+                  cik: 0000320193
+                  name: Apple Inc.
+                  ticker: AAPL
+                accession_number: 0001140361-26-023363
+                form: '4'
+                accepted_at: '2026-05-29T22:30:27.000Z'
+                period_of_report: '2026-05-27'
+                date_of_original_submission: null
+                not_subject_to_section_16: null
+                rule_10b5_1: false
+                remarks: null
+                reporting_owners:
+                - cik: 0001214128
+                  name: LEVINSON ARTHUR D
+                  address:
+                    street1: ONE APPLE PARK WAY
+                    street2: null
+                    city: CUPERTINO
+                    state: CA
+                    zip_code: '95014'
+                    country: null
+                  relationship:
+                    is_director: true
+                    is_officer: null
+                    is_ten_percent_owner: null
+                    is_other: null
+                    officer_title: null
+                    other_text: null
+                owner_signatures:
+                - name: /s/ Sam Whittington, Attorney-in-Fact for Arthur D. Levinson
+                  date: '2026-05-29'
+                footnotes:
+                - id: F1
+                  text: This transaction was executed in multiple trades at prices ranging from $310.76 to $311.42; the price reported above reflects the weighted average sale price. The reporting person hereby undertakes to provide full information regarding the number of shares and prices at which the transactions were effected upon request to the SEC staff, Apple, or a security holder of Apple.
+                non_derivative_transactions:
+                - source_row_index: 1
+                  transaction_code: S
+                  transaction_date: '2026-05-27'
+                  deemed_execution_date: null
+                  transaction_form_type: '4'
+                  security: Common Stock
+                  shares: '50000'
+                  price: '311.02'
+                  transaction_total_value: null
+                  acquired_disposed_code: D
+                  shares_owned_after: '3764576'
+                  ownership_type: direct
+                  nature_of_ownership: null
+                  transaction_timeliness: null
+                  equity_swap_involved: false
+                  conversion_or_exercise_price: null
+                  exercise_date: null
+                  expiration_date: null
+                  underlying_security: null
+                  footnote_ids:
+                  - F1
+                  field_footnote_ids:
+                    price:
+                    - F1
+                - source_row_index: 2
+                  transaction_code: G
+                  transaction_date: '2026-05-27'
+                  deemed_execution_date: null
+                  transaction_form_type: '4'
+                  security: Common Stock
+                  shares: '65000'
+                  price: '0'
+                  transaction_total_value: null
+                  acquired_disposed_code: D
+                  shares_owned_after: '3699576'
+                  ownership_type: direct
+                  nature_of_ownership: null
+                  transaction_timeliness: null
+                  equity_swap_involved: false
+                  conversion_or_exercise_price: null
+                  exercise_date: null
+                  expiration_date: null
+                  underlying_security: null
+                  footnote_ids: []
+                  field_footnote_ids: {}
+                derivative_transactions: []
+                non_derivative_holdings:
+                - source_row_index: 1
+                  late_holding_form_type: null
+                  security: Common Stock
+                  shares_owned_after: '56000'
+                  value_owned_after: null
+                  ownership_type: indirect
+                  nature_of_ownership: By Spouse
+                  footnote_ids: []
+                  field_footnote_ids: {}
+                derivative_holdings: []
+                sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+        '400':
+          description: The accession number is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The requested insider filing was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The filing storage layer is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.insiderFilings.get({\n  accessionNumber: \"0001140361-26-023363\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/insider-filings/0001140361-26-023363' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/proposed-sales:
+    get:
+      tags:
+      - Insider activity
+      operationId: listProposedSales
+      summary: List proposed sales
+      description: Returns one cursor-paginated page of as-filed proposed-sale rows from Form 144 and Form 144/A in SEC acceptance order.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          example: '2026-07-01'
+          description: Include filings from this date (YYYY-MM-DD)
+        required: true
+        description: Include filings from this date (YYYY-MM-DD)
+        name: from
+        in: query
+      - schema:
+          type: string
+          example: AAPL,MSFT
+          description: Company tickers; mutually exclusive with ciks.
+        required: false
+        description: Company tickers; mutually exclusive with ciks.
+        name: tickers
+        in: query
+      - schema:
+          type: string
+          example: 0000320193,0000789019
+          description: Filing entity CIKs; mutually exclusive with tickers. Reference rows are not required.
+        required: false
+        description: Filing entity CIKs; mutually exclusive with tickers. Reference rows are not required.
+        name: ciks
+        in: query
+      - schema:
+          type: string
+          example: '2026-07-31'
+          description: Include filings through this date (YYYY-MM-DD); defaults to today
+        required: false
+        description: Include filings through this date (YYYY-MM-DD); defaults to today
+        name: until
+        in: query
+      - schema:
+          type: string
+          example: cur_eyJ2IjoxLCJvcGVyYXRpb24iOiJwcm9wb3NlZF9zYWxlcyJ9
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+      - schema:
+          type: string
+          example: '1000'
+          description: Rows per page from 1 through 1000. Defaults to 1000.
+        required: false
+        description: Rows per page from 1 through 1000. Defaults to 1000.
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Proposed sales
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProposedSalesResponse'
+              example:
+                proposed_sales:
+                - issuer:
+                    cik: 0000320193
+                    name: Apple Inc.
+                    ticker: AAPL
+                  accession_number: 0001140361-26-030001
+                  source_row_index: 1
+                  accepted_at: '2026-07-29T18:04:05.000Z'
+                  reporting_person:
+                    cik: '0002100523'
+                    name: Example Reporting Person
+                    relationships:
+                    - Officer
+                  security: Common Stock
+                  amount: '100'
+                  market_value: '20000.00'
+                  approximate_sale_date: '2026-07-30'
+                  sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126030001/0001140361-26-030001-index.htm
+                next_cursor: null
+                has_more: false
+        '400':
+          description: The query parameters or pagination cursor are invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - invalid_cursor
+                    - invalid_date_window
+                    - invalid_limit
+                    - invalid_query_parameters
+                required:
+                - error
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: A ticker was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: A ticker resolves to multiple companies
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.proposedSales.list({\n  from: \"2026-07-01\",\n  until: \"2026-07-31\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/proposed-sales?from=2026-07-01&until=2026-07-31' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/proposed-sale-filings/{accession}:
+    get:
+      tags:
+      - Insider activity
+      operationId: getProposedSaleFiling
+      summary: Get proposed sale filing
+      description: Returns the details of one Form 144 filing, including the proposed sale, acquisition history, and sales made during the past three months. Sales listed only in an attached exhibit are not included.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          example: 0001140361-26-030001
+          description: SEC accession number with dashes
+        required: true
+        description: SEC accession number with dashes
+        name: accession
+        in: path
+      responses:
+        '200':
+          description: Proposed sale filing
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProposedSaleFilingDetail'
+              example:
+                issuer:
+                  cik: 0000320193
+                  name: Apple Inc.
+                  ticker: AAPL
+                accession_number: 0001140361-26-030001
+                form: '144'
+                accepted_at: '2026-07-29T18:04:05.000Z'
+                previous_accession_number: null
+                reporting_person:
+                  cik: '0002100523'
+                  name: Example Reporting Person
+                  relationships:
+                  - Officer
+                proposed_sales:
+                - source_row_index: 1
+                  security: Common Stock
+                  amount: '100'
+                  market_value: '20000.00'
+                  amount_outstanding: '15000000000'
+                  approximate_sale_date: '2026-07-30'
+                  broker_or_market_maker: Example Broker
+                  intended_sale_exchange: NASDAQ
+                securities_to_be_sold:
+                - source_row_index: 1
+                  security: Common Stock
+                  acquisition_date: '2025-01-15'
+                  acquisition_method: Restricted stock vesting
+                  acquired_from: Apple Inc.
+                  is_gift: false
+                  amount: '100'
+                  donor_acquisition_date: null
+                  payment_date: null
+                  payment_method: Services
+                nothing_to_report: true
+                past_three_month_sales: []
+                remarks: null
+                notice:
+                  date: '2026-07-29'
+                  plan_adoption_dates:
+                  - '2026-01-10'
+                  signature: /s/ Example Reporting Person
+                sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126030001/0001140361-26-030001-index.htm
+        '400':
+          description: The accession is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '404':
+          description: The Form 144 filing was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The filing storage layer is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: "const result = await client.proposedSales.getFiling({\n  accessionNumber: \"0001140361-26-030001\",\n});"
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/proposed-sale-filings/0001140361-26-030001' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/insider-activity/feed:
+    get:
+      tags:
+      - Insider activity
+      operationId: listInsiderActivityFeed
+      summary: List insider activity updates
+      description: Returns Form 3 initial ownership statements, Form 4 and Form 5 transactions, and Form 144 proposed-sale notices in one publication order. Use this feed when you want all three kinds of insider activity in one stream. Without cursor or start, the response contains the most recent matching activities up to limit and a cursor at the current feed head. Continue with the same forms filter.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - '3'
+            - 3/A
+            - '4'
+            - 4/A
+            - '5'
+            - 5/A
+            - '144'
+            - 144/A
+          description: Filter by form; comma-separated. Includes all forms by default. Keep the same selection when using a cursor.
+        required: false
+        description: Filter by form; comma-separated. Includes all forms by default. Keep the same selection when using a cursor.
+        name: forms
+        in: query
+        style: form
+        explode: false
+        examples:
+          default:
+            value:
+            - '4'
+            - 4/A
+            - '5'
+            - 5/A
+            - '144'
+            - 144/A
+            x-disabled: false
+      - schema:
+          type: string
+          description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        required: false
+        description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        name: start
+        in: query
+        examples:
+          default:
+            value: now
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '500'
+          description: Page size from 1 through 1000.
+        required: false
+        description: Page size from 1 through 1000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '500'
+            x-disabled: false
+      responses:
+        '200':
+          description: Insider activity updates
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderActivityFeedResponse'
+              examples:
+                all_forms:
+                  summary: Initial ownership, transaction, and proposed-sale activity
+                  value:
+                    activities:
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: iae_000000000201
+                      published_at: '2026-07-31T14:05:00.000Z'
+                      form: '3'
+                      accession_number: 0001214128-26-000003
+                      accepted_at: '2026-07-31T14:03:12.000Z'
+                      event_date: '2026-07-30'
+                      reporting_owners:
+                      - cik: 0001214128
+                        name: LEVINSON ARTHUR D
+                        address:
+                          street1: ONE APPLE PARK WAY
+                          street2: null
+                          city: CUPERTINO
+                          state: CA
+                          zip_code: '95014'
+                          country: null
+                        relationship:
+                          is_director: true
+                          is_officer: null
+                          is_ten_percent_owner: null
+                          is_other: null
+                          officer_title: null
+                          other_text: null
+                      no_securities_owned: false
+                      non_derivative_holding_count: 1
+                      derivative_holding_count: 0
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000121412826000003/0001214128-26-000003-index.htm
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: ite_000000000129
+                      published_at: '2026-07-31T14:06:00.000Z'
+                      form: '4'
+                      accession_number: 0001140361-26-023363
+                      row_kind: nonderivative_transaction
+                      accepted_at: '2026-05-29T22:30:27.000Z'
+                      footnotes:
+                      - id: F1
+                        text: This transaction was executed in multiple trades at prices ranging from $310.76 to $311.42; the price reported above reflects the weighted average sale price. The reporting person hereby undertakes to provide full information regarding the number of shares and prices at which the transactions were effected upon request to the SEC staff, Apple, or a security holder of Apple.
+                      reporting_owners:
+                      - cik: 0001214128
+                        name: LEVINSON ARTHUR D
+                        address:
+                          street1: ONE APPLE PARK WAY
+                          street2: null
+                          city: CUPERTINO
+                          state: CA
+                          zip_code: '95014'
+                          country: null
+                        relationship:
+                          is_director: true
+                          is_officer: null
+                          is_ten_percent_owner: null
+                          is_other: null
+                          officer_title: null
+                          other_text: null
+                      source_row_index: 1
+                      transaction_code: S
+                      transaction_date: '2026-05-27'
+                      deemed_execution_date: null
+                      transaction_form_type: '4'
+                      security: Common Stock
+                      shares: '50000'
+                      price: '311.02'
+                      transaction_total_value: null
+                      acquired_disposed_code: D
+                      shares_owned_after: '3764576'
+                      ownership_type: direct
+                      nature_of_ownership: null
+                      transaction_timeliness: null
+                      equity_swap_involved: false
+                      conversion_or_exercise_price: null
+                      exercise_date: null
+                      expiration_date: null
+                      underlying_security: null
+                      footnote_ids:
+                      - F1
+                      field_footnote_ids:
+                        price:
+                        - F1
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: pse_000000000203
+                      published_at: '2026-07-31T14:07:00.000Z'
+                      form: '144'
+                      accession_number: 0001140361-26-030001
+                      source_row_index: 1
+                      accepted_at: '2026-07-31T14:06:12.000Z'
+                      reporting_person:
+                        cik: '0002100523'
+                        name: Example Reporting Person
+                        relationships:
+                        - Officer
+                      security: Common Stock
+                      amount: '100'
+                      market_value: '20000.00'
+                      approximate_sale_date: '2026-08-03'
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126030001/0001140361-26-030001-index.htm
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+                proposed_sale_filter:
+                  summary: Proposed-sale notices only
+                  value:
+                    activities:
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: pse_000000000203
+                      published_at: '2026-07-31T14:07:00.000Z'
+                      form: '144'
+                      accession_number: 0001140361-26-030001
+                      source_row_index: 1
+                      accepted_at: '2026-07-31T14:06:12.000Z'
+                      reporting_person:
+                        cik: '0002100523'
+                        name: Example Reporting Person
+                        relationships:
+                        - Officer
+                      security: Common Stock
+                      amount: '100'
+                      market_value: '20000.00'
+                      approximate_sale_date: '2026-08-03'
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126030001/0001140361-26-030001-index.htm
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+                start_now:
+                  summary: Bootstrap future-only polling
+                  value:
+                    activities: []
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+        '400':
+          description: The feed query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderActivityFeedBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: const result = await client.feeds.insiderActivity.listLatest();
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/insider-activity/feed' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+  /v1/insider-transactions/feed:
+    get:
+      tags:
+      - Insider activity
+      operationId: listInsiderTransactionFeed
+      summary: List insider transaction updates
+      description: Returns one feed event per supported Form 4 or Form 5 transaction row, ordered by publication sequence. Use this feed when you only want Form 4 and Form 5 transaction rows, need transaction-code filtering, or want one consistent transaction shape. Without cursor or start, the response contains the most recent matching transactions up to limit and a cursor at the current feed head.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - A
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+            - I
+            - J
+            - K
+            - L
+            - M
+            - O
+            - P
+            - S
+            - U
+            - V
+            - W
+            - X
+            - Z
+          description: Filter by SEC transaction code; comma-separated. Includes all codes by default.
+        required: false
+        description: Filter by SEC transaction code; comma-separated. Includes all codes by default.
+        name: transaction_codes
+        in: query
+        style: form
+        explode: false
+        examples:
+          default:
+            value:
+            - P
+            - S
+            - M
+            x-disabled: false
+      - schema:
+          type: string
+          description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        required: false
+        description: Set to `now` to receive only future updates; cannot be combined with `cursor`
+        name: start
+        in: query
+        examples:
+          default:
+            value: now
+            x-disabled: false
+      - schema:
+          type: string
+          description: Use `next_cursor` from the previous response
+        required: false
+        description: Use `next_cursor` from the previous response
+        name: cursor
+        in: query
+        examples:
+          default:
+            value: cur_request_bound_example
+            x-disabled: false
+      - schema:
+          type: string
+          default: '500'
+          description: Page size from 1 through 1000.
+        required: false
+        description: Page size from 1 through 1000.
+        name: limit
+        in: query
+        examples:
+          default:
+            value: '500'
+            x-disabled: false
+      responses:
+        '200':
+          description: Insider transaction updates
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderTransactionFeedResponse'
+              examples:
+                initial_polling:
+                  summary: Initial polling from the beginning of the feed
+                  value:
+                    transactions:
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: ite_000000000129
+                      published_at: '2026-06-18T13:49:12.000Z'
+                      form: '4'
+                      accession_number: 0001140361-26-023363
+                      row_kind: nonderivative_transaction
+                      accepted_at: '2026-05-29T22:30:27.000Z'
+                      footnotes:
+                      - id: F1
+                        text: This transaction was executed in multiple trades at prices ranging from $310.76 to $311.42; the price reported above reflects the weighted average sale price. The reporting person hereby undertakes to provide full information regarding the number of shares and prices at which the transactions were effected upon request to the SEC staff, Apple, or a security holder of Apple.
+                      reporting_owners:
+                      - cik: 0001214128
+                        name: LEVINSON ARTHUR D
+                        address:
+                          street1: ONE APPLE PARK WAY
+                          street2: null
+                          city: CUPERTINO
+                          state: CA
+                          zip_code: '95014'
+                          country: null
+                        relationship:
+                          is_director: true
+                          is_officer: null
+                          is_ten_percent_owner: null
+                          is_other: null
+                          officer_title: null
+                          other_text: null
+                      source_row_index: 1
+                      transaction_code: S
+                      transaction_date: '2026-05-27'
+                      deemed_execution_date: null
+                      transaction_form_type: '4'
+                      security: Common Stock
+                      shares: '50000'
+                      price: '311.02'
+                      transaction_total_value: null
+                      acquired_disposed_code: D
+                      shares_owned_after: '3764576'
+                      ownership_type: direct
+                      nature_of_ownership: null
+                      transaction_timeliness: null
+                      equity_swap_involved: false
+                      conversion_or_exercise_price: null
+                      exercise_date: null
+                      expiration_date: null
+                      underlying_security: null
+                      footnote_ids:
+                      - F1
+                      field_footnote_ids:
+                        price:
+                        - F1
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+                cursor_polling:
+                  summary: Polling after a returned cursor
+                  value:
+                    transactions:
+                    - issuer:
+                        cik: 0000320193
+                        name: Apple Inc.
+                        ticker: AAPL
+                      feed_event_id: ite_000000000130
+                      published_at: '2026-06-18T13:49:12.000Z'
+                      form: '4'
+                      accession_number: 0001140361-26-023363
+                      row_kind: nonderivative_transaction
+                      accepted_at: '2026-05-29T22:30:27.000Z'
+                      footnotes: []
+                      reporting_owners:
+                      - cik: 0001214128
+                        name: LEVINSON ARTHUR D
+                        address:
+                          street1: ONE APPLE PARK WAY
+                          street2: null
+                          city: CUPERTINO
+                          state: CA
+                          zip_code: '95014'
+                          country: null
+                        relationship:
+                          is_director: true
+                          is_officer: null
+                          is_ten_percent_owner: null
+                          is_other: null
+                          officer_title: null
+                          other_text: null
+                      source_row_index: 2
+                      transaction_code: G
+                      transaction_date: '2026-05-27'
+                      deemed_execution_date: null
+                      transaction_form_type: '4'
+                      security: Common Stock
+                      shares: '65000'
+                      price: '0'
+                      transaction_total_value: null
+                      acquired_disposed_code: D
+                      shares_owned_after: '3699576'
+                      ownership_type: direct
+                      nature_of_ownership: null
+                      transaction_timeliness: null
+                      equity_swap_involved: false
+                      conversion_or_exercise_price: null
+                      exercise_date: null
+                      expiration_date: null
+                      underlying_security: null
+                      footnote_ids: []
+                      field_footnote_ids: {}
+                      sec_url: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+                start_now:
+                  summary: Bootstrap future-only polling
+                  value:
+                    transactions: []
+                    next_cursor: cur_request_bound_example
+                    has_more: false
+        '400':
+          description: The feed query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsiderTransactionFeedBadRequestResponse'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetNotEntitledErrorResponse'
+        '429':
+          description: The request exceeded a rate limit
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: const result = await client.feeds.insiderTransactions.listLatest();
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/insider-transactions/feed' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    InsiderTransactionFeedBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_cursor
+          - invalid_limit
+          - invalid_start
+          - invalid_transaction_codes
+          - unsupported_cursor
+          example: invalid_cursor
+      required:
+      - error
+    InsiderTransactionListItem:
+      type: object
+      properties:
+        issuer:
+          $ref: '#/components/schemas/InsiderIssuer'
+        accession_number:
+          type: string
+          example: 0001140361-26-023363
+        row_kind:
+          type: string
+          enum:
+          - nonderivative_transaction
+          - derivative_transaction
+          example: nonderivative_transaction
+          description: SEC ownership table containing the transaction row.
+        source_row_index:
+          type: integer
+          exclusiveMinimum: 0
+          example: 1
+          description: One-based row position within the filing's derivative or non-derivative transaction table.
+        transaction_code:
+          type: string
+          enum:
+          - A
+          - C
+          - D
+          - E
+          - F
+          - G
+          - H
+          - I
+          - J
+          - K
+          - L
+          - M
+          - O
+          - P
+          - S
+          - U
+          - V
+          - W
+          - X
+          - Z
+          example: S
+          description: 'SEC transaction code: P purchase; S sale; A grant or award; D disposition to issuer; F tax or exercise-price payment with securities; I discretionary Rule 16b-3 transaction; M exempt derivative exercise or conversion; C derivative conversion; E short-position expiration; H long-position expiration or cancellation with value; O out-of-the-money exercise; X in- or at-the-money exercise; G gift; L small acquisition; W inheritance; Z voting-trust transfer; J other event explained in the filing; K equity swap; U tender in a change of control; V voluntary early report.'
+        accepted_at:
+          type: string
+          format: date-time
+          example: '2026-05-29T22:30:27.000Z'
+          description: SEC acceptance timestamp for the containing filing.
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-27'
+          description: Transaction date reported in the filing, or null when absent.
+        deemed_execution_date:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: Deemed execution date reported for the transaction, or null when not applicable or absent.
+        transaction_form_type:
+          type:
+          - string
+          - 'null'
+          example: '4'
+          description: Row-level SEC form timing code, or null when not stated. This can differ from the containing document form.
+        security:
+          type:
+          - string
+          - 'null'
+          example: Common Stock
+        shares:
+          type:
+          - string
+          - 'null'
+          example: '50000'
+        price:
+          type:
+          - string
+          - 'null'
+          example: '311.02'
+        transaction_total_value:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: SEC transactionTotalValue when present. This value is not computed by the API.
+        acquired_disposed_code:
+          type:
+          - string
+          - 'null'
+          example: D
+          description: A when securities were acquired, D when disposed, or null when not stated.
+        shares_owned_after:
+          type:
+          - string
+          - 'null'
+          example: '3764576'
+        ownership_type:
+          type:
+          - string
+          - 'null'
+          example: direct
+          description: 'Normalized ownership value: direct for direct beneficial ownership, indirect for ownership through another person or entity, or null when not stated.'
+        nature_of_ownership:
+          type:
+          - string
+          - 'null'
+          example: null
+        transaction_timeliness:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: E for early, L for late, or null when the filing does not state transaction timeliness.
+        equity_swap_involved:
+          type:
+          - boolean
+          - 'null'
+          example: false
+        conversion_or_exercise_price:
+          type:
+          - string
+          - 'null'
+          example: null
+        exercise_date:
+          type:
+          - string
+          - 'null'
+          example: null
+        expiration_date:
+          type:
+          - string
+          - 'null'
+          example: null
+        underlying_security:
+          $ref: '#/components/schemas/InsiderUnderlyingSecurity'
+        footnote_ids:
+          type: array
+          items:
+            type: string
+          example:
+          - F1
+          description: All document-level footnote IDs referenced by fields on this row.
+        field_footnote_ids:
+          $ref: '#/components/schemas/InsiderFieldFootnoteIds'
+        footnotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionFootnote'
+        reporting_owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionReportingOwner'
+          description: Reporting owners listed on the SEC filing that contains this transaction. These owners are filing-level context and are not guaranteed to identify the owner of this exact transaction row.
+        sec_url:
+          type: string
+          example: https://www.sec.gov/Archives/edgar/data/320193/000114036126023363/0001140361-26-023363-index.htm
+      required:
+      - issuer
+      - accession_number
+      - row_kind
+      - source_row_index
+      - transaction_code
+      - accepted_at
+      - transaction_date
+      - deemed_execution_date
+      - transaction_form_type
+      - security
+      - shares
+      - price
+      - transaction_total_value
+      - acquired_disposed_code
+      - shares_owned_after
+      - ownership_type
+      - nature_of_ownership
+      - transaction_timeliness
+      - equity_swap_involved
+      - conversion_or_exercise_price
+      - exercise_date
+      - expiration_date
+      - underlying_security
+      - footnote_ids
+      - field_footnote_ids
+      - footnotes
+      - reporting_owners
+      - sec_url
+    InsiderIssuer:
+      type: object
+      properties:
+        cik:
+          type: string
+          example: 0000320193
+          description: SEC CIK of the issuer whose securities are reported.
+        name:
+          type:
+          - string
+          - 'null'
+          example: Apple Inc.
+          description: Issuer name reported in the filing, or null when absent.
+        ticker:
+          type:
+          - string
+          - 'null'
+          example: AAPL
+          description: Issuer trading symbol reported in the filing, or null.
+      required:
+      - cik
+      - name
+      - ticker
+    InsiderFilingTransactionRow:
+      type: object
+      properties:
+        source_row_index:
+          type: integer
+          exclusiveMinimum: 0
+          example: 1
+          description: One-based row position within the filing's derivative or non-derivative transaction table.
+        transaction_code:
+          type: string
+          enum:
+          - A
+          - C
+          - D
+          - E
+          - F
+          - G
+          - H
+          - I
+          - J
+          - K
+          - L
+          - M
+          - O
+          - P
+          - S
+          - U
+          - V
+          - W
+          - X
+          - Z
+          example: S
+          description: 'SEC transaction code: P purchase; S sale; A grant or award; D disposition to issuer; F tax or exercise-price payment with securities; I discretionary Rule 16b-3 transaction; M exempt derivative exercise or conversion; C derivative conversion; E short-position expiration; H long-position expiration or cancellation with value; O out-of-the-money exercise; X in- or at-the-money exercise; G gift; L small acquisition; W inheritance; Z voting-trust transfer; J other event explained in the filing; K equity swap; U tender in a change of control; V voluntary early report.'
+        transaction_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-27'
+          description: Transaction date reported in the filing, or null when absent.
+        deemed_execution_date:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: Deemed execution date reported for the transaction, or null when not applicable or absent.
+        transaction_form_type:
+          type:
+          - string
+          - 'null'
+          example: '4'
+          description: Row-level SEC form timing code, or null when not stated. This can differ from the containing document form.
+        security:
+          type:
+          - string
+          - 'null'
+          example: Common Stock
+        shares:
+          type:
+          - string
+          - 'null'
+          example: '50000'
+        price:
+          type:
+          - string
+          - 'null'
+          example: '311.02'
+        transaction_total_value:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: SEC transactionTotalValue when present. This value is not computed by the API.
+        acquired_disposed_code:
+          type:
+          - string
+          - 'null'
+          example: D
+          description: A when securities were acquired, D when disposed, or null when not stated.
+        shares_owned_after:
+          type:
+          - string
+          - 'null'
+          example: '3764576'
+        ownership_type:
+          type:
+          - string
+          - 'null'
+          example: direct
+          description: 'Normalized ownership value: direct for direct beneficial ownership, indirect for ownership through another person or entity, or null when not stated.'
+        nature_of_ownership:
+          type:
+          - string
+          - 'null'
+          example: null
+        transaction_timeliness:
+          type:
+          - string
+          - 'null'
+          example: null
+          description: E for early, L for late, or null when the filing does not state transaction timeliness.
+        equity_swap_involved:
+          type:
+          - boolean
+          - 'null'
+          example: false
+        conversion_or_exercise_price:
+          type:
+          - string
+          - 'null'
+          example: null
+        exercise_date:
+          type:
+          - string
+          - 'null'
+          example: null
+        expiration_date:
+          type:
+          - string
+          - 'null'
+          example: null
+        underlying_security:
+          $ref: '#/components/schemas/InsiderUnderlyingSecurity'
+        footnote_ids:
+          type: array
+          items:
+            type: string
+          example:
+          - F1
+          description: All document-level footnote IDs referenced by fields on this row.
+        field_footnote_ids:
+          $ref: '#/components/schemas/InsiderFieldFootnoteIds'
+      required:
+      - source_row_index
+      - transaction_code
+      - transaction_date
+      - deemed_execution_date
+      - transaction_form_type
+      - security
+      - shares
+      - price
+      - transaction_total_value
+      - acquired_disposed_code
+      - shares_owned_after
+      - ownership_type
+      - nature_of_ownership
+      - transaction_timeliness
+      - equity_swap_involved
+      - conversion_or_exercise_price
+      - exercise_date
+      - expiration_date
+      - underlying_security
+      - footnote_ids
+      - field_footnote_ids
+    InsiderTransactionFootnote:
+      type: object
+      properties:
+        id:
+          type: string
+          example: F1
+          description: Document-level footnote identifier.
+        text:
+          type:
+          - string
+          - 'null'
+          example: This transaction was executed in multiple trades at prices ranging from $310.76 to $311.42; the price reported above reflects the weighted average sale price. The reporting person hereby undertakes to provide full information regarding the number of shares and prices at which the transactions were effected upon request to the SEC staff, Apple, or a security holder of Apple.
+          description: Filed footnote text, or null when the referenced text is absent.
+      required:
+      - id
+      - text
+    InsiderTransactionFeedResponse:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionFeedEvent'
+        next_cursor:
+          type: string
+          example: cur_request_bound_example
+          description: Cursor to send after the current page has been processed successfully.
+        has_more:
+          type: boolean
+          example: false
+          description: Whether another page is already available after next_cursor.
+      required:
+      - transactions
+      - next_cursor
+      - has_more
+    InsiderActivityFeedResponse:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderActivity'
+        next_cursor:
+          type: string
+          example: cur_request_bound_example
+          description: Cursor to send after the current page has been processed successfully.
+        has_more:
+          type: boolean
+          example: false
+          description: Whether another matching page is already available after next_cursor.
+      required:
+      - activities
+      - next_cursor
+      - has_more
+    InitialOwnershipActivity:
+      type: object
+      properties:
+        issuer:
+          $ref: '#/components/schemas/InsiderIssuer'
+        feed_event_id:
+          type: string
+          example: iae_000000000201
+          description: Stable idempotency key for this initial ownership statement event.
+        published_at:
+          type: string
+          format: date-time
+          example: '2026-07-31T14:05:00.000Z'
+          description: Timestamp assigned to the database transaction that published this activity.
+        form:
+          type: string
+          enum:
+          - '3'
+          - 3/A
+          example: '3'
+        accession_number:
+          type: string
+          example: 0001214128-26-000003
+        accepted_at:
+          type: string
+          format: date-time
+          example: '2026-07-31T14:03:12.000Z'
+          description: SEC acceptance timestamp for the filing.
+        event_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-07-30'
+          description: Source event date reported by the initial ownership statement. It does not state when a holding was acquired.
+        reporting_owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionReportingOwner'
+        no_securities_owned:
+          type:
+          - boolean
+          - 'null'
+          example: false
+          description: Source statement that the reporting owner held no securities, or null when not stated.
+        non_derivative_holding_count:
+          type: integer
+          minimum: 0
+          example: 1
+        derivative_holding_count:
+          type: integer
+          minimum: 0
+          example: 0
+        sec_url:
+          type: string
+          example: https://www.sec.gov/Archives/edgar/data/320193/000121412826000003/0001214128-26-000003-index.htm
+      required:
+      - issuer
+      - feed_event_id
+      - published_at
+      - form
+      - accession_number
+      - accepted_at
+      - event_date
+      - reporting_owners
+      - no_securities_owned
+      - non_derivative_holding_count
+      - derivative_holding_count
+      - sec_url
+    InsiderActivity:
+      oneOf:
+      - $ref: '#/components/schemas/InitialOwnershipActivity'
+      - $ref: '#/components/schemas/OwnershipTransactionActivity'
+      - $ref: '#/components/schemas/ProposedSaleNoticeActivity'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: unauthorized
+      required:
+      - error
+    InsiderFilingDocument:
+      type: object
+      properties:
+        issuer:
+          $ref: '#/components/schemas/InsiderIssuer'
+        accession_number:
+          type: string
+        form:
+          type: string
+          enum:
+          - '3'
+          - '4'
+          - '5'
+          - 3/A
+          - 4/A
+          - 5/A
+        accepted_at:
+          type: string
+          format: date-time
+        period_of_report:
+          type:
+          - string
+          - 'null'
+        date_of_original_submission:
+          type:
+          - string
+          - 'null'
+        not_subject_to_section_16:
+          type:
+          - boolean
+          - 'null'
+        rule_10b5_1:
+          type:
+          - boolean
+          - 'null'
+        remarks:
+          type:
+          - string
+          - 'null'
+        reporting_owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionReportingOwner'
+        owner_signatures:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+              date:
+                type:
+                - string
+                - 'null'
+            required:
+            - name
+            - date
+        footnotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionFootnote'
+        non_derivative_transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderFilingTransactionRow'
+        derivative_transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderFilingTransactionRow'
+        non_derivative_holdings:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderOwnershipHoldingRow'
+        derivative_holdings:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderOwnershipHoldingRow'
+        sec_url:
+          type: string
+      required:
+      - issuer
+      - accession_number
+      - form
+      - accepted_at
+      - period_of_report
+      - date_of_original_submission
+      - not_subject_to_section_16
+      - rule_10b5_1
+      - remarks
+      - reporting_owners
+      - owner_signatures
+      - footnotes
+      - non_derivative_transactions
+      - derivative_transactions
+      - non_derivative_holdings
+      - derivative_holdings
+      - sec_url
+    DatasetNotEntitledErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - dataset_not_entitled
+      required:
+      - error
+    InsiderReportingOwnerAddress:
+      type: object
+      properties:
+        street1:
+          type:
+          - string
+          - 'null'
+          example: ONE APPLE PARK WAY
+        street2:
+          type:
+          - string
+          - 'null'
+          example: null
+        city:
+          type:
+          - string
+          - 'null'
+          example: CUPERTINO
+        state:
+          type:
+          - string
+          - 'null'
+          example: CA
+        zip_code:
+          type:
+          - string
+          - 'null'
+          example: '95014'
+        country:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - street1
+      - street2
+      - city
+      - state
+      - zip_code
+      - country
+    InsiderTransactionFeedEvent:
+      allOf:
+      - $ref: '#/components/schemas/InsiderTransactionListItem'
+      - type: object
+        properties:
+          feed_event_id:
+            type: string
+            example: ite_000000000129
+            description: Stable idempotency key for this published transaction event.
+          published_at:
+            type: string
+            example: '2026-06-18T13:49:12.000Z'
+            description: Timestamp assigned to the database transaction that published this event to the feed.
+          form:
+            type: string
+            enum:
+            - '4'
+            - '5'
+            - 4/A
+            - 5/A
+            example: '4'
+            description: Filed SEC form that contains the transaction row.
+        required:
+        - feed_event_id
+        - published_at
+        - form
+    InsiderReportingOwnerRelationship:
+      type: object
+      properties:
+        is_director:
+          type:
+          - boolean
+          - 'null'
+          example: true
+          description: Whether the filing identifies the owner as a director, or null when not stated.
+        is_officer:
+          type:
+          - boolean
+          - 'null'
+          example: null
+          description: Whether the filing identifies the owner as an officer, or null when not stated.
+        is_ten_percent_owner:
+          type:
+          - boolean
+          - 'null'
+          example: null
+          description: Whether the filing identifies the owner as a ten-percent owner, or null when not stated.
+        is_other:
+          type:
+          - boolean
+          - 'null'
+          example: null
+          description: Whether the filing identifies another Section 16 relationship, or null when not stated.
+        officer_title:
+          type:
+          - string
+          - 'null'
+          example: null
+        other_text:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - is_director
+      - is_officer
+      - is_ten_percent_owner
+      - is_other
+      - officer_title
+      - other_text
+    InsiderUnderlyingSecurity:
+      type:
+      - object
+      - 'null'
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+          example: Class A Common Stock
+        shares:
+          type:
+          - string
+          - 'null'
+          example: '2500'
+        value:
+          type:
+          - string
+          - 'null'
+          example: null
+      required:
+      - title
+      - shares
+      - value
+    OwnershipTransactionActivity:
+      allOf:
+      - $ref: '#/components/schemas/InsiderTransactionListItem'
+      - type: object
+        properties:
+          feed_event_id:
+            type: string
+            example: ite_000000000129
+            description: Stable idempotency key for this published transaction event.
+          published_at:
+            type: string
+            example: '2026-06-18T13:49:12.000Z'
+            description: Timestamp assigned to the database transaction that published this event to the feed.
+          form:
+            type: string
+            enum:
+            - '4'
+            - '5'
+            - 4/A
+            - 5/A
+            example: '4'
+            description: Filed SEC form that contains the transaction row.
+        required:
+        - feed_event_id
+        - published_at
+        - form
+    ProposedSaleNoticeActivity:
+      type: object
+      properties:
+        issuer:
+          $ref: '#/components/schemas/InsiderIssuer'
+        feed_event_id:
+          type: string
+          example: pse_000000000203
+          description: Stable idempotency key for this proposed-sale activity.
+        published_at:
+          type: string
+          format: date-time
+          example: '2026-07-31T14:07:00.000Z'
+        form:
+          type: string
+          enum:
+          - '144'
+          - 144/A
+          example: '144'
+        accession_number:
+          type: string
+          example: 0001140361-26-030001
+        source_row_index:
+          type: integer
+          exclusiveMinimum: 0
+          example: 1
+        accepted_at:
+          type: string
+          format: date-time
+          example: '2026-07-31T14:06:12.000Z'
+        reporting_person:
+          type: object
+          properties:
+            cik:
+              type: string
+              example: '0002100523'
+            name:
+              type: string
+              example: Example Reporting Person
+            relationships:
+              type: array
+              items:
+                type: string
+              example:
+              - Officer
+          required:
+          - cik
+          - name
+          - relationships
+        security:
+          type: string
+          example: Common Stock
+        amount:
+          type: string
+          example: '100'
+        market_value:
+          type: string
+          example: '20000.00'
+        approximate_sale_date:
+          type: string
+          example: '2026-08-03'
+        sec_url:
+          type: string
+          example: https://www.sec.gov/Archives/edgar/data/320193/000114036126030001/0001140361-26-030001-index.htm
+      required:
+      - issuer
+      - feed_event_id
+      - published_at
+      - form
+      - accession_number
+      - source_row_index
+      - accepted_at
+      - reporting_person
+      - security
+      - amount
+      - market_value
+      - approximate_sale_date
+      - sec_url
+    InsiderTransactionReportingOwner:
+      type: object
+      properties:
+        cik:
+          type: string
+          example: 0001214128
+        name:
+          type:
+          - string
+          - 'null'
+          example: LEVINSON ARTHUR D
+        address:
+          $ref: '#/components/schemas/InsiderReportingOwnerAddress'
+        relationship:
+          $ref: '#/components/schemas/InsiderReportingOwnerRelationship'
+      required:
+      - cik
+      - name
+      - address
+      - relationship
+    ProposedSaleFilingDetail:
+      type: object
+      properties:
+        issuer:
+          type: object
+          properties:
+            cik:
+              type: string
+            name:
+              type:
+              - string
+              - 'null'
+            ticker:
+              type:
+              - string
+              - 'null'
+          required:
+          - cik
+          - name
+          - ticker
+        accession_number:
+          type: string
+        form:
+          type: string
+          enum:
+          - '144'
+          - 144/A
+        accepted_at:
+          type: string
+        previous_accession_number:
+          type:
+          - string
+          - 'null'
+        reporting_person:
+          type: object
+          properties:
+            cik:
+              type: string
+            name:
+              type: string
+            relationships:
+              type: array
+              items:
+                type: string
+          required:
+          - cik
+          - name
+          - relationships
+        proposed_sales:
+          type: array
+          items:
+            type: object
+            properties:
+              source_row_index:
+                type: integer
+                exclusiveMinimum: 0
+              security:
+                type: string
+              amount:
+                type: string
+              market_value:
+                type: string
+              amount_outstanding:
+                type: string
+              approximate_sale_date:
+                type: string
+              broker_or_market_maker:
+                type: string
+              intended_sale_exchange:
+                type: string
+            required:
+            - source_row_index
+            - security
+            - amount
+            - market_value
+            - amount_outstanding
+            - approximate_sale_date
+            - broker_or_market_maker
+            - intended_sale_exchange
+        securities_to_be_sold:
+          type: array
+          items:
+            type: object
+            properties:
+              source_row_index:
+                type: integer
+                exclusiveMinimum: 0
+              security:
+                type: string
+              acquisition_date:
+                type: string
+              acquisition_method:
+                type: string
+              acquired_from:
+                type:
+                - string
+                - 'null'
+              is_gift:
+                type: boolean
+              amount:
+                type: string
+              donor_acquisition_date:
+                type:
+                - string
+                - 'null'
+              payment_date:
+                type:
+                - string
+                - 'null'
+              payment_method:
+                type: string
+            required:
+            - source_row_index
+            - security
+            - acquisition_date
+            - acquisition_method
+            - acquired_from
+            - is_gift
+            - amount
+            - donor_acquisition_date
+            - payment_date
+            - payment_method
+        nothing_to_report:
+          type: boolean
+        past_three_month_sales:
+          type: array
+          items:
+            type: object
+            properties:
+              source_row_index:
+                type: integer
+                exclusiveMinimum: 0
+              seller:
+                type: string
+              security:
+                type: string
+              sale_date:
+                type: string
+              amount:
+                type: string
+              gross_proceeds:
+                type: string
+            required:
+            - source_row_index
+            - seller
+            - security
+            - sale_date
+            - amount
+            - gross_proceeds
+        remarks:
+          type:
+          - string
+          - 'null'
+        notice:
+          type: object
+          properties:
+            date:
+              type: string
+            plan_adoption_dates:
+              type: array
+              items:
+                type: string
+            signature:
+              type: string
+          required:
+          - date
+          - plan_adoption_dates
+          - signature
+        sec_url:
+          type: string
+      required:
+      - issuer
+      - accession_number
+      - form
+      - accepted_at
+      - previous_accession_number
+      - reporting_person
+      - proposed_sales
+      - securities_to_be_sold
+      - nothing_to_report
+      - past_three_month_sales
+      - remarks
+      - notice
+      - sec_url
+    InsiderFieldFootnoteIds:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      description: Map from API field name to the document-level footnote IDs that qualify that field. An absent key means the field has no filed footnote reference.
+    ProposedSalesResponse:
+      type: object
+      properties:
+        proposed_sales:
+          type: array
+          items:
+            type: object
+            properties:
+              issuer:
+                type: object
+                properties:
+                  cik:
+                    type: string
+                  name:
+                    type:
+                    - string
+                    - 'null'
+                  ticker:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - cik
+                - name
+                - ticker
+              accession_number:
+                type: string
+              source_row_index:
+                type: integer
+                exclusiveMinimum: 0
+              accepted_at:
+                type: string
+              reporting_person:
+                type: object
+                properties:
+                  cik:
+                    type: string
+                  name:
+                    type: string
+                  relationships:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - cik
+                - name
+                - relationships
+              security:
+                type: string
+              amount:
+                type: string
+              market_value:
+                type: string
+              approximate_sale_date:
+                type: string
+              sec_url:
+                type: string
+            required:
+            - issuer
+            - accession_number
+            - source_row_index
+            - accepted_at
+            - reporting_person
+            - security
+            - amount
+            - market_value
+            - approximate_sale_date
+            - sec_url
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - proposed_sales
+      - next_cursor
+      - has_more
+    InsiderTransactionsResponse:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsiderTransactionListItem'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        has_more:
+          type: boolean
+      required:
+      - transactions
+      - next_cursor
+      - has_more
+    InsiderOwnershipHoldingRow:
+      type: object
+      properties:
+        source_row_index:
+          type: integer
+          exclusiveMinimum: 0
+        late_holding_form_type:
+          type:
+          - string
+          - 'null'
+        security:
+          type:
+          - string
+          - 'null'
+        shares_owned_after:
+          type:
+          - string
+          - 'null'
+        value_owned_after:
+          type:
+          - string
+          - 'null'
+        ownership_type:
+          type:
+          - string
+          - 'null'
+        nature_of_ownership:
+          type:
+          - string
+          - 'null'
+        conversion_or_exercise_price:
+          type:
+          - string
+          - 'null'
+        exercise_date:
+          type:
+          - string
+          - 'null'
+        expiration_date:
+          type:
+          - string
+          - 'null'
+        underlying_security:
+          $ref: '#/components/schemas/InsiderUnderlyingSecurity'
+        footnote_ids:
+          type: array
+          items:
+            type: string
+        field_footnote_ids:
+          $ref: '#/components/schemas/InsiderFieldFootnoteIds'
+      required:
+      - source_row_index
+      - late_holding_form_type
+      - security
+      - shares_owned_after
+      - value_owned_after
+      - ownership_type
+      - nature_of_ownership
+      - footnote_ids
+      - field_footnote_ids
+    InsiderTransactionsBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_cursor
+          - invalid_transaction_codes
+          - invalid_query_parameters
+          - invalid_limit
+          - invalid_date_window
+          example: invalid_tickers
+      required:
+      - error
+    InsiderActivityFeedBadRequestResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_forms
+          - invalid_cursor
+          - invalid_limit
+          - invalid_start
+          - unsupported_cursor
+          example: invalid_forms
+      required:
+      - error
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.

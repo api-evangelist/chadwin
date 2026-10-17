@@ -1,0 +1,726 @@
+openapi: 3.2.0
+info:
+  title: Chadwin Company KPIs API
+  version: v1
+  description: Explore the available endpoints, view their parameters and response fields, and see example requests and responses. For help understanding the datasets and planning your integration, read the guides.
+servers:
+- url: https://api.chadwin.co
+tags:
+- name: Company KPIs
+  description: Issuer-specific operating KPIs with annual, half-year and quarterly values from original SEC filing documents. Free subscriber beta.
+  externalDocs:
+    description: Read the Company KPI guide
+    url: https://chadwin.co/docs/company-kpis
+paths:
+  /v1/companies/kpis:
+    get:
+      tags:
+      - Company KPIs
+      operationId: getCompanyKpis
+      summary: Get company KPIs
+      description: Returns company KPIs with original SEC citations.
+      security:
+      - bearerAuth: []
+      parameters:
+      - schema:
+          type: string
+          description: Supply one ticker; letters normalize to uppercase.
+          example: IBM
+        required: false
+        description: Supply one ticker; letters normalize to uppercase.
+        name: ticker
+        in: query
+      - schema:
+          type: string
+          description: Supply one CIK; CIKs normalize to ten digits.
+          example: '0000051143'
+        required: false
+        description: Supply one CIK; CIKs normalize to ten digits.
+        name: cik
+        in: query
+      - schema:
+          type: integer
+          minimum: 1900
+          maximum: 2100
+          description: One fiscal year; cannot be combined with limit.
+          example: 2025
+        required: false
+        description: One fiscal year; cannot be combined with limit.
+        name: fiscal_year
+        in: query
+      - schema:
+          type: string
+          enum:
+          - annual
+          - half_year
+          - quarterly
+          description: Reporting period type. Defaults to annual.
+          example: quarterly
+          x-enumDescriptions:
+            annual: FY values
+            half_year: H1 and H2 values
+            quarterly: Q1, Q2, Q3 and Q4 values
+        required: false
+        description: Reporting period type. Defaults to annual.
+        name: period
+        in: query
+      - schema:
+          type: integer
+          minimum: 1
+          maximum: 80
+          description: Consecutive reporting periods to return, ending at the latest reported period of the selected type. Unreviewed periods are omitted without extending the window. Defaults to 1.
+          example: 8
+        required: false
+        description: Consecutive reporting periods to return, ending at the latest reported period of the selected type. Unreviewed periods are omitted without extending the window. Defaults to 1.
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Company KPI history
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisResponse'
+              example:
+                issuer:
+                  cik: 0000104169
+                  name: Walmart Inc.
+                  ticker: WMT
+                periods:
+                - fiscal_year: 2025
+                  fiscal_period: FY
+                  kpis:
+                  - kpi_id: 0000104169.distribution_facilities
+                    group: Supply Chain
+                    name: Distribution facilities worldwide
+                    definition: Distribution facilities in Walmart’s worldwide supply chain, including fulfillment and return facilities and third-party-operated facilities where reported
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '379'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.global_pickup_delivery
+                    group: Pickup and Delivery
+                    name: Pickup or delivery locations worldwide
+                    definition: Walmart locations worldwide offering pickup or delivery services, reported as a combined network
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '8000'
+                    value_operator: gt
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 1. Business — Global omni-channel operations
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.international_distribution_facilities
+                    group: Supply Chain
+                    name: International distribution facilities
+                    definition: Distribution facilities reported for Walmart International, including fulfillment and third-party-operated facilities where reported
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '184'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.international_pickup_delivery
+                    group: Pickup and Delivery
+                    name: International pickup or delivery locations
+                    definition: Walmart International locations offering pickup or delivery services, reported as a combined network
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '2900'
+                    value_operator: approx
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 1. Business — Walmart International
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.international_retail_area
+                    group: Retail Footprint
+                    name: International retail floor area
+                    definition: Reported retail floor area of Walmart International retail units at local reporting year ends
+                    unit: square feet
+                    period_end_date: '2025-01-31'
+                    value: '274420000'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.international_retail_units
+                    group: Retail Footprint
+                    name: International retail units
+                    definition: Stores, wholesale clubs and other retail units operated by Walmart International at local reporting year ends; Canada reports in January and most other markets in December
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '5566'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.retail_area
+                    group: Retail Footprint
+                    name: Retail floor area worldwide
+                    definition: Reported retail floor area across Walmart’s stores and clubs worldwide at local reporting year ends
+                    unit: square feet
+                    period_end_date: '2025-01-31'
+                    value: '1052720000'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.retail_units
+                    group: Retail Footprint
+                    name: Retail units worldwide
+                    definition: Stores, clubs and other retail units operated by Walmart worldwide at their local reporting year ends
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '10771'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.sams_clubs
+                    group: Retail Footprint
+                    name: Sam’s Club U.S. clubs
+                    definition: Membership warehouse clubs operated by Sam’s Club in the U.S. and Puerto Rico at fiscal year end
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '600'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.sams_distribution_facilities
+                    group: Supply Chain
+                    name: Sam’s Club U.S. distribution facilities
+                    definition: Dedicated distribution facilities reported for Sam’s Club U.S., including fulfillment and third-party-operated facilities where reported
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '31'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.sams_ecommerce_fulfillment_centers
+                    group: Supply Chain
+                    name: Sam’s Club U.S. eCommerce fulfillment centers
+                    definition: Dedicated eCommerce fulfillment centers serving Sam’s Club U.S.; includes temporary centers when reported as part of the operating network
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '14'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 1. Business
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.sams_retail_area
+                    group: Retail Footprint
+                    name: Sam’s Club U.S. retail floor area
+                    definition: Reported retail floor area of Sam’s Club U.S. clubs at fiscal year end
+                    unit: square feet
+                    period_end_date: '2025-01-31'
+                    value: '80351000'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.us_discount_stores
+                    group: Retail Footprint
+                    name: Walmart U.S. discount stores
+                    definition: Walmart U.S. discount stores operated at fiscal year end
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '355'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.us_ecommerce_fulfillment_centers
+                    group: Supply Chain
+                    name: Walmart U.S. eCommerce fulfillment centers
+                    definition: Dedicated eCommerce fulfillment centers serving Walmart U.S.; includes temporary centers when reported as part of the operating network
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '29'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 1. Business
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.us_retail_area
+                    group: Retail Footprint
+                    name: Walmart U.S. retail floor area
+                    definition: Reported retail floor area of Walmart U.S. stores at fiscal year end
+                    unit: square feet
+                    period_end_date: '2025-01-31'
+                    value: '697949000'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.us_small_formats
+                    group: Retail Footprint
+                    name: Walmart U.S. small-format stores
+                    definition: Walmart U.S. Neighborhood Markets and other small-format stores operated at fiscal year end
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '691'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.us_supercenters
+                    group: Retail Footprint
+                    name: Walmart U.S. supercenters
+                    definition: Walmart U.S. supercenters operated at fiscal year end
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '3559'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.walmart_us_distribution_facilities
+                    group: Supply Chain
+                    name: Walmart U.S. distribution facilities
+                    definition: Distribution facilities reported for the Walmart U.S. segment, including fulfillment, return and third-party-operated facilities where reported
+                    unit: facilities
+                    period_end_date: '2025-01-31'
+                    value: '164'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.walmart_us_stores
+                    group: Retail Footprint
+                    name: Walmart U.S. stores
+                    definition: Stores operated by the Walmart U.S. segment at fiscal year end
+                    unit: locations
+                    period_end_date: '2025-01-31'
+                    value: '4605'
+                    value_operator: eq
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 2. Properties — Retail units and distribution facilities
+                      xbrl_concept: null
+                  - kpi_id: 0000104169.weekly_customers
+                    group: Customer Scale
+                    name: Weekly customers
+                    definition: Customers served each week through Walmart stores and eCommerce websites worldwide
+                    unit: customers
+                    period_end_date: '2025-01-31'
+                    value: '270000000'
+                    value_operator: approx
+                    source:
+                      type: sec_filing
+                      form: 10-K
+                      accession_number: 0000104169-25-000021
+                      document: wmt-20250131.htm
+                      location: Item 1. Business
+                      xbrl_concept: null
+        '400':
+          description: The identifier or query parameters are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisBadRequest'
+        '401':
+          description: The request is missing a valid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisUnauthorized'
+        '403':
+          description: The subscription does not include this dataset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisNotEntitled'
+        '404':
+          description: No company matches the requested ticker
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisCompanyNotFound'
+        '409':
+          description: The ticker matches more than one retained CIK and has no explicit resolving override
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisTickerAmbiguous'
+        '429':
+          description: The request exceeded a rate limit or monthly quota
+          headers:
+            Retry-After:
+              schema:
+                type: string
+            RateLimit-Limit:
+              schema:
+                type: string
+            RateLimit-Reset:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Limit:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Remaining:
+              schema:
+                type: string
+            X-Billing-Period-Quota-Reset:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisTooManyRequests'
+        '500':
+          description: A stored result cannot map to the public schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisInternalError'
+        '503':
+          description: The database is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyKpisUnavailable'
+      x-codeSamples:
+      - label: Node.js
+        lang: JavaScript
+        source: 'const result = await client.companyKpis.get({ ticker: "WMT", fiscalYear: 2025, period: "annual" });'
+      - label: curl
+        lang: Shell
+        source: "curl 'https://api.chadwin.co/v1/companies/kpis?ticker=WMT&fiscal_year=2025&period=annual' \\\n  -H 'Authorization: Bearer YOUR_API_KEY'"
+components:
+  schemas:
+    CompanyKpisInternalError:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - internal_server_error
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpisUnauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpiSource:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - sec_filing
+        form:
+          type: string
+          enum:
+          - 10-K
+          - 10-K/A
+          - 10-Q
+          - 10-Q/A
+          - 20-F
+          - 20-F/A
+          - 40-F
+          - 40-F/A
+          - 8-K
+          - 8-K/A
+          - 6-K
+          - 6-K/A
+        accession_number:
+          type: string
+          pattern: ^[0-9]{10}-[0-9]{2}-[0-9]{6}$
+        document:
+          type: string
+          pattern: ^[A-Za-z0-9][A-Za-z0-9._-]*$
+          description: Exact filename in the original SEC filing package, including substantive exhibits. Independent of Chadwin report rendering.
+        location:
+          type: string
+          minLength: 1
+          pattern: \S
+          description: Human-readable section, table or passage in the original SEC document.
+        xbrl_concept:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          pattern: \S
+      required:
+      - type
+      - form
+      - accession_number
+      - document
+      - location
+      - xbrl_concept
+      additionalProperties: false
+    CompanyKpisCompanyNotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - company_not_found
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpisUnavailable:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - database_unavailable
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpisResponse:
+      type: object
+      properties:
+        issuer:
+          type: object
+          properties:
+            cik:
+              type: string
+              pattern: ^[0-9]{10}$
+            name:
+              type:
+              - string
+              - 'null'
+            ticker:
+              type:
+              - string
+              - 'null'
+          required:
+          - cik
+          - name
+          - ticker
+          additionalProperties: false
+        periods:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyKpiPeriod'
+          description: Completed reviews only. An empty kpis array means the period was reviewed and no eligible values were found. An omitted period has not completed review.
+      required:
+      - issuer
+      - periods
+      additionalProperties: false
+    CompanyKpisTickerAmbiguous:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - company_ambiguous
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpisTooManyRequests:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - rate_limited
+          - billing_period_quota_exceeded
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpiPeriod:
+      type: object
+      properties:
+        fiscal_year:
+          type: integer
+          exclusiveMinimum: 0
+        fiscal_period:
+          type: string
+          enum:
+          - FY
+          - H1
+          - H2
+          - Q1
+          - Q2
+          - Q3
+          - Q4
+        kpis:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyKpi'
+      required:
+      - fiscal_year
+      - fiscal_period
+      - kpis
+      additionalProperties: false
+    CompanyKpisBadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - invalid_query_parameters
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpisNotEntitled:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - dataset_not_entitled
+      required:
+      - error
+      additionalProperties: false
+    CompanyKpi:
+      type: object
+      properties:
+        kpi_id:
+          type: string
+          pattern: ^[0-9]{10}\.[a-z][a-z0-9]*(_[a-z0-9]+)*$
+        group:
+          type: string
+          minLength: 1
+          pattern: \S
+        name:
+          type: string
+          minLength: 1
+          pattern: \S
+        definition:
+          type: string
+          minLength: 1
+          pattern: \S
+        unit:
+          type: string
+          minLength: 1
+          pattern: \S
+        period_end_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          description: Reported fiscal-period end date, or null if unavailable. Independent of source filing dates.
+        value:
+          type: string
+          pattern: ^(?!-0(?:\.0+)?$)-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$
+          description: Unscaled exact decimal string. Currency uses base units, counts use the stated entity, percentages use percentage points. No exponent notation or negative zero.
+        value_operator:
+          type: string
+          enum:
+          - eq
+          - gt
+          - gte
+          - lt
+          - lte
+          - approx
+          description: 'eq: unqualified reported amount; gt/lt: strict bounds; gte/lte: inclusive bounds; approx: explicitly approximate disclosure. Display rounding alone does not imply approx. Two-sided ranges are outside this response.'
+        source:
+          $ref: '#/components/schemas/CompanyKpiSource'
+      required:
+      - kpi_id
+      - group
+      - name
+      - definition
+      - unit
+      - period_end_date
+      - value
+      - value_operator
+      - source
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Chadwin API key supplied as a bearer token.
