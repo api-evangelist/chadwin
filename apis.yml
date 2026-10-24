@@ -16,6 +16,11 @@ created: '2026-10-16'
 modified: '2026-10-16'
 tags:
 - Company
+- Data Analytics
+- Integration
+- Enterprise
+tags_raw:
+- Company
 - DataAnalytics
 - Integration
 - APIs
@@ -142,6 +147,8 @@ apis:
   humanURL: https://www.chadwin.co/docs/api
   baseURL: https://api.chadwin.co
   tags:
+  - Company Reports
+  tags_raw:
   - Company reports
   properties:
   - type: OpenAPI
