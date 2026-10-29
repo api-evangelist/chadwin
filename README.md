@@ -64,5 +64,136 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Chadwin is a company surfaced via the API Evangelist harvest backlog (source: g2-catalog) and added to the network as a stub for full-pipeline profiling.
-- https://chadwin.co/
+Chadwin is a technology company specializing in advanced data analytics and integration solutions for enterprises. Founded in 2020, Chadwin provides a suite of APIs that enable seamless data ingestion, transformation, and real-time analytics across multiple platforms. Their platform supports robust security features, scalable architecture, and comprehensive documentation to help developers integrate their services quickly and efficiently. The company focuses on delivering high-performance, reliable APIs that empower businesses to unlock insights from their data and drive informed decision-making.
+
+**Areas:** Company · Data Analytics · Integration · Enterprise
+
+## Chadwin on APIs.io
+
+Everything profiled for Chadwin is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/chadwin/](https://apis.io/providers/chadwin/)** — or go straight to one of the APIs or properties below.
+
+### APIs (8)
+
+- [Chadwin API](https://apis.io/apis/chadwin/chadwin-api/) — Financial data API for US-listed companies, KPIs, reports, and more.
+- [Chadwin Companies API](https://apis.io/apis/chadwin/chadwin-companies-api/) — Search US-listed companies by name, ticker, or CIK, and retrieve company details.
+- [Chadwin Company KPIs API](https://apis.io/apis/chadwin/chadwin-company-kpis-api/) — Issuer-specific operating KPIs with annual, half-year and quarterly values from original SEC filing documents. Free subscriber beta.
+- [Chadwin Company reports API](https://apis.io/apis/chadwin/chadwin-company-reports-api/) — Retrieve annual and quarterly company reports as cleaned HTML, and follow updates for Forms 10-K, 10-Q, 20-F, and 40-F and their amendments.
+- [Chadwin Current reports API](https://apis.io/apis/chadwin/chadwin-current-reports-api/) — Retrieve 8-K and 6-K reports with readable exhibits in one HTML response, and follow new reports and amendments through the update feed.
+- [Chadwin Insider activity API](https://apis.io/apis/chadwin/chadwin-insider-activity-api/) — Find transactions on Forms 4 and 5, retrieve Form 3, 4, and 5 filings, and find proposed sales on Form 144. Use the insider activity feed for new Forms 3,…
+- [Chadwin Institutional holdings API](https://apis.io/apis/chadwin/chadwin-institutional-holdings-api/) — Find institutional managers and reporting periods, retrieve Form 13F filings and holdings, and view a manager's holdings and consolidated positions. Follow…
+- [Chadwin Normalized financial statements API](https://apis.io/apis/chadwin/chadwin-normalized-financial-statements-api/) — Annual financial statements and financial metrics.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### JSON Schema (6)
+
+The data models the API reads and writes.
+
+- [CompanyReportPage](https://apis.io/schemas/chadwin/chadwin-company-report-page/)
+- [CompanyReportResponse](https://apis.io/schemas/chadwin/chadwin-company-report-response/)
+- [InsiderFilingDocument](https://apis.io/schemas/chadwin/chadwin-insider-filing-document/)
+- [InstitutionalFilingDetailResponse](https://apis.io/schemas/chadwin/chadwin-institutional-filing-detail-response/)
+- [ProposedSaleFilingDetail](https://apis.io/schemas/chadwin/chadwin-proposed-sale-filing-detail/)
+- [ProposedSalesResponse](https://apis.io/schemas/chadwin/chadwin-proposed-sales-response/)
+
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
+
+- [Chadwin Context](https://apis.io/jsonld/chadwin/chadwin-context/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Chadwin Openapi Overlay](https://apis.io/overlays/chadwin/chadwin-openapi-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [Chadwin API Rules](https://apis.io/rules/chadwin/chadwin-rules/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Chadwin Domain Security](https://apis.io/security/chadwin/chadwin-domain-security/)
+- [Chadwin Vulnerability Disclosure](https://apis.io/security/chadwin/chadwin-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Chadwin Plans Pricing](https://apis.io/plans/chadwin/chadwin-plans-pricing/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://chadwin.co/)
+- [Documentation](https://www.chadwin.co/docs)
+- [API reference](https://www.chadwin.co/docs/api)
+- [Pricing](https://www.chadwin.co/pricing)
+- [Sign up](https://www.chadwin.co/sign-in)
+- [Blog](https://www.chadwin.co/blog)
+- [Terms of service](https://www.chadwin.co/terms)
+- [Privacy policy](https://www.chadwin.co/privacy)
+- [GitHub](https://github.com/chadwinco)
+
+## API Evangelist rating
+
+**Kin Score 49.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 66.6 |
+| Contract governance | 22.0 |
+| Operational transparency | 15.8 |
+| Developer ergonomics | 35.0 |
+| Access clarity | 65.8 |
+
+**Agent readiness 41.5** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | na |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | na |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | unknown |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/chadwin/](https://apis.io/providers/chadwin/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Chadwin: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/chadwin/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
